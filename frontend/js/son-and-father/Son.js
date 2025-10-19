@@ -1,8 +1,6 @@
 import Listener from '../observer/Listener.js'
 import Observer from '../observer/Observer.js'
 
-console.log("Hello everybody, how fare you?");
-
 export default class Son extends Listener {
 	constructor(name) {
 		super()
