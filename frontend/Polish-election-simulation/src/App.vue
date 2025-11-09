@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import PageTabs from './components/PageTabs.vue'
 </script>
 
 <template>
@@ -18,6 +19,24 @@ import HelloWorld from './components/HelloWorld.vue'
   </header>
 
   <RouterView />
+  NIe lubiem kościej
+  <PageTabs :tabs="[
+    { name: 'visualization', title: 'Kliknij by ujrzeć swoje jakże interesujące dane wyświetlone w atrakcyjnej postaci'},
+    { name: 'methods', title: 'Dla nerdów'},
+    { name: 'constituencies', title: 'Dla nołlajfów'}
+  ]">
+    <template #visualization>
+    	Ale visualizacja, ale checa. Jakie ciekawe.
+    </template>
+
+    <template #methods>
+    	Czyli jesteś nerdem?
+    </template>
+
+    <template #constituencies>
+    	No edytuj sobie swoje okręgi, ja Ci nie bronię
+    </template>
+  </PageTabs>
 </template>
 
 <style scoped>
