@@ -1,10 +1,15 @@
 <script setup lang='ts'>
   import PageTabs from './PageTabs.vue'
-  import FillableSelect from './FillableSelect.vue';
-  import apiClient from '../api/apiClient.ts';
 
-  const api = apiClient.getInstance();
-  const methods = api.getApportionmentMethodsID();
+  import VisualizationTab from './tabs/VisualizationTab.vue'
+  import MethodsTab from './tabs/MethodsTab.vue'
+  import ConstituenciesTab from './tabs/ConstituenciesTab.vue'
+
+  import apiClient from '../api/apiClient.ts'
+  import Results from '../api/Results.ts'
+
+  const api = apiClient.getInstance()
+  const methods = api.getApportionmentMethodsID()
 </script>
 
 <template>
@@ -14,16 +19,16 @@
     { name: 'constituencies', title: 'Dla nołlajfów'}
   ]">
     <template #visualization>
-    	Ale visualizacja, ale checa. Jakie ciekawe.
+      <VisualizationTab/>
     </template>
 
     <template #methods>
-    	Czyli jesteś nerdem?
       <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/>
+      <MethodsTab/>
     </template>
 
     <template #constituencies>
-    	No edytuj sobie swoje okręgi, ja Ci nie bronię
+      <ConstituenciesTab/>
     </template>
   </PageTabs>
 </template>

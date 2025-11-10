@@ -30,6 +30,7 @@ const props = defineProps({
 })
 
 const activeTab = ref(0)
+
 activeTab.value = props.tabs[0].name
 </script>
 
