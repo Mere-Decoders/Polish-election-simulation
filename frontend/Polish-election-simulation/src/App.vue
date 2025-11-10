@@ -2,6 +2,11 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import PageTabs from './components/PageTabs.vue'
+import FillableSelect from './components/FillableSelect.vue';
+import apiClient from './api/apiClient.ts';
+
+const api = apiClient.getInstance();
+const methods = api.getMethods();
 </script>
 
 <template>
@@ -21,7 +26,7 @@ import PageTabs from './components/PageTabs.vue'
   <RouterView />
   NIe lubiem kościej
   <PageTabs :tabs="[
-    { name: 'visualization', title: 'Kliknij by ujrzeć swoje jakże interesujące dane wyświetlone w atrakcyjnej postaci'},
+    { name: 'visualization', title: 'Kliknij by ujrzeć swoje jakże interesujące dane wyświetlone w atrakcyjnej postaci'},
     { name: 'methods', title: 'Dla nerdów'},
     { name: 'constituencies', title: 'Dla nołlajfów'}
   ]">
@@ -30,7 +35,8 @@ import PageTabs from './components/PageTabs.vue'
     </template>
 
     <template #methods>
-    	Czyli jesteś nerdem?
+    	Czyli jesteś nerdem?
+      <FillableSelect :elements="apiClient.getInstance().getMethods()"/>
     </template>
 
     <template #constituencies>
