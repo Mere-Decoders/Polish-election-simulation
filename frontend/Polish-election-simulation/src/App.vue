@@ -6,7 +6,7 @@ import FillableSelect from './components/FillableSelect.vue';
 import apiClient from './api/apiClient.ts';
 
 const api = apiClient.getInstance();
-const methods = api.getMethods();
+const methods = api.getApportionmentMethodsID();
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const methods = api.getMethods();
 
     <template #methods>
     	Czyli jesteś nerdem?
-      <FillableSelect :elements="apiClient.getInstance().getMethods()"/>
+      <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/>
     </template>
 
     <template #constituencies>
