@@ -14,7 +14,7 @@ export default class apiClient {
     return apiClient.instance;
   }
 
-  public getMethods(): ApportionmentMethodID[] {
+  public getApportionmentMethodsID(): ApportionmentMethodID[] {
     let result: ApportionmentMethodID[] = [
         new ApportionmentMethodID("D'Hondta"),
         new ApportionmentMethodID("Sainte-Lague")
@@ -22,7 +22,7 @@ export default class apiClient {
     return result;
   }
 
-  public getVotes(): VotesID[] {
+  public getVotesID(): VotesID[] {
     let result: VotesID[] = [
         new VotesID("2019"),
         new VotesID("2023")
@@ -30,7 +30,7 @@ export default class apiClient {
     return result;
   }
 
-  public getConstituencySets(): ConstituencySetID[] {
+  public getConstituencySetsID(): ConstituencySetID[] {
     let result: ConstituencySetID[] = [
         new ConstituencySetID("Oficjalne"),
         new ConstituencySetID("Zestaw Lorem ipsum")
