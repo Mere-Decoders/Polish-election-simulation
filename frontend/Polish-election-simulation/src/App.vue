@@ -1,48 +1,21 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
-import PageTabs from './components/PageTabs.vue'
-import FillableSelect from './components/FillableSelect.vue';
-import apiClient from './api/apiClient.ts';
-
-const api = apiClient.getInstance();
-const methods = api.getApportionmentMethodsID();
+import Composition from './components/Composition.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/about">About</RouterLink>
     </div>
   </header>
 
   <RouterView />
   NIe lubiem kościej
-  <PageTabs :tabs="[
-    { name: 'visualization', title: 'Kliknij by ujrzeć swoje jakże interesujące dane wyświetlone w atrakcyjnej postaci'},
-    { name: 'methods', title: 'Dla nerdów'},
-    { name: 'constituencies', title: 'Dla nołlajfów'}
-  ]">
-    <template #visualization>
-    	Ale visualizacja, ale checa. Jakie ciekawe.
-    </template>
-
-    <template #methods>
-    	Czyli jesteś nerdem?
-      <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/>
-    </template>
-
-    <template #constituencies>
-    	No edytuj sobie swoje okręgi, ja Ci nie bronię
-    </template>
-  </PageTabs>
+  <Composition/>
 </template>
 
 <style scoped>
