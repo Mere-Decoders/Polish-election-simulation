@@ -1,4 +1,4 @@
-namespace backend
+namespace backend.Data
 {
     public class WeatherForecast
     {

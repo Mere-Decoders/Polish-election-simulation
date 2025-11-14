@@ -1,0 +1,19 @@
+using backend.Data;
+
+namespace backend.Services;
+
+public class SimulationService:ISimulationService
+{
+    private readonly ISimContextManager _simContextManager = default!;
+
+    public SimulationService(ISimContextManager simContextManager)
+    {
+        _simContextManager = simContextManager;
+    }
+
+    public ElectionResult Simulate(Guid simDataGuid, Guid methodGuid)
+    {
+        var context =  _simContextManager.FetchContext(simDataGuid, methodGuid);
+        return context.CountingMethod(context.Data);
+    }
+}

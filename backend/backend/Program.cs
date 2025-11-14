@@ -1,3 +1,6 @@
+using System.Text.Json;
+using backend.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
