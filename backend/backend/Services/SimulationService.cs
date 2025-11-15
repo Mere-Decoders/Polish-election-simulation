@@ -4,7 +4,7 @@ namespace backend.Services;
 
 public class SimulationService:ISimulationService
 {
-    private readonly ISimContextManager _simContextManager = default!;
+    private readonly ISimContextManager _simContextManager;
 
     public SimulationService(ISimContextManager simContextManager)
     {
