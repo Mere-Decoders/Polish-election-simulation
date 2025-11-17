@@ -4,5 +4,5 @@ namespace backend.Services;
 
 public interface ISimContextManager
 {
-    public SimContext FetchContext(Guid simDataGuid, Guid MethodGuid);
+    public SimContext FetchContextByGuid(Guid simDataGuid, Guid methodGuid);
 }

@@ -13,7 +13,7 @@ public class SimulationService:ISimulationService
 
     public ElectionResult Simulate(Guid simDataGuid, Guid methodGuid)
     {
-        var context =  _simContextManager.FetchContext(simDataGuid, methodGuid);
+        var context =  _simContextManager.FetchContextByGuid(simDataGuid, methodGuid);
         return context.CountingMethod(context.Data);
     }
 }

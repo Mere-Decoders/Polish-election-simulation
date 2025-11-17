@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 
 //our own Services
 builder.Services.AddScoped<ISimulationService, SimulationService>();
+builder.Services.AddScoped<ISimContextManager, SimContextManager>();
 
 var app = builder.Build();
 

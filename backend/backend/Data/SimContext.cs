@@ -6,7 +6,7 @@ public class SimContext
 
     public SimulationData Data;
 
-    SimContext(Func<SimulationData, ElectionResult> countingMethod, SimulationData data)
+    public SimContext(Func<SimulationData, ElectionResult> countingMethod, SimulationData data)
     {
         CountingMethod = countingMethod;
         Data = data;
