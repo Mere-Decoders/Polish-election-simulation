@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using backend.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -20,7 +21,9 @@ namespace backend.Controllers
             _logger = logger;
         }
 
+        
         [HttpGet(Name = "GetWeatherForecast")]
+        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

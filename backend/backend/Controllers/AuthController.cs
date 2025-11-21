@@ -47,10 +47,4 @@ public class AuthController : ControllerBase
             token = new JwtSecurityTokenHandler().WriteToken(token)
         });
     }
-
-    [HttpPost("confirmLogin")]
-    public IActionResult confirm([FromBody] LoginRequest request)
-    {
-        
-    }
 }
