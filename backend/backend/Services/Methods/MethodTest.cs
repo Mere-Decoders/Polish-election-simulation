@@ -20,7 +20,16 @@ namespace backend.Services.Methods
                 { "Area 1", (5, new[] { 10, 100 }) },
                 { "Area 2", (7, new[] { 20, 100, 3000 }) }
             }
+
         );
+
+        public void TestMethod()
+        {
+            var method = new DhondtMethod();
+            ElectionResult result = method.Run(simulationData);
+            Console.Write(result.ToJson());
+            // Add assertions or checks here as needed
+        }
 
     }
 }

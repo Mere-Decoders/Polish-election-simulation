@@ -1,6 +1,7 @@
 using System.Text;
 using backend.Data;
 using backend.Services;
+using backend.Services.Methods;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -71,3 +72,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
