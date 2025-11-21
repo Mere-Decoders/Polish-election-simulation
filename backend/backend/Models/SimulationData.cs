@@ -1,18 +1,11 @@
 namespace backend.Data;
 
-public class SimulationData
+public class SimulationData(Party[] parties, Dictionary<string, string[]> districts,
+    Dictionary<string, (int, int[])> mandateNumberAndVotesInAreas)
 {
-    public Party[] Parties { get; set; }
+    public Party[] Parties { get; set; } = parties;
 
-    public  Dictionary<string, string[]> Districts { get; set; }
-    
-    public Dictionary<string, int[]> VotesInAreas { get; set; }
+    public Dictionary<string, string[]> Districts { get; set; } = districts;
 
-    public SimulationData(Party[] parties, Dictionary<string, string[]> districts,
-        Dictionary<string, int[]> votesInAreas)
-    {
-        Parties = parties;
-        Districts = districts;
-        VotesInAreas = votesInAreas;
-    }
+    public Dictionary<string, (int, int[])> MandateNumberAndVotesInAreas { get; set; } = mandateNumberAndVotesInAreas;
 }

@@ -1,6 +1,6 @@
 using backend.Data;
 
-namespace backend.Services;
+namespace backend.Services.Methods;
 
 public interface IMethodManager
 {
