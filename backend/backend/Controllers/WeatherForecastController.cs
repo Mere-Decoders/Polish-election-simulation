@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -23,7 +24,6 @@ namespace backend.Controllers
 
         
         [HttpGet(Name = "GetWeatherForecast")]
-        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
