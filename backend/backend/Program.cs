@@ -1,6 +1,6 @@
-using System.Text.Json;
 using backend.Data;
 using backend.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +12,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //our own Services
-builder.Services.AddScoped<ISimulationService, SimulationService>();
-builder.Services.AddScoped<ISimContextManager, SimContextManager>();
+//builder.Services.AddScoped<ISimulationService, SimulationService>();
+//builder.Services.AddScoped<ISimContextManager, SimContextManager>();
+
+
+//Add db to the Container
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 

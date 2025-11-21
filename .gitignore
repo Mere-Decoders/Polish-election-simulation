@@ -7,3 +7,4 @@
 /.vs
 /backend/backend/bin/Debug/net8.0
 /backend/backend/obj
+backend/backend/appsettings.Development.json
