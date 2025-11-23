@@ -14,7 +14,6 @@ import Composition from './components/Composition.vue'
   </header>
 
   <RouterView />
-  NIe lubiem kościej
   <Composition/>
 </template>
 
