@@ -1,5 +1,10 @@
 <template>
   <ResultsTable :resultsToDisplay="resultsToDisplay"/>
+  <Parliament 
+    :resultsToDisplay="resultsToDisplay"
+    :innerRadius = "100"
+    :outerRadius = "500"
+  />
 </template>
 
 <script setup lang='ts'>
@@ -8,6 +13,7 @@
   import Results from '../../api/Results.ts'
   import ResultsTableRow from '../../api/ResultsTableRow.ts'
   import ResultsTable from '../ResultsTable.vue'
+  import Parliament from '../Parliament.vue'
 
   const props = defineProps({
     results: Results

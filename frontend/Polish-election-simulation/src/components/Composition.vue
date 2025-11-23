@@ -23,7 +23,7 @@
     </template>
 
     <template #methods>
-      <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/>
+      <!-- <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/> -->
       <MethodsTab/>
     </template>
 
