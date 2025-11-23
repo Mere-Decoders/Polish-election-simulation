@@ -1,6 +1,7 @@
 <script setup lang='ts'>
   import PageTabs from './PageTabs.vue'
-
+  import FillableSelect from './FillableSelect.vue'
+  
   import VisualizationTab from './tabs/VisualizationTab.vue'
   import MethodsTab from './tabs/MethodsTab.vue'
   import ConstituenciesTab from './tabs/ConstituenciesTab.vue'
@@ -23,7 +24,7 @@
     </template>
 
     <template #methods>
-      <!-- <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/> -->
+      <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/>
       <MethodsTab/>
     </template>
 
