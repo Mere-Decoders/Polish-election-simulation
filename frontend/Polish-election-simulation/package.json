@@ -14,13 +14,19 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@turf/bbox": "^7.3.0",
+    "@turf/union": "^7.3.0",
+    "d3": "^7.9.0",
+    "d3-geo": "^3.1.1",
+    "d3-selection": "^3.0.0",
     "patch-package": "^8.0.1",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
-    "@types/node": "^22.18.11",
+    "@types/d3": "^7.4.3",
+    "@types/node": "^22.19.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "npm-run-all2": "^8.0.4",
