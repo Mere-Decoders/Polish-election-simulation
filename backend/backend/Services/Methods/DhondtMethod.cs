@@ -4,129 +4,96 @@ namespace backend.Services.Methods
 {
     public class DhondtMethod
     {
-        public ElectionResult Run(SimulationData data) {
+        public static ElectionResult RunDhondt(SimulationData data, double coalitionThreshold = 0.08, double lowerThreshold = 0.05)
+        {
+            string[] partyNames = data.Parties.Select(p => p.Name).ToArray();
 
-            var partyNames = data.Parties.Select(p => p.Name).ToArray();
+            // -------------------------
+            // 1. Sumowanie głosów ogólnokrajowych
+            // -------------------------
+            int partyCount = data.Parties.Length;
+            int[] nationalVotes = new int[partyCount];
+
+            foreach (var area in data.VotesInAreas)
+            {
+                for (int i = 0; i < partyCount; i++)
+                    nationalVotes[i] += area.Value[i];
+            }
+
+            int totalVotes = nationalVotes.Sum();
+
+            // -------------------------
+            // 2. Wyliczenie kto przekracza próg
+            // -------------------------
+            bool[] passesThreshold = new bool[partyCount];
+
+            for (int i = 0; i < partyCount; i++)
+            {
+                var p = data.Parties[i];
+
+                if (!p.NeedsThreshold)
+                {
+                    passesThreshold[i] = true;
+                    continue;
+                }
+
+                double pct = (double)nationalVotes[i] / totalVotes;
+
+                if (p.IsCoalition)
+                    passesThreshold[i] = pct >= coalitionThreshold;
+                else
+                    passesThreshold[i] = pct >= lowerThreshold;
+            }
+
+            // -------------------------
+            // 3. Liczenie mandatów w każdym okręgu
+            // -------------------------
             var districtResults = new Dictionary<string, int[]>();
 
             foreach (var district in data.Districts)
             {
-                string districtName = district.Key;
-                string[] areaNames = district.Value;
+                string districtId = district.Key;
+                int seats = district.Value.Item1;
+                string[] areas = district.Value.Item2;
 
-                // Sumujemy głosy z obszarów w tym okręgu
-                var districtVotes = SumVotesForDistrict(areaNames, data);
+                // Suma głosów per okręg
+                int[] districtVotes = new int[partyCount];
 
-                // Filtr według progów
-                var filteredVotes = ApplyThresholds(districtVotes, data.Parties);
+                foreach (var area in areas)
+                {
+                    var areaVotes = data.VotesInAreas[area];
+                    for (int i = 0; i < partyCount; i++)
+                        districtVotes[i] += areaVotes[i];
+                }
 
-                // Liczymy mandaty
-                int mandates = SumMandatesFromAreas(areaNames, data);
+                // d’Hondt: lista (value, partyIndex)
+                var quotients = new List<(double value, int party)>();
 
-                int[] seats = CalculateDhondt(filteredVotes, mandates);
+                for (int i = 0; i < partyCount; i++)
+                {
+                    if (!passesThreshold[i])
+                        continue; // nie przeszedł progu – zero dzielników
 
-                districtResults[districtName] = seats;
+                    for (int d = 1; d <= seats; d++)
+                    {
+                        quotients.Add(((double)districtVotes[i] / d, i));
+                    }
+                }
+
+                // wybieramy największe N
+                var top = quotients
+                    .OrderByDescending(q => q.value)
+                    .Take(seats)
+                    .ToList();
+
+                int[] seatResult = new int[partyCount];
+                foreach (var t in top)
+                    seatResult[t.party]++;
+
+                districtResults[districtId] = seatResult;
             }
 
             return new ElectionResult(partyNames, districtResults);
         }
-
-        private Dictionary<string, int> SumVotesForDistrict(string[] areaNames, SimulationData data)
-        {
-            var totalVotes = new Dictionary<string, int>();
-
-            foreach (var party in data.Parties)
-                totalVotes[party.Name] = 0;
-
-            foreach (var area in areaNames)
-            {
-                var (mandates, votes) = data.MandateNumberAndVotesInAreas[area];
-
-                int partyIndex = 0;
-                foreach (var party in data.Parties)
-                {
-                    totalVotes[party.Name] += votes[partyIndex];
-                    partyIndex++;
-                }
-            }
-
-            return totalVotes;
-        }
-
-        private int SumMandatesFromAreas(string[] areaNames, SimulationData data)
-        {
-            int total = 0;
-
-            foreach (var area in areaNames)
-            {
-                var (mandates, _) = data.MandateNumberAndVotesInAreas[area];
-                total += mandates;
-            }
-
-            return total;
-        }
-
-        private Dictionary<string, int> ApplyThresholds(
-            Dictionary<string, int> votes,
-            Party[] parties)
-        {
-            int totalVotes = votes.Values.Sum();
-
-            var result = new Dictionary<string, int>();
-
-            int index = 0;
-            foreach (var party in parties)
-            {
-                int v = votes[party.Name];
-
-                bool pass;
-                if (!party.NeedsThreshold)
-                {
-                    pass = true; // brak progu
-                }
-                else if (party.IsCoalition)
-                {
-                    pass = (v >= 0.08 * totalVotes);
-                }
-                else
-                {
-                    pass = (v >= 0.05 * totalVotes);
-                }
-
-                result[party.Name] = pass ? v : 0;
-
-                index++;
-            }
-
-            return result;
-        }
-
-        private int[] CalculateDhondt(Dictionary<string, int> votes, int mandates)
-        {
-            var parties = votes.Keys.ToList();
-            var seatCount = parties.ToDictionary(p => p, p => 0);
-
-            var quotients = new List<(string party, double quotient)>();
-
-            foreach (var p in parties)
-            {
-                for (int i = 1; i <= mandates; i++)
-                {
-                    quotients.Add((p, (double)votes[p] / i));
-                }
-            }
-
-            var top = quotients
-                .OrderByDescending(q => q.quotient)
-                .Take(mandates)
-                .ToList();
-
-            foreach (var q in top)
-                seatCount[q.party]++;
-
-            // Zwracamy tablicę w kolejności oryginalnych partii
-            return parties.Select(p => seatCount[p]).ToArray();
-
-        }
-    }
+    }    
 }

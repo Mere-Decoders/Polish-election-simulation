@@ -1,4 +1,7 @@
+using System.Text.Json;
+
 namespace backend.Data;
+
 
 public class ElectionResult
 {
@@ -13,21 +16,10 @@ public class ElectionResult
 
     public string ToJson()
     {
-        var partyList = string.Join(", ", PartyNames.Select(p => $"\"{p}\""));
-
-        var districts = DistrictResults
-            .Select(d =>
-                $"\"{d.Key}\": [{string.Join(", ", d.Value)}]"
-            );
-
-        string districtJson = string.Join(",\n    ", districts);
-
-        return
-            $@"{{
-              ""PartyNames"": [{partyList}],
-              ""DistrictResults"": {{
-                {districtJson}
-              }}
-            }}";
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
     }
 }
+
