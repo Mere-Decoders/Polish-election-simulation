@@ -8,7 +8,7 @@ public class SimContextManager : ISimContextManager
     private readonly ISimDataManager _simDataManager;
     private readonly IMethodManager _methodManager;
 
-    SimContextManager(ISimDataManager simDataManager, IMethodManager methodManager)
+    public SimContextManager(ISimDataManager simDataManager, IMethodManager methodManager)
     {
         _simDataManager = simDataManager;
         _methodManager = methodManager;

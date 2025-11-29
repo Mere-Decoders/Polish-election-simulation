@@ -39,12 +39,16 @@ builder.Services.AddSwaggerGen(c =>
             new string[]{}
         }
     });
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 //our own Services
-//builder.Services.AddScoped<ISimulationService, SimulationService>();
-//builder.Services.AddScoped<ISimContextManager, SimContextManager>();
-
+builder.Services.AddScoped<ISimulationService, SimulationService>();
+builder.Services.AddScoped<ISimContextManager, SimContextManager>();
+builder.Services.AddScoped<IMethodManager, MethodManager>();
+builder.Services.AddScoped<ISimDataManager, SimDataManager> ();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -78,7 +82,6 @@ builder.Services.AddAuthentication(options =>
     });
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
-builder.Services.AddScoped<MethodTest>();
 
 var app = builder.Build();
 

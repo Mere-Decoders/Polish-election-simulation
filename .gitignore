@@ -7,4 +7,13 @@
 /.vs
 /backend/backend/bin/Debug/net8.0
 /backend/backend/obj
+
+#secrets
 backend/backend/appsettings.Development.json
+
+# Rider/Resharper user settings
+*.DotSettings.user
+
+#Xunit but also generally
+obj/
+bin/
