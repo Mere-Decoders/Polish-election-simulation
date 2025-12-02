@@ -5,15 +5,6 @@ import Composition from './components/Composition.vue'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-    </div>
-  </header>
-
-  <RouterView />
   <Composition/>
 </template>
 

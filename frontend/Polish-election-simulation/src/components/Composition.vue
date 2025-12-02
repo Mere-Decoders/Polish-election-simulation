@@ -15,9 +15,9 @@
 
 <template>
   <PageTabs :tabs="[
-    { name: 'visualization', title: 'Kliknij by ujrzeć swoje jakże interesujące dane wyświetlone w atrakcyjnej postaci'},
-    { name: 'methods', title: 'Dla nerdów'},
-    { name: 'constituencies', title: 'Dla nołlajfów'}
+    { name: 'visualization', title: 'Wizualizacja wyników'},
+    { name: 'methods', title: 'Edytor metod'},
+    { name: 'constituencies', title: 'Edytor okręgów'}
   ]">
     <template #visualization>
       <VisualizationTab/>
