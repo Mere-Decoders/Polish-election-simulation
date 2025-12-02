@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.Models;
 
 namespace backend.Tests.Methods;
 
@@ -10,10 +11,10 @@ public static class DhondtTestData
             new Party("123", false, false),
             new Party("456", false, true)
         },
-        new Dictionary<string, (int, string[])>
+        new Dictionary<string, DistrictDetails>
         {
-            { "1", (7, new[] { "0052", "0721" }) },
-            { "2", (4, new[] { "1021", "0823", "1304" }) }
+            { "1", new DistrictDetails { Seats = 7, TerytCodes = new[] { "0052", "0721" } } },
+            { "2", new DistrictDetails { Seats = 4, TerytCodes = new[] { "1021", "0823", "1304" } } }
         },
         new Dictionary<string, int[]>
         {
@@ -31,9 +32,9 @@ public static class DhondtTestData
             new Party("A", false, true),
             new Party("B", false, true)
         },
-        new Dictionary<string, (int, string[])>
+        new Dictionary<string, DistrictDetails>
         {
-            { "1", (5, new[] { "001", "002" }) }
+            { "1", new DistrictDetails { Seats = 5, TerytCodes = new[] { "001", "002" } } }
         },
         new Dictionary<string, int[]>
         {
@@ -48,9 +49,9 @@ public static class DhondtTestData
             new Party("A", false, false),
             new Party("B", false, true)
         },
-        new Dictionary<string, (int, string[])>
+        new Dictionary<string, DistrictDetails>
         {
-            { "1", (5, new[] { "001", "002" }) }
+            { "1", new DistrictDetails { Seats = 5, TerytCodes = new[] { "001", "002" } } }
         },
         new Dictionary<string, int[]>
         {
@@ -65,9 +66,9 @@ public static class DhondtTestData
             new Party("A", false, true),
             new Party("B", false, true)
         },
-        new Dictionary<string, (int, string[])>
+        new Dictionary<string, DistrictDetails>
         {
-            { "1", (100, new[] { "001" }) }
+            { "1", new DistrictDetails { Seats = 100, TerytCodes = new[] { "001" } } }
         },
         new Dictionary<string, int[]>
         {
@@ -81,9 +82,9 @@ public static class DhondtTestData
             new Party("A", false, false),
             new Party("B", false, true)
         },
-        new Dictionary<string, (int, string[])>
+        new Dictionary<string, DistrictDetails>
         {
-            { "1", (100, new[] { "001" }) }
+            { "1", new DistrictDetails { Seats = 100, TerytCodes = new[] { "001" } } }
         },
         new Dictionary<string, int[]>
         {
@@ -97,10 +98,10 @@ public static class DhondtTestData
             new Party("123", false, false),
             new Party("456", false, true)
         },
-        new Dictionary<string, (int, string[])>
+        new Dictionary<string, DistrictDetails>
         {
-            { "1", (17, new[] { "0052", "0071" }) },
-            { "2", (14, new[] { "1021", "0823", "1304" }) }
+            { "1", new DistrictDetails { Seats = 17, TerytCodes = new[] { "0052", "0071" } } },
+            { "2", new DistrictDetails { Seats = 14, TerytCodes = new[] { "1021", "0823", "1304" } } }
         },
         new Dictionary<string, int[]>
         {
