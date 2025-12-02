@@ -53,8 +53,8 @@ namespace backend.Services.Methods
             foreach (var district in data.Districts)
             {
                 string districtId = district.Key;
-                int seats = district.Value.Item1;
-                string[] areas = district.Value.Item2;
+                int seats = district.Value.Seats;
+                string[] areas = district.Value.TerytCodes;
 
                 // Suma głosów per okręg
                 int[] districtVotes = new int[partyCount];
