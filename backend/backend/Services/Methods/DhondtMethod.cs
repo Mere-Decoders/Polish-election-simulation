@@ -49,6 +49,7 @@ namespace backend.Services.Methods
             // 3. Liczenie mandatów w każdym okręgu
             // -------------------------
             var districtResults = new Dictionary<string, int[]>();
+            var voteNumbers = new Dictionary<string, int[]>();
 
             foreach (var district in data.Districts)
             {
@@ -65,6 +66,8 @@ namespace backend.Services.Methods
                     for (int i = 0; i < partyCount; i++)
                         districtVotes[i] += areaVotes[i];
                 }
+
+                voteNumbers[districtId] = districtVotes;
 
                 // d’Hondt: lista (value, partyIndex)
                 var quotients = new List<(double value, int party)>();
@@ -93,7 +96,7 @@ namespace backend.Services.Methods
                 districtResults[districtId] = seatResult;
             }
 
-            return new ElectionResult(partyNames, districtResults);
+            return new ElectionResult(partyNames, districtResults, voteNumbers);
         }
     }    
 }
