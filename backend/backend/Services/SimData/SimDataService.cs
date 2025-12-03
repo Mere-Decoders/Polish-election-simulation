@@ -15,7 +15,7 @@ public class SimDataService:ISimDataService
             case ("00000000-0000-0000-0000-000000000001"):
                 return SimulationDataFromCsv.Get2();
             default:
-                throw new ArgumentException("The method you are requesting doesn't exist");
+                throw new KeyNotFoundException("The data you are requesting doesn't exist");
         }
     }
 
