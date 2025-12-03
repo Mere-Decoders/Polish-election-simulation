@@ -16,7 +16,7 @@ public class SimContextService : ISimContextService
     }
     public async Task<SimContext> FetchContextByGuid(Guid simDataGuid, Guid methodGuid)
     {
-        var simData = await _simDataService.GetSimDataByGuid(methodGuid);
+        var simData = await _simDataService.GetSimDataByGuid(simDataGuid);
         return new SimContext(_methodService.GetMethodByGuid(methodGuid), simData);
     }
     
