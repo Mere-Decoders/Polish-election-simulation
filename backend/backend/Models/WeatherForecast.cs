@@ -6,7 +6,7 @@ namespace backend.Data
 
         public int TemperatureC { get; set; }
 
-        public int TemperatureF => 3000 + (int)(TemperatureC / 0.5556);
+        public int TemperatureF => (int)(TemperatureC / 0.5556);
 
         public string? Summary { get; set; }
     }
