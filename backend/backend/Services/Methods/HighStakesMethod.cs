@@ -9,7 +9,7 @@ public class HighStakesMethod
 
         string[] partyNames = data.Parties.Select(p => p.Name).ToArray();
 
-        //Sumowanie g³osów ogólnokrajowych
+        //Sumowanie glosow ogolnokrajowych
         
         int partyCount = data.Parties.Length;
         int[] nationalVotes = new int[partyCount];
@@ -29,7 +29,7 @@ public class HighStakesMethod
             int seats = district.Value.Seats;
             string[] areas = district.Value.TerytCodes;
 
-            // Suma g³osów per okrêg
+            // Suma glosow per okreg
             int[] districtVotes = new int[partyCount];
 
             foreach (var area in areas)
@@ -41,7 +41,7 @@ public class HighStakesMethod
 
             voteNumbers[districtId] = districtVotes;
 
-            //Znajdowanie partii z najwiêksz¹ liczb¹ g³osów
+            //Znajdowanie partii z najwieksze liczbe glosow
 
             int winningParty = 0;
             int maxVotes = districtVotes[0];
