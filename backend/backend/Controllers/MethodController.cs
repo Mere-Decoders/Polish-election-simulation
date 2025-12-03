@@ -1,0 +1,28 @@
+using backend.Data;
+using backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace backend.Controllers;
+
+
+[Authorize]
+[ApiController]
+[Route("api/methods/[controller]")]
+public class MethodController : ControllerBase
+{
+    [HttpGet("get-list")]
+    public ActionResult< Dictionary<String, Guid>> GetMethodList()
+    {
+        var options = new Dictionary<String, Guid>();
+        options.Add("Metoda Dhondt'a", Guid.Empty);
+        options.Add("Metoda High Stakes", Guid.Parse("00000000-0000-0000-0000-000000000001"));
+        return Ok(options);
+    }
+    
+    [HttpGet("details")]
+    public ActionResult< MethodDto> GetMethod(Guid guid)
+    {
+        return Ok(new NotImplementedException());
+    }
+}
