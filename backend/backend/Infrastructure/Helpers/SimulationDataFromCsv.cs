@@ -37,5 +37,6 @@ namespace backend.Infrastructure.Helpers
 
             return simulationData;
         }
+
     }
 }
