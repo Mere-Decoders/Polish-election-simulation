@@ -1,10 +1,4 @@
 <script setup lang="ts">
-    import { onMounted } from "vue";
-    import { generateConstituencies } from "@/api/constituencyLoader";
-    console.log("lol");
-    let content = await generateConstituencies();
-    
-    console.log(content);
 </script>
 
 <template>

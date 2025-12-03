@@ -1,6 +1,5 @@
-import { select, geoPath, geoMercator, type GeoPath, type GeoPermissibleObjects } from 'd3';
-import { bbox } from '@turf/bbox'
-import { union } from '@turf/union'
+import {union} from '@turf/union'
+import { rewind } from "@turf/rewind";
 
 export async function loadPowiaty() {
   const response = await fetch('/poland.counties.json');
@@ -15,46 +14,47 @@ export async function loadConstituencies() {
 export async function generateConstituencies() {
     const powiaty = await loadPowiaty();
     const constituencyDef = await loadConstituencies();
-    console.log(constituencyDef.features);
     let constituencies = constituencyDef.features.map(function(row: { num: string; powiaty: Array<string>; }) {
         let shapes = powiaty.features.filter(function(item: { properties: { terc: string; }; }) {
             return row.powiaty.includes(item.properties.terc);
         });
-        let shape = union({
+        if (shapes.length === 1) {
+            return shapes[0];
+        }
+        let _union = union({
             "type": "FeatureCollection",
             "features": shapes
         });
-        console.log("shape");
-        console.log(shape);
-        return shape;
+        // because union() puts the vertices in the wrong order, causing constituencies to be colored on the outside
+        _union.geometry = rewind(_union.geometry, {reverse: true});
+        return _union;
     });
     let geoCollection = {
         "type": "FeatureCollection",
         "features": constituencies
     };
-    console.log(geoCollection);
     return geoCollection;
 }
 
 // var geoGenerator: GeoPath<any, GeoPermissibleObjects> | ((arg0: any) => string);
 
 // async function init() {
-//     const powiaty = await loadPowiaty();
-//     const bboxPowiaty = bbox(powiaty);
-//     console.log(bboxPowiaty);
+//     const constituencies = await generateConstituencies();
+//     const bboxConstituencies = bbox(constituencies.features);
+//     console.log(bboxConstituencies);
 //     const projection =
 //         geoMercator()
 //         .scale(2000) // Do dopracowania jaką wartość dokładnie dobrać
 //         .translate([0, 0])
-//         .center([bboxPowiaty[0], bboxPowiaty[3]]);
+//         .center([bboxConstituencies[0], bboxConstituencies[3]]);
 
 //     geoGenerator = geoPath().projection(projection);
 
-//     console.log(powiaty.features)
+//     console.log(constituencies.features)
 //     // const u =
 //     //     select('#content g.map')
 //     //     .selectAll('path')
-//     //     .data(powiaty.features)
+//     //     .data(constituencies.features)
 //     //     .join('path')
 //     //     .attr('d', geoGenerator)
 //     //     .attr('fill', "#f00");
@@ -62,7 +62,7 @@ export async function generateConstituencies() {
 //     const u =
 //         select('svg.map')
 //         .selectAll('a')
-//         .data(powiaty.features)
+//         .data(constituencies.features)
 //         .join('a')
 //         .attr('id', getTERC)
 //         .attr('name', getRegionName)
