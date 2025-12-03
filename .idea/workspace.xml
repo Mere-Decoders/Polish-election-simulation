@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e0c76587-12c4-4672-8fbe-6b7930ca5ab6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/Polish-election-simulation/src/api/apiClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/Polish-election-simulation/src/api/apiClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Polish-election-simulation/src/components/tabs/VisualizationTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/Polish-election-simulation/src/components/tabs/VisualizationTab.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

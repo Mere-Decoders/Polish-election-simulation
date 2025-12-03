@@ -1,7 +1,7 @@
 import ApportionmentMethodID from "./ApportionmentMethodID.ts"
 import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
-import type ResultsTableRow from "@/api/ResultsTableRow.ts";
+import ResultsTableRow from "@/api/ResultsTableRow.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -39,8 +39,35 @@ export default class apiClient {
     return result;
   }
 
-  public async getTotalResults(year: number, method: string)  {
-    const data = await fetch("/mock_results.json");
+  public async getTotalResults(year: number, method: string): Promise<ResultsTableRow[]>  {
+    const data_response = await fetch("/mock_results.json");
+    const data = (await data_response.json()).result;
+    let results: ResultsTableRow[] = [];
+    const constituencyCount: number = 41;
+    let sumSeatsArray: Array<number> = [];
+    let sumVotesArray: Array<number> = [];
+    for (let i = 0; i < data.partyNames.length; i++) {
+        let sumVotes: number = 0;
+        let sumSeats: number = 0;
+        for (let j = 1; j <= constituencyCount; j++) {
+            sumVotes += data.constituencyVotes[j][i];
+            sumSeats += data.constituencySeats[j][i];
+        }
+        sumSeatsArray.push(sumSeats);
+        sumVotesArray.push(sumVotes);
+    }
+    const totalSumSeats: number = sumSeatsArray.reduce((a, b) => a + b);
+    const totalSumVotes: number = sumVotesArray.reduce((a, b) => a + b);
 
+    for (let i = 0; i < data.partyNames.length; i++) {
+        results.push(
+            new ResultsTableRow(
+                data.partyNames[i],
+                sumVotesArray[i]!,
+                sumVotesArray[i]! / totalSumVotes,
+                sumSeatsArray[i]!,
+                sumSeatsArray[i]! / totalSumSeats));
+    }
+    return results;
   }
 }
