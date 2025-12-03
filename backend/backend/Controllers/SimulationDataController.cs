@@ -20,7 +20,10 @@ public class SimulationDataController : ControllerBase
     [HttpGet("get-list")]
     public  ActionResult< List<(String, Guid)>> GetSimDataList()
     {
-        return Ok( new NotImplementedException());
+        var options = new Dictionary<String, Guid>();
+        options.Add("wybory 2023 [przetworzone]", Guid.Empty);
+        options.Add("wiarygodne wybory", Guid.Parse("00000000-0000-0000-0000-000000000001"));
+        return Ok(options);
     }
     
     [HttpGet("details/{guid:guid}")]

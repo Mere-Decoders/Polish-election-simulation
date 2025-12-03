@@ -6,7 +6,7 @@ namespace backend.Services.Methods;
 /// Guid "00000000-0000-0000-0000-000000000000" - Dhondt method
 /// Current Implementation is certainly not final
 /// </summary>
-public class MethodManager : IMethodManager
+public class MethodService : IMethodService
 {
     public Func<SimulationData, ElectionResult> GetMethodByGuid(Guid methodGuid)
     {
