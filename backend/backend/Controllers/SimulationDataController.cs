@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.DTOs;
+using backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,15 +11,22 @@ namespace backend.Controllers;
 [Route("api/sim-data/[controller]")]
 public class SimulationDataController : ControllerBase
 {
+    private readonly ISimDataService _simDataService;
+    public SimulationDataController(ISimDataService simDataService)
+    {
+        _simDataService = simDataService;
+    }
+    
     [HttpGet("get-list")]
-    public  ActionResult< DataResponse< List<(String, Guid)>>> GetSimDataList()
+    public  ActionResult< List<(String, Guid)>> GetSimDataList()
     {
         return Ok( new NotImplementedException());
     }
     
-    [HttpGet("details")]
-    public ActionResult<DataResponse< SimulationData>> GetSimData(Guid guid)
+    [HttpGet("details/{guid:guid}")]
+    public async Task<ActionResult<SimulationData>> GetSimData(Guid guid)
     {
-        return Ok( new NotImplementedException());
+        var simData = await _simDataService.GetSimDataByGuid(guid);
+        return Ok(simData);
     }
 }

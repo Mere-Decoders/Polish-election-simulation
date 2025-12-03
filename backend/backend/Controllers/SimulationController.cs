@@ -26,7 +26,7 @@ namespace backend.Controllers
         /// <param name="methodGuid">Parameter identifying the counting method to apply to the dataset. The empty guid(00000000-0000-0000-0000-000000000000) will serve a sane debug value.</param>
         /// <returns>ElectionResult - serializable model of the result of an election.</returns>
         [HttpGet(Name = "simulate")]
-        public ActionResult< DataResponse<ElectionResult>> Simulate(Guid simDataGuid, Guid methodGuid)
+        public ActionResult< ElectionResult> Simulate(Guid simDataGuid, Guid methodGuid)
         {
             return Ok(_simulationService.Simulate(simDataGuid, methodGuid));
         }

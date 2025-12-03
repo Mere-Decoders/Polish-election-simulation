@@ -46,9 +46,9 @@ builder.Services.AddSwaggerGen(c =>
 
 //our own Services
 builder.Services.AddScoped<ISimulationService, SimulationService>();
-builder.Services.AddScoped<ISimContextManager, SimContextManager>();
+builder.Services.AddScoped<ISimContextService, SimContextService>();
 builder.Services.AddScoped<IMethodManager, MethodManager>();
-builder.Services.AddScoped<ISimDataManager, SimDataManager> ();
+builder.Services.AddScoped<ISimDataService, SimDataService> ();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

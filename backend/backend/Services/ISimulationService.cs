@@ -4,5 +4,5 @@ namespace backend.Services;
 
 public interface ISimulationService
 {
-    public ElectionResult Simulate(Guid SimDataGuid, Guid MethodGuid );
+    public Task<ElectionResult> Simulate(Guid SimDataGuid, Guid MethodGuid );
 }

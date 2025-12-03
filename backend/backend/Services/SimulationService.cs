@@ -4,16 +4,16 @@ namespace backend.Services;
 
 public class SimulationService:ISimulationService
 {
-    public readonly ISimContextManager _simContextManager;
+    public readonly ISimContextService SimContextService;
 
-    public SimulationService(ISimContextManager simContextManager)
+    public SimulationService(ISimContextService simContextService)
     {
-        _simContextManager = simContextManager;
+        SimContextService = simContextService;
     }
 
-    public ElectionResult Simulate(Guid simDataGuid, Guid methodGuid)
+    public async Task<ElectionResult> Simulate(Guid simDataGuid, Guid methodGuid)
     {
-        var context =  _simContextManager.FetchContextByGuid(simDataGuid, methodGuid);
+        var context =  await SimContextService.FetchContextByGuid(simDataGuid, methodGuid);
         return context.CountingMethod(context.Data);
     }
 }

@@ -12,13 +12,13 @@ namespace backend.Controllers;
 public class MethodController : ControllerBase
 {
     [HttpGet("get-list")]
-    public ActionResult< DataResponse< List<(Guid, String)>>> GetMethodList()
+    public ActionResult< List<(Guid, String)>> GetMethodList()
     {
         return Ok(new NotImplementedException());
     }
     
     [HttpGet("details")]
-    public ActionResult< DataResponse<MethodDto>> GetMethod(Guid guid)
+    public ActionResult< MethodDto> GetMethod(Guid guid)
     {
         return Ok(new NotImplementedException());
     }
