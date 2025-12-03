@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace backend.Tests.Methods
 {
-    public static class SainteLaguëData
+    public static class SainteLagueData
     {
 
         public static readonly SimulationData Case1 = new SimulationData(

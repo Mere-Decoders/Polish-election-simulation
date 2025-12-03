@@ -2,9 +2,9 @@
 
 namespace backend.Services.Methods
 {
-    public class SainteLaguëMethod
+    public class SainteLagueMethod
     {
-        public static ElectionResult RunSainteLaguë(
+        public static ElectionResult RunSainteLague(
             SimulationData data,                    
             double coalitionThreshold = 0.08,
             double lowerThreshold = 0.05,
@@ -75,7 +75,7 @@ namespace backend.Services.Methods
                 voteNumbers[districtId] = districtVotes;
 
                 // -------------------------
-                // Sainte-Laguë (modified): generowanie ilorazów
+                // Sainte-Lague (modified): generowanie ilorazów
                 // -------------------------
                 var quotients = new List<(double value, int party)>();
 
@@ -95,7 +95,7 @@ namespace backend.Services.Methods
                         }
                         else
                         {
-                            // standard Sainte-Laguë divisors: 1.5, 2.5, 3.5...
+                            // standard Sainte-Lague divisors: 1.5, 2.5, 3.5...
                             div = s + 0.5;
                         }
 
