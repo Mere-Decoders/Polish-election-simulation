@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace backend.Tests.Methods
 {
-    public class SainteLaguëMethodTests
+    public class SainteLagueMethodTests
     {
         [Fact]
         public void Case1_Runs()
         {
-            var result = SainteLaguëMethod.RunSainteLaguë(SainteLaguëData.Case1);
+            var result = SainteLagueMethod.RunSainteLague(SainteLagueData.Case1);
             Assert.NotNull(result);
             string[] names = { "Party A", "Party B", "Party C", "Party D" };
             Assert.Equal(names, result.PartyNames);
