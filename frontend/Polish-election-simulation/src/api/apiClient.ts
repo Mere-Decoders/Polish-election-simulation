@@ -40,7 +40,27 @@ export default class apiClient {
   }
 
   public async getTotalResults(year: number, method: string): Promise<ResultsTableRow[]>  {
-    const data_response = await fetch("/mock_results.json");
+    //const data_response = await fetch("/mock_results.json");
+     const auth = await fetch(
+        "http://localhost:8080/api/Auth/login",
+         {
+             method: "POST",
+             headers: {
+                 "accept": "*/*",
+                 "Content-Type": "application/json"
+             },
+             body: JSON.stringify({username: "string", password: "string"})
+         }
+     );
+      const data_response = await fetch(
+         "http://localhost:8080/api/Simulation?simDataGuid=00000000-0000-0000-0000-000000000001&methodGuid=00000000-0000-0000-0000-000000000001",
+         {
+             headers: {
+                 "accept": "text/plain",
+                 "Authorization": "Bearer " + (await auth.json()).token
+             }
+         }
+     );
     const data = (await data_response.json()).result;
     let results: ResultsTableRow[] = [];
     const constituencyCount: number = 41;
