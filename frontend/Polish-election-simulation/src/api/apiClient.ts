@@ -1,6 +1,7 @@
 import ApportionmentMethodID from "./ApportionmentMethodID.ts"
 import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
+import type ResultsTableRow from "@/api/ResultsTableRow.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -36,5 +37,10 @@ export default class apiClient {
         new ConstituencySetID("Zestaw Lorem ipsum")
     ];
     return result;
+  }
+
+  public async getTotalResults(year: number, method: string)  {
+    const data = await fetch("/mock_results.json");
+
   }
 }
