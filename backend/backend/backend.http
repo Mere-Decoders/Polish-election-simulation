@@ -3,7 +3,4 @@
 GET {{backend_HostAddress}}/weatherforecast/
 Accept: application/json
 
-GET {{backend_HostAddress}}/MethodTest/
-Accept: application/json
-
 ###
