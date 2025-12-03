@@ -14,8 +14,10 @@ public class MethodManager : IMethodManager
         {
             case ("00000000-0000-0000-0000-000000000000"):
                 return (data => DhondtMethod.RunDhondt(data) );
+            case ("00000000-0000-0000-0000-000000000001"):
+                return (data => HighStakesMethod.RunHighStakes(data) );
             default:
-                throw new NotImplementedException("The method you are requesting doesn't exist");
+                throw new ArgumentException("The method you are requesting doesn't exist");
         }
     }
 }

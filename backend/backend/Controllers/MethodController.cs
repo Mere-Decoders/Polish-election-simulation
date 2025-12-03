@@ -12,9 +12,12 @@ namespace backend.Controllers;
 public class MethodController : ControllerBase
 {
     [HttpGet("get-list")]
-    public ActionResult< List<(Guid, String)>> GetMethodList()
+    public ActionResult< Dictionary<String, Guid>> GetMethodList()
     {
-        return Ok(new NotImplementedException());
+        var options = new Dictionary<String, Guid>();
+        options.Add("Metoda Dhondt'a", Guid.Empty);
+        options.Add("Metoda High Stakes", Guid.Parse("00000000-0000-0000-0000-000000000001"));
+        return Ok(options);
     }
     
     [HttpGet("details")]
