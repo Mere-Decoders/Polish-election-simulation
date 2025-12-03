@@ -17,7 +17,7 @@ public class MethodService : IMethodService
             case ("00000000-0000-0000-0000-000000000001"):
                 return (data => HighStakesMethod.RunHighStakes(data) );
             case ("00000000-0000-0000-0000-000000000002"):
-                return (data => SainteLaguëMethod.RunSainteLaguë(data));
+                return (data => SainteLagueMethod.RunSainteLague(data));
             default:
                 throw new ArgumentException("The method you are requesting doesn't exist");
         }
