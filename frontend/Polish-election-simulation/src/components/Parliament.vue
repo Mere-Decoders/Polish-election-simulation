@@ -150,11 +150,17 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
   let partyIndex = 0
   let seatIndex = 0
 
+  
+  let maxColorIndex = resultsToDisplay.length + 1;
+  if (maxColorIndex % 2 == 0)
+  	maxColorIndex++;
+
   for (let dotIndex = 0; dotIndex < desiredDots; dotIndex++) {
     let colorIndex = -1
     
     if (partyIndex < resultsToDisplay.length) {
-      colorIndex = partyIndex
+
+      colorIndex = partyIndex * (maxColorIndex / 2 + 0.5) % maxColorIndex;
       seatIndex++
       if (seatIndex >= resultsToDisplay[partyIndex].seats) {
         seatIndex = 0
@@ -214,12 +220,9 @@ const getColorForDot = (colorIndex: number): string => {
     return 'hsl(0, 0%, 0%)'
   }
 
-  let maxColorIndex = props.resultsToDisplay.length
+  const maxColorIndex = props.resultsToDisplay.length
 
-  if (maxColorIndex % 2 == 0)
-  	maxColorIndex++;
-
-  const hue = maxColorIndex > 0 ? ((colorIndex * (maxColorIndex / 2 + 0.5) % maxColorIndex) / maxColorIndex) * 360 : 0
+  const hue = maxColorIndex > 0 ? (colorIndex / maxColorIndex) * 360 : 0
   return `hsl(${hue}, 100%, 50%)`
 }
 </script>
