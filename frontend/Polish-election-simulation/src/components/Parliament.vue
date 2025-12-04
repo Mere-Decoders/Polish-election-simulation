@@ -149,28 +149,12 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
   let currentIndex = 0
   let partyIndex = 0
   let seatIndex = 0
-
   
-  let maxColorIndex = resultsToDisplay.length + 1;
-  if (maxColorIndex % 2 == 0)
-  	maxColorIndex++;
-
   for (let dotIndex = 0; dotIndex < desiredDots; dotIndex++) {
-    let colorIndex = -1
     
-    if (partyIndex < resultsToDisplay.length) {
-
-      colorIndex = partyIndex * (maxColorIndex / 2 + 0.5) % maxColorIndex;
-      seatIndex++
-      if (seatIndex >= resultsToDisplay[partyIndex].seats) {
-        seatIndex = 0
-        partyIndex++
-      }
-    }
-
     dots.push({
       position: { orbit: currentOrbit, index: currentIndex },
-      colorIndex
+      colorIndex: -1
     })
 
     currentOrbit++
@@ -185,6 +169,22 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
       if (currentOrbit >= orbits.length) {
         currentOrbit = 0
       }
+    }
+  }
+
+  dots.sort((a, b) => calculateDotAngle(a) - calculateDotAngle(b))
+
+  initPartyColors(resultsToDisplay);
+
+  for (let i = 0; i < desiredDots; i++) {
+    if (partyIndex < resultsToDisplay.length) {
+      if (seatIndex >= resultsToDisplay[partyIndex].seats) {
+        seatIndex = 0
+        partyIndex++
+      }
+
+      dots[i].colorIndex = partyIndex;
+      seatIndex++
     }
   }
 
@@ -215,14 +215,31 @@ const calculateDotY = (dot: Dot): number => {
   return props.outerRadius - orbit.radius * Math.sin(orbit.anglePerBall * (dot.position.index + 0.5))
 }
 
+const calculateDotAngle = (dot: Dot): number => {
+  const orbit = orbits.value[dot.position.orbit];
+  return orbit.anglePerBall * dot.position.index;
+}
+
+let partyColors: number[] = []
+let maxColorIndex: number = -1
+
+const initPartyColors= (resultsToDisplay: ResultsTableRow[]) => {
+  partyColors = []
+
+  maxColorIndex = resultsToDisplay.length
+  if (maxColorIndex % 2 == 0)
+  	maxColorIndex++;
+
+  for (let i = 0; i < resultsToDisplay.length; i++)
+    partyColors.push(i * (maxColorIndex / 2 + 0.5) % maxColorIndex)
+}
+
 const getColorForDot = (colorIndex: number): string => {
   if (colorIndex === -1) {
     return 'hsl(0, 0%, 0%)'
   }
 
-  const maxColorIndex = props.resultsToDisplay.length
-
-  const hue = maxColorIndex > 0 ? (colorIndex / maxColorIndex) * 360 : 0
+  const hue = maxColorIndex > 0 ? (partyColors[colorIndex] / maxColorIndex) * 360 : 0
   return `hsl(${hue}, 100%, 50%)`
 }
 </script>
