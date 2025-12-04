@@ -1,12 +1,17 @@
+<template>
+  <nav>
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/about">About</RouterLink>
+    <RouterLink to="/simulation">Election simulation</RouterLink>
+    <RouterLink to="/login">Login</RouterLink>
+  </nav>
+  <RouterView/>
+</template>
+
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
-import Composition from './components/Composition.vue'
 </script>
-
-<template>
-  <Composition/>
-</template>
 
 <style scoped>
 header {

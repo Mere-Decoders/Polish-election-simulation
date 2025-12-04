@@ -1,14 +1,9 @@
 <template>
   <div class="about">
-    <h1>testing maps</h1>
+    <h1>This is an about page</h1>
   </div>
-  <div class="map">
-    not testing maps?
-  </div>
+  <Composition/>
 </template>
-
-<script setup lang="ts">
-</script>
 
 <style>
 @media (min-width: 1024px) {
@@ -19,3 +14,6 @@
   }
 }
 </style>
+<script setup lang="ts">
+import Composition from "@/components/Composition.vue";
+</script>
