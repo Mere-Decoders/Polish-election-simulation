@@ -172,7 +172,7 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
     }
   }
 
-  dots.sort((a, b) => calculateDotAngle(a) - calculateDotAngle(b))
+  dots.sort((a, b) => -(calculateDotAngle(a) - calculateDotAngle(b)))
 
   initPartyColors(resultsToDisplay);
 
