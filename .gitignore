@@ -17,3 +17,5 @@ backend/backend/appsettings.Development.json
 #Xunit but also generally
 obj/
 bin/
+
+.vscode
