@@ -214,8 +214,12 @@ const getColorForDot = (colorIndex: number): string => {
     return 'hsl(0, 0%, 0%)'
   }
 
-  const maxColorIndex = props.resultsToDisplay.length
-  const hue = maxColorIndex > 0 ? (colorIndex / maxColorIndex) * 360 : 0
+  let maxColorIndex = props.resultsToDisplay.length
+
+  if (maxColorIndex % 2 == 0)
+  	maxColorIndex++;
+
+  const hue = maxColorIndex > 0 ? ((colorIndex * (maxColorIndex / 2 + 0.5) % maxColorIndex) / maxColorIndex) * 360 : 0
   return `hsl(${hue}, 100%, 50%)`
 }
 </script>
