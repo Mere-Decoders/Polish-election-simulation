@@ -29,7 +29,7 @@
             :fill="getColorForDot(index)" 
           />
         </svg>
-        <span class="legend-text">{{ party.partyName }} ({{ party.seats }})</span>
+        <span class="legend-text"> &nbsp {{ party.seats }} ~ {{ party.partyName }} </span>
       </div>
     </div>
   </div>
@@ -230,11 +230,13 @@ const getColorForDot = (colorIndex: number): string => {
 }
 
 .legend-container {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  columns: 2;
+  margin-left: 3.8vw;
+
   gap: 1rem;
   justify-content: center;
-  max-width: 800px;
 }
 
 .legend-item {
@@ -245,6 +247,10 @@ const getColorForDot = (colorIndex: number): string => {
 
 .legend-text {
   font-size: 0.875rem;
+  text-align: justify;
+  text-align-last: justify;
+  text-justify: inter-word;
   font-weight: 500;
 }
+
 </style>
