@@ -1,10 +1,10 @@
 <template>
-  <ResultsTable :resultsToDisplay="resultsToDisplay"/>
   <Parliament 
     :resultsToDisplay="resultsToDisplay"
     :innerRadius = "100"
-    :outerRadius = "500"
+    :outerRadius = "300"
   />
+  <ResultsTable :resultsToDisplay="resultsToDisplay"/>
 </template>
 
 <script setup lang='ts'>

@@ -9,24 +9,24 @@
 	<th>Procent mandatów</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="mainTable">
       <tr
-        v-for='row in resultsToDisplay'
+        v-for='row in processedResults'
       >
         <td>
 	  {{ row.partyName }}
 	</td>
-        <td>
+        <td class="numberCell">
 	  {{ row.votes}}
 	</td>
-        <td>
-	  {{ row.percentVotes}}
+        <td class="numberCell">
+	  {{ row.percentVotes}}%
 	</td>
-        <td>
+        <td class="numberCell">
 	  {{ row.seats}}
 	</td>
-        <td>
-	  {{ row.percentSeats }}
+        <td class="numberCell">
+	  {{ row.percentSeats }}%
 	</td>
       </tr>
     </tbody>
@@ -35,6 +35,7 @@
 
 <script setup lang='ts'>
   import ResultsTableRow from '../api/ResultsTableRow.ts'
+  import {computed} from 'vue'
 
   const props = defineProps({
     resultsToDisplay: {
@@ -42,4 +43,45 @@
       required: true,
     }
   })
+
+  function formatPercentage(percentage: number) {
+    return Math.floor(percentage * 10000) / 100;
+  }
+
+  const processedResults = computed(() => {
+    let result = []
+    for (let row of props.resultsToDisplay) {
+      let newRow = {...row}
+      newRow.percentVotes = formatPercentage(newRow.percentVotes)
+      newRow.percentSeats = formatPercentage(newRow.percentSeats)
+
+      result.push(newRow);
+    }
+    return result
+  })
 </script>
+
+<style>
+  .numberCell {
+    text-align: center;
+  }
+
+  .mainTable {
+    border-collapse: collapse;
+  }
+
+  .mainTable td, tr {
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+
+  .mainTable tr:nth-child(odd) {
+    background-color: #ff0000;
+  }
+
+  .mainTable tr:nth-child(even) {
+    background-color: #bbbbbb;
+  }
+
+</style>
