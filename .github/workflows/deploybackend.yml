@@ -13,9 +13,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -f backend/backend/Dockerfile -t backend backend/backend
-
-
+        working-directory: backend
+        run: docker build -f backend/Dockerfile -t backend .
+        
       - name: Login to ACR
         run: |
           echo "${{ secrets.AZURE_ACR_PASSWORD }}" | docker login polelecontainerregistry.azurecr.io --username ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
