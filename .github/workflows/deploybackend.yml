@@ -15,7 +15,7 @@ jobs:
       - name: Build Docker image
         run: |
           cd backend
-          docker build -t backend .
+          docker build -f backend/backend/Dockerfile -t backend .
 
 
       - name: Login to ACR
