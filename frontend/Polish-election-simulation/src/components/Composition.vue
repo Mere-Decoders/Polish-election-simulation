@@ -8,9 +8,6 @@
 
   import apiClient from '../api/apiClient.ts'
   import Results from '../api/Results.ts'
-
-  const api = apiClient.getInstance()
-  const methods = api.getApportionmentMethodsID()
 </script>
 
 <template>
@@ -24,7 +21,6 @@
     </template>
 
     <template #methods>
-      <FillableSelect :elements="apiClient.getInstance().getApportionmentMethodsID()"/>
       <MethodsTab/>
     </template>
 

@@ -21,7 +21,7 @@
         :key="index"
         class="legend-item"
       >
-        <svg :width="dotRadius * 2" :height="dotRadius * 2">
+        <svg :width="dotRadius * 2" :height="dotRadius * 2" xmlns="http://www.w3.org/2000/svg">
           <circle 
             :cx="dotRadius" 
             :cy="dotRadius" 
@@ -264,9 +264,10 @@ const getColorForDot = (colorIndex: number): string => {
 }
 
 .legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+}
+
+svg {
+  display: inline-block;
 }
 
 .legend-text {

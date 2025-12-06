@@ -15,7 +15,9 @@ export default class apiClient {
     return apiClient.instance;
   }
 
-  public getApportionmentMethodsID(): ApportionmentMethodID[] {
+  // All methods can be static and if needed acess the data in the singleton by using getInstance()
+  // Making them static makes the invokation cleaner (you don't need to use the getInstance() method)
+  public static getApportionmentMethodIDs(): ApportionmentMethodID[] {
     let result: ApportionmentMethodID[] = [
         new ApportionmentMethodID("D'Hondta"),
         new ApportionmentMethodID("Sainte-Lague")
@@ -23,7 +25,7 @@ export default class apiClient {
     return result;
   }
 
-  public getVotesID(): VotesID[] {
+  public static getVotesIDs(): VotesID[] {
     let result: VotesID[] = [
         new VotesID("2019"),
         new VotesID("2023")
@@ -31,7 +33,7 @@ export default class apiClient {
     return result;
   }
 
-  public getConstituencySetsID(): ConstituencySetID[] {
+  public static getConstituencySetIDs(): ConstituencySetID[] {
     let result: ConstituencySetID[] = [
         new ConstituencySetID("Oficjalne"),
         new ConstituencySetID("Zestaw Lorem ipsum")
