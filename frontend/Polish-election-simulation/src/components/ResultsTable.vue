@@ -3,10 +3,10 @@
     <thead>
       <tr>
         <th>Nazwa partii</th>
-	<th>Liczba głosów</th>
-	<th>Procent głosów</th>
-	<th>Liczba mandatów</th>
-	<th>Procent mandatów</th>
+	<th class="numberCell">Liczba głosów</th>
+	<th class="numberCell">Procent głosów</th>
+	<th class="numberCell">Liczba mandatów</th>
+	<th class="numberCell">Procent mandatów</th>
       </tr>
     </thead>
     <tbody class="mainTable">
@@ -68,19 +68,38 @@
 
   table {
     border-collapse: collapse;
-    width: 100%;
+    width: 130%;
+    border-radius: 30px;
+    overflow: hidden;
   }
 
-  td, tr {
+  td, th {
     padding: 5px;
+    text-align: justify;
+  }
+
+  table tr > :first-child,
+  table th > :first-child {
+    padding-left: 50px;
+  }
+  
+  table tr > :last-child,
+  table th > :last-child {
+    padding-right: 30px;
   }
 
   tr:nth-child(odd) {
-    background-color: #ff0000;
+    background-color: #222222;
   }
 
   tr:nth-child(even) {
-    background-color: #bbbbbb;
+    background-color: #0a0a0a;
   }
 
+  th {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: darkred;
+    color: white;
+  }
 </style>
