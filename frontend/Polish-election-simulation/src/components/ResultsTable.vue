@@ -66,21 +66,20 @@
     text-align: center;
   }
 
-  .mainTable {
+  table {
     border-collapse: collapse;
+    width: 100%;
   }
 
-  .mainTable td, tr {
-    padding: 0;
-    margin: 0;
-    border: 0;
+  td, tr {
+    padding: 5px;
   }
 
-  .mainTable tr:nth-child(odd) {
+  tr:nth-child(odd) {
     background-color: #ff0000;
   }
 
-  .mainTable tr:nth-child(even) {
+  tr:nth-child(even) {
     background-color: #bbbbbb;
   }
 
