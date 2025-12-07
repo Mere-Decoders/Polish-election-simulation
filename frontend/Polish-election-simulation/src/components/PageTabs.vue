@@ -78,6 +78,7 @@ activeTab.value = props.tabs[0].name
   background-color: white;
   color: darkred;
   border-color: white;
+  transition: all 0.05s ease;
 }
 
 .tabs .active {
