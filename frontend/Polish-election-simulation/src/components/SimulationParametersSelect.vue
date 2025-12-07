@@ -1,5 +1,8 @@
 <template>
   <form class="simulation_parameters_select" @submit.prevent="$emit('simulationParametersChosen', new SimulationParametersNotice(selectedVotesID, selectedMethodID, selectedConstituencySetID))">
+    <div class="title">
+      Wybierz parametry symulacji
+    </div>
     <div class="selects">
       <label> Zestaw głosów: </label>
       <select v-model="selectedVotesID">
@@ -33,6 +36,14 @@
   const props = defineProps<Props>()
 </script>
 <style>
+  .title {
+    margin: 0 auto;
+    margin-bottom: 20px;
+    font-size: large;
+    color: white;
+    text-align: center;
+  }
+
   .simulation_parameters_select {
     width: max-content;
     padding: 20px;
