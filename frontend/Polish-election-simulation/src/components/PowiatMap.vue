@@ -1,5 +1,5 @@
 <template>
-  <svg :width="svgWidth" :height="svgHeight" v-if="constituencies && geoGenerator">
+  <svg class="constituencies-svg" v-if="constituencies && geoGenerator">
     <g class="map">
       <path
           v-for="(feature, index) in constituencies.features"
@@ -36,3 +36,12 @@ onMounted(async () => {
   geoGenerator.value = geoPath().projection(projection);
 });
 </script>
+
+<style scoped>
+
+.constituencies-svg {
+  width: min(100%, 800px);
+  height: min(100%, 800px);
+}
+
+</style>

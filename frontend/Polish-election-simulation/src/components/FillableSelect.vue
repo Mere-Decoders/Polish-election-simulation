@@ -4,7 +4,7 @@
     </select>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   elements: {
     type: Array,
