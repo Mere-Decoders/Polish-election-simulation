@@ -5,30 +5,59 @@
     <RouterLink to="/simulation">Election simulation</RouterLink>
     <RouterLink to="/login">Login</RouterLink>
   </nav>
-  <RouterView/>
+  <main>
+    <RouterView/>
+  </main>
 </template>
 
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
+<style>
+
+html {
+  scrollbar-gutter: stable; /* Reserves space for scrollbar */
+}
+
+</style>
+
 <style scoped>
+
+body {
+  font-size: 16px;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+main {
+  display: flex;
+  max-width: 85%;
+  text-align: left;
+  justify-content: left;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 nav {
-  width: 100%;
-  font-size: 12px;
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  font-size: 1rem;
   text-align: center;
   margin-top: 2rem;
+  background-color: var(--color-background); /* Add background so content doesn't show through */
+  z-index: 100; /* Ensure nav stays on top */
+}
+
+main {
+  padding-top: 80px; /* Add this to push content below the fixed nav */
 }
 
 nav a.router-link-exact-active {
@@ -40,6 +69,8 @@ nav a.router-link-exact-active:hover {
 }
 
 nav a {
+  color: var(--velvet-orchid);
+  font-weight: bold;
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);

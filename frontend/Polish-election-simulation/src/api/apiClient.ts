@@ -41,8 +41,9 @@ export default class apiClient {
 
   public async getTotalResults(year: number, method: string): Promise<ResultsTableRow[]>  {
     //const data_response = await fetch("/mock_results.json");
+      const backend_address = "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
      const auth = await fetch(
-        "http://localhost:8080/api/Auth/login",
+        backend_address + "/api/Auth/login",
          {
              method: "POST",
              headers: {
@@ -53,7 +54,7 @@ export default class apiClient {
          }
      );
       const data_response = await fetch(
-         "http://localhost:8080/api/Simulation?simDataGuid=00000000-0000-0000-0000-000000000001&methodGuid=00000000-0000-0000-0000-000000000001",
+          backend_address + "/api/Simulation?simDataGuid=00000000-0000-0000-0000-000000000001&methodGuid=00000000-0000-0000-0000-000000000001",
          {
              headers: {
                  "accept": "text/plain",
