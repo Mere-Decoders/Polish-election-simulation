@@ -1,0 +1,27 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        working-directory: backend
+        run: docker build -f backend/Dockerfile -t backend .
+        
+      - name: Login to ACR
+        run: |
+          echo "${{ secrets.AZURE_ACR_PASSWORD }}" | docker login polelecontainerregistry.azurecr.io --username ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+
+      - name: Tag image
+        run: docker tag backend polelecontainerregistry.azurecr.io/backend:latest
+
+      - name: Push image
+        run: docker push polelecontainerregistry.azurecr.io/backend:latest
