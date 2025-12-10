@@ -81,7 +81,6 @@ builder.Services.AddAuthentication(options =>
         };
     });
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
 
 
 builder.Services.AddCors(options =>
@@ -101,13 +100,12 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors("AllowLocalhost");
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors("AllowLocalhost");
 
 app.MapControllers();
 
