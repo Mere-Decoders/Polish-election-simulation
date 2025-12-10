@@ -1,5 +1,6 @@
-import {union} from '@turf/union'
+import { union } from '@turf/union'
 import { rewind } from "@turf/rewind";
+import type { Polygon, MultiPolygon } from 'geojson';
 
 export async function loadPowiaty() {
   const response = await fetch('/poland.counties.json');
@@ -26,7 +27,7 @@ export async function generateConstituencies() {
             "features": shapes
         });
         // because union() puts the vertices in the wrong order, causing constituencies to be colored on the outside
-        _union.geometry = rewind(_union.geometry, {reverse: true});
+        _union!.geometry = rewind(_union!.geometry, {reverse: true}) as Polygon | MultiPolygon;
         return _union;
     });
     let geoCollection = {

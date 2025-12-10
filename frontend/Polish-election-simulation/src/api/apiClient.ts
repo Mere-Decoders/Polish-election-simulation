@@ -27,43 +27,49 @@ export default class apiClient {
 
   public static getVotesIDs(): VotesID[] {
     let result: VotesID[] = [
-        new VotesID("2019"),
-        new VotesID("2023")
+      new VotesID("2019"),
+      new VotesID("2023")
     ];
     return result;
   }
 
   public static getConstituencySetIDs(): ConstituencySetID[] {
     let result: ConstituencySetID[] = [
-        new ConstituencySetID("Oficjalne"),
-        new ConstituencySetID("Zestaw Lorem ipsum")
+      new ConstituencySetID("Oficjalne"),
+      new ConstituencySetID("Zestaw Lorem ipsum")
     ];
     return result;
   }
 
   public async getTotalResults(year: number, method: string): Promise<ResultsTableRow[]>  {
-    //const data_response = await fetch("/mock_results.json");
+    const mockup = false;
+    let data_response;
+    if (mockup) {
+      data_response = await fetch("/mock_results.json");
+    }
+    else {
       const backend_address = "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
-     const auth = await fetch(
+      const auth = await fetch(
         backend_address + "/api/Auth/login",
-         {
-             method: "POST",
-             headers: {
-                 "accept": "*/*",
-                 "Content-Type": "application/json"
-             },
-             body: JSON.stringify({username: "string", password: "string"})
-         }
-     );
-      const data_response = await fetch(
-          backend_address + "/api/Simulation?simDataGuid=00000000-0000-0000-0000-000000000001&methodGuid=00000000-0000-0000-0000-000000000001",
-         {
-             headers: {
-                 "accept": "text/plain",
-                 "Authorization": "Bearer " + (await auth.json()).token
-             }
-         }
-     );
+        {
+          method: "POST",
+          headers: {
+            "accept": "*/*",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({username: "string", password: "string"})
+        }
+      );
+      data_response = await fetch(
+        backend_address + "/api/Simulation?simDataGuid=00000000-0000-0000-0000-000000000001&methodGuid=00000000-0000-0000-0000-000000000001",
+        {
+          headers: {
+            "accept": "text/plain",
+            "Authorization": "Bearer " + (await auth.json()).token
+          }
+        }
+      );
+    }
     const data = (await data_response.json()).result;
     let results: ResultsTableRow[] = [];
     const constituencyCount: number = 41;

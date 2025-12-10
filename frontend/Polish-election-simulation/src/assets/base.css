@@ -42,7 +42,9 @@
     --color-heading: var(--vt-c-text-light-1);
     --color-text: var(--vt-c-text-light-1);
 
+    --color-text-navigation: var(--velvet-orchid);
     --color-button-hover: var(--vanilla-custard);
+    --color-constituency: var(--vt-c-white-soft);
 
     --section-gap: 160px;
 }

@@ -20,7 +20,6 @@
 
 <script setup lang='ts'>
 import PageTabs from './PageTabs.vue'
-import FillableSelect from './FillableSelect.vue'
 
 import VisualizationTab from './tabs/VisualizationTab.vue'
 import MethodsTab from './tabs/MethodsTab.vue'
