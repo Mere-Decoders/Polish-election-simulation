@@ -1,8 +1,8 @@
 <template>
   <div class="parliament-container">
     <svg 
-      :width="2 * outerRadius" 
-      :height="outerRadius" 
+      :width="2 * outerRadius"
+      :height="outerRadius"
       xmlns="http://www.w3.org/2000/svg"
     >
       <circle
@@ -15,23 +15,23 @@
       />
     </svg>
     
-    <div class="legend-container">
-      <div 
-        v-for="(party, index) in resultsToDisplay"
-        :key="index"
-        class="legend-item"
-      >
-        <svg :width="dotRadius * 2" :height="dotRadius * 2" xmlns="http://www.w3.org/2000/svg">
-          <circle 
-            :cx="dotRadius" 
-            :cy="dotRadius" 
-            :r="dotRadius * 0.8" 
-            :fill="getColorForDot(index)" 
-          />
-        </svg>
-        <span class="legend-text"> &nbsp {{ party.seats }} ~ {{ party.partyName }} </span>
-      </div>
-    </div>
+<!--    <div class="legend-container">-->
+<!--      <div -->
+<!--        v-for="(party, index) in resultsToDisplay"-->
+<!--        :key="index"-->
+<!--        class="legend-item"-->
+<!--      >-->
+<!--        <svg :width="dotRadius * 2" :height="dotRadius * 2" xmlns="http://www.w3.org/2000/svg">-->
+<!--          <circle -->
+<!--            :cx="dotRadius" -->
+<!--            :cy="dotRadius" -->
+<!--            :r="dotRadius * 0.8" -->
+<!--            :fill="getColorForDot(index)" -->
+<!--          />-->
+<!--        </svg>-->
+<!--        <span class="legend-text"> &nbsp {{ party.seats }} ~ {{ party.partyName }} </span>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -162,7 +162,7 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
       currentIndex++
       currentOrbit = 0
       
-      while (currentOrbit < orbits.length && orbits[currentOrbit].numberOfDots <= currentIndex) {
+      while (currentOrbit < orbits.length && orbits[currentOrbit]!.numberOfDots <= currentIndex) {
         currentOrbit++
       }
       
@@ -178,12 +178,12 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
 
   for (let i = 0; i < desiredDots; i++) {
     if (partyIndex < resultsToDisplay.length) {
-      if (seatIndex >= resultsToDisplay[partyIndex].seats) {
+      if (seatIndex >= resultsToDisplay[partyIndex]!.seats) {
         seatIndex = 0
         partyIndex++
       }
 
-      dots[i].colorIndex = partyIndex;
+      dots[i]!.colorIndex = partyIndex;
       seatIndex++
     }
   }
@@ -206,17 +206,17 @@ const dots = computed(() =>
 
 // Methods to calculate positions
 const calculateDotX = (dot: Dot): number => {
-  const orbit = orbits.value[dot.position.orbit]
+  const orbit = orbits.value[dot.position.orbit]!
   return props.outerRadius + orbit.radius * Math.cos(orbit.anglePerBall * (dot.position.index + 0.5))
 }
 
 const calculateDotY = (dot: Dot): number => {
-  const orbit = orbits.value[dot.position.orbit]
+  const orbit = orbits.value[dot.position.orbit]!
   return props.outerRadius - orbit.radius * Math.sin(orbit.anglePerBall * (dot.position.index + 0.5))
 }
 
 const calculateDotAngle = (dot: Dot): number => {
-  const orbit = orbits.value[dot.position.orbit];
+  const orbit = orbits.value[dot.position.orbit]!;
   return orbit.anglePerBall * dot.position.index;
 }
 
@@ -239,7 +239,7 @@ const getColorForDot = (colorIndex: number): string => {
     return 'hsl(0, 0%, 0%)'
   }
 
-  const hue = maxColorIndex > 0 ? (partyColors[colorIndex] / maxColorIndex) * 360 : 0
+  const hue = maxColorIndex > 0 ? (partyColors[colorIndex]! / maxColorIndex) * 360 : 0
   return `hsl(${hue}, 100%, 50%)`
 }
 </script>
