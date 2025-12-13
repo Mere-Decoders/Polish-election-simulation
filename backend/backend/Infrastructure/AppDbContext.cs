@@ -1,25 +1,23 @@
 using Microsoft.EntityFrameworkCore;
-using backend.Models.DBModels;
+using backend.Infrastructure.Entities;
 
-namespace backend.Data;
+namespace backend.Infrastructure;
 
 public class AppDbContext:DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
-    public DbSet<User> Users { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
     public DbSet<DataClaim> DataClaims { get; set; }
     public DbSet<MethodClaim> MethodClaims { get; set; }
-    public DbSet<SimulationDataDBWrapper> SimulationData { get; set; }
-    public DbSet<SimulationMethodDBWrapper> SimulationMethods { get; set; }
+    public DbSet<SimulationDataEntity> SimulationDataStore { get; set; }
+    public DbSet<SimulationMethodEntity> SimulationMethodsStore { get; set; }
 
-    //commented until issue #61 is resolved
-    /* public DbSet<SimulationDataDBWrapper> SimulationData { get; set; }*/
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.ToTable("users");
             entity.Property(u => u.Id)
@@ -38,32 +36,21 @@ public class AppDbContext:DbContext
             entity.HasKey(e => new { e.UserId, e.MethodId });
         });
 
-        modelBuilder.Entity<SimulationDataDBWrapper>(entity =>
+        modelBuilder.Entity<SimulationDataEntity>(entity =>
         {
             entity.ToTable("simulation_data");
+            entity.HasKey(e => e.Id);
             entity.Property(s => s.Id)
-                  .HasDefaultValueSql("gen_random_uuid()");
+                .ValueGeneratedNever();
         });
 
-        modelBuilder.Entity<SimulationMethodDBWrapper>(entity =>
+        modelBuilder.Entity<SimulationMethodEntity>(entity =>
         {
             entity.ToTable("simulation_methods");
+            entity.HasKey(e => e.Id);
             entity.Property(s => s.Id)
-                  .HasDefaultValueSql("gen_random_uuid()");
+                .ValueGeneratedNever();
         });
-
-        //commented until issue #61 is resolved
-        /*   modelBuilder.Entity<SimulationDataDBWrapper>(entity =>
-           {
-               entity.ToTable("simulation_data");
-
-               entity.HasKey(e => e.Id);
-
-               entity.OwnsOne(e => e.Data, owned =>
-               {
-                   owned.ToJson();
-               });
-           });*/
 
     }
 

@@ -39,8 +39,8 @@ namespace backend.Migrations
                 name: "simulation_data",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    Foo = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Json = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,8 +51,8 @@ namespace backend.Migrations
                 name: "simulation_methods",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    ThisShouldBeMethod = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Json = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
