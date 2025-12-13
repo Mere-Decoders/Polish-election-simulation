@@ -1,5 +1,3 @@
-using backend.Data;
-using backend.Models.DBModels;
 using backend.Services;
 using backend.Services.Methods;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using backend.Infrastructure;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -96,23 +96,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.ExecuteSqlRaw("CREATE EXTENSION IF NOT EXISTS \"pgcrypto\";");
-
-    if (!db.Users.Any())
-    {
-        db.Users.Add(new User
-        {
-            Email = "admin@example.com",
-            Username = "admin",
-            PasswordHash = "hashedpassword"
-        });
-        db.SaveChanges();
-    }
-}
 
 app.UseSwagger();
 app.UseSwaggerUI();

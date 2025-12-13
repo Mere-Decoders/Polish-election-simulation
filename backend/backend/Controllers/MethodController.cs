@@ -1,5 +1,4 @@
 using backend.Data;
-using backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +21,7 @@ public class MethodController : ControllerBase
     }
     
     [HttpGet("details")]
-    public ActionResult< MethodDto> GetMethod(Guid guid)
+    public ActionResult GetMethod(Guid guid)
     {
         return Ok(new NotImplementedException());
     }

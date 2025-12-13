@@ -5,7 +5,7 @@ namespace backend.Models;
 [Owned]
 public class DistrictDetails
 {
-    private DistrictDetails() { }
+    public DistrictDetails() { }
 
     public DistrictDetails(int seats, string[] terytcodes)
     {
