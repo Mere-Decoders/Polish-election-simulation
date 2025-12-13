@@ -1,13 +1,27 @@
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Data;
-
-public class SimulationData(Party[] parties, Dictionary<string, DistrictDetails> districts,
-    Dictionary<string, int[]> votesInAreas)
+[Owned]
+public class SimulationData
 {
-    public Party[] Parties { get; set; } = parties;
+    private SimulationData() { }
 
-    public Dictionary<string, DistrictDetails> Districts { get; set; } = districts;
+    public SimulationData(
+        Party[] parties,
+        Dictionary<string, DistrictDetails> districts,
+        Dictionary<string, int[]> votesInAreas)
+    {
+        Parties = parties;
+        Districts = districts;
+        VotesInAreas = votesInAreas;
+    }
 
-    public Dictionary<string, int[]> VotesInAreas { get; set; } = votesInAreas;
+    public Party[] Parties { get; set; } = Array.Empty<Party>();
+
+    public Dictionary<string, DistrictDetails> Districts { get; set; }
+        = new();
+
+    public Dictionary<string, int[]> VotesInAreas { get; set; }
+        = new();
 }
