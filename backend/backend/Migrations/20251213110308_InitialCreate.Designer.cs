@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using backend.Data;
+using backend.Infrastructure;
 
 #nullable disable
 
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251213061730_InitialCreate")]
+    [Migration("20251213110308_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("backend.Models.DBModels.DataClaim", b =>
+            modelBuilder.Entity("backend.Infrastructure.Entities.DataClaim", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -38,7 +38,7 @@ namespace backend.Migrations
                     b.ToTable("data_claims", (string)null);
                 });
 
-            modelBuilder.Entity("backend.Models.DBModels.MethodClaim", b =>
+            modelBuilder.Entity("backend.Infrastructure.Entities.MethodClaim", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -51,14 +51,13 @@ namespace backend.Migrations
                     b.ToTable("method_claims", (string)null);
                 });
 
-            modelBuilder.Entity("backend.Models.DBModels.SimulationDataDBWrapper", b =>
+            modelBuilder.Entity("backend.Infrastructure.Entities.SimulationDataEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("Foo")
+                    b.Property<string>("Json")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -67,14 +66,13 @@ namespace backend.Migrations
                     b.ToTable("simulation_data", (string)null);
                 });
 
-            modelBuilder.Entity("backend.Models.DBModels.SimulationMethodDBWrapper", b =>
+            modelBuilder.Entity("backend.Infrastructure.Entities.SimulationMethodEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("ThisShouldBeMethod")
+                    b.Property<string>("Json")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -83,7 +81,7 @@ namespace backend.Migrations
                     b.ToTable("simulation_methods", (string)null);
                 });
 
-            modelBuilder.Entity("backend.Models.DBModels.User", b =>
+            modelBuilder.Entity("backend.Infrastructure.Entities.UserEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
