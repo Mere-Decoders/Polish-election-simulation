@@ -1,3 +1,5 @@
+using backend.Infrastructure;
+using backend.Infrastructure.Repositories;
 using backend.Services;
 using backend.Services.Methods;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -5,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using backend.Infrastructure;
 
 
 
@@ -50,6 +51,8 @@ builder.Services.AddScoped<ISimulationService, SimulationService>();
 builder.Services.AddScoped<ISimContextService, SimContextService>();
 builder.Services.AddScoped<IMethodService, MethodService>();
 builder.Services.AddScoped<ISimDataService, SimDataService> ();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -82,7 +85,6 @@ builder.Services.AddAuthentication(options =>
         };
     });
 builder.Services.AddAuthorization();
-
 
 builder.Services.AddCors(options =>
 {
