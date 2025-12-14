@@ -1,10 +1,12 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-namespace backend.Models.DBModels;
+namespace backend.Models;
 
+[Index(nameof(Username), IsUnique = true)]
+[Index(nameof(Email), IsUnique = true)]
 public class User
 {
     public Guid Id { get; set; }
-
     [Required]
     [MaxLength(100)]
     [EmailAddress]

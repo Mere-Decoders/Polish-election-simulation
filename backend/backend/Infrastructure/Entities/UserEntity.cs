@@ -1,4 +1,4 @@
-using backend.Models.DBModels;
+using backend.Models;
 
 namespace backend.Infrastructure.Entities;
 

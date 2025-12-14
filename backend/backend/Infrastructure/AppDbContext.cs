@@ -17,12 +17,8 @@ public class AppDbContext:DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<UserEntity>(entity =>
-        {
-            entity.ToTable("users");
-            entity.Property(u => u.Id)
-                  .HasDefaultValueSql("gen_random_uuid()");
-        });
+        modelBuilder.Entity<UserEntity>(entity => entity.ToTable("users"));
+
 
         modelBuilder.Entity<DataClaim>(entity =>
         {
