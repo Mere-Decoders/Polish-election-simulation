@@ -1,4 +1,6 @@
-﻿using backend.Infrastructure.Repositories;
+﻿namespace backend.Services.Auth;
+
+using backend.Infrastructure.Repositories;
 using backend.Models;
 
 public class AuthService : IAuthService
@@ -18,7 +20,6 @@ public class AuthService : IAuthService
         if (await _userRepository.ExistsByEmailAsync(email))
             throw new InvalidOperationException("Email already taken");
 
-        //password hashing
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
         await _userRepository.AddAsync(

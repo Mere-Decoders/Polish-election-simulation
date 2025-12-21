@@ -4,6 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using backend.Models;
+using backend.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers;
 
@@ -13,7 +15,6 @@ public class AuthController : ControllerBase
 {
     private readonly IConfiguration _config;
     private readonly IAuthService _authService;
-
     public AuthController(
         IConfiguration config,
         IAuthService authService)
@@ -21,41 +22,10 @@ public class AuthController : ControllerBase
         _config = config;
         _authService = authService;
     }
-
+    
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
-    {
-        // TODO: Replace with DB check later
-        if (string.IsNullOrEmpty(request.Username))
-            return BadRequest("Username required");
-
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, request.Username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(60),
-            signingCredentials: creds
-        );
-
-        return Ok(new
-        {
-            token = new JwtSecurityTokenHandler().WriteToken(token)
-        });
-    }
-
-    [HttpPost("login_auth")]
     public async Task<IActionResult> LoginAuth([FromBody] LoginRequest request)
     {
-        //validation done in LoginRequest class using data annotations
         var user = await _authService.LoginAsync(
             request.Username,
             request.Password
@@ -72,7 +42,6 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        //validation done in RegisterRequest class using data annotations
         try
         {
             await _authService.RegisterAsync(
@@ -95,8 +64,7 @@ public class AuthController : ControllerBase
         {
         new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
         new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-    };
+        };
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
@@ -111,7 +79,7 @@ public class AuthController : ControllerBase
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(60),
+            expires: DateTime.UtcNow.AddMinutes(double.Parse(_config["Jwt:ExpireMinutes"])),
             signingCredentials: creds
         );
 

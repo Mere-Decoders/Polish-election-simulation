@@ -29,7 +29,7 @@ public class AppDbContext:DbContext
         modelBuilder.Entity<MethodClaim>(entity =>
         {
             entity.ToTable("method_claims");
-            entity.HasKey(e => new { e.UserId, e.MethodId });
+            entity.HasKey(e => new { e.UserId, e.Label, e.MethodId });
         });
 
         modelBuilder.Entity<SimulationDataEntity>(entity =>
