@@ -1,11 +1,14 @@
 using backend.Data;
+using backend.Infrastructure.Entities;
 using backend.Infrastructure.Helpers;
+using backend.Infrastructure.Repositories;
 using backend.Models;
 
 namespace backend.Services;
 
 public class SimDataService:ISimDataService
 {
+    private readonly IDataClaimRepository dataClaimRepository;
     public async Task<SimulationData> GetSimDataByGuid(Guid dataGuid)
     {
         switch (dataGuid.ToString())
@@ -19,9 +22,9 @@ public class SimDataService:ISimDataService
         }
     }
 
-    public async Task<List<SimulationData>> GetUsersSimData(Guid userGuid)
+    public async Task<List<DataClaim>> GetUsersSimData(Guid userGuid)
     {
-        throw new NotImplementedException();
+        return await dataClaimRepository.GetUserDataClaims(userGuid);
     }
 
 }

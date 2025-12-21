@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using backend.Data;
+using backend.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers;
@@ -10,6 +11,7 @@ namespace backend.Controllers;
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
+    private readonly ICurrentUser _currentUser;
     private static readonly string[] Summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -17,9 +19,10 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ILogger<WeatherForecastController> _logger;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, ICurrentUser currentUser)
     {
         _logger = logger;
+        _currentUser = currentUser;
     }
 
     
@@ -33,6 +36,14 @@ public class WeatherForecastController : ControllerBase
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
         })
         .ToArray();
+    }
+    
+    [HttpGet("WhoAmI")]
+    public async Task<IActionResult> WhoAmI()
+    {
+        if (_currentUser.IsAuthenticated) return Ok(_currentUser.Value);
+        else return Ok("Stranger");
+
     }
 }
 

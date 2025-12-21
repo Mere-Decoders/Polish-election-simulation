@@ -13,6 +13,10 @@ public class DataClaimRepository : IDataClaimRepository
         _db = db;
     }
 
+    public async Task<List<DataClaim>> GetUserDataClaims(Guid userId)
+    {
+        return await _db.DataClaims.Where(r => r.UserId == userId).ToListAsync();
+    }
     public async Task<DataClaim?> CheckExistanceAsync(Guid userId, Guid dataId)
     {
         return await _db.DataClaims
@@ -21,7 +25,8 @@ public class DataClaimRepository : IDataClaimRepository
         .Select(c => new DataClaim
         {
             UserId = c.UserId,
-            DataId = c.DataId
+            DataId = c.DataId,
+            Label = c.Label
         })
         .FirstOrDefaultAsync();
     }
@@ -33,17 +38,19 @@ public class DataClaimRepository : IDataClaimRepository
         .Select(c => new DataClaim
         {
             UserId = c.UserId,
-            DataId = c.DataId
+            DataId = c.DataId,
+            Label = c.Label
         })
         .ToListAsync();
     }
 
-    public async Task<DataClaim> AddAsync(Guid userId, Guid dataId)
+    public async Task<DataClaim> AddAsync(Guid userId, Guid dataId, string label)
     {
         var entity = new DataClaim
         {
             UserId = userId,
-            DataId = dataId
+            DataId = dataId,
+            Label = label
         };
 
         _db.DataClaims.Add(entity);

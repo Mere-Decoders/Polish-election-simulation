@@ -69,8 +69,6 @@ public class UserRepository : IUserRepository
         };
 
         _db.Users.Add(entity);
-        //if somehow it passed the checks in AuthService (shouldn not be possible!)
-        // we catch the DbUpdateException here
         try
         {
             await _db.SaveChangesAsync();
@@ -122,6 +120,5 @@ public class UserRepository : IUserRepository
     {
         return await _db.Users.AnyAsync(u => u.Email == email);
     }
-
 
 }
