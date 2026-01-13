@@ -31,9 +31,9 @@ public class SimDataIntegrationTests
 
         var repo = provider.GetRequiredService<ISimDataRepository>();
 
-        var simData = SimulationDataFromCsv.Get();
-        var guid = Guid.Empty;
-        await repo.AddAsync(guid, simData); //this line will now fail because the object is already in db
+        var simData = SimulationDataFromCsv.Get2(); //.Get();
+        var guid = Guid.Parse("00000000-0000-0000-0000-000000000001"); // .Empty
+        await repo.AddAsync(guid, simData); //this line will now fail because if the object is already in db
 
         var inserted = (await repo.GetAsync(guid));
         var insertedJson = JsonSerializer.Serialize(inserted);
