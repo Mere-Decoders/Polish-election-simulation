@@ -1,7 +1,7 @@
-import ApportionmentMethodID from "./ApportionmentMethodID.ts"
 import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
+import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -21,20 +21,34 @@ export default class apiClient {
 
   // All methods can be static and if needed access the data in the singleton by using getInstance()
   // Making them static makes the invocation cleaner (you don't need to use the getInstance() method)
-  public static getApportionmentMethodIDs(): ApportionmentMethodID[] {
-    let result: ApportionmentMethodID[] = [
-        new ApportionmentMethodID("D'Hondta"),
-        new ApportionmentMethodID("Sainte-Lague")
-    ];
-    return result;
+  public static async getApportionmentMethodIDs(): Promise<ApportionmentMethod[]> {
+    const backend_address = apiClient.getBackendAddress();
+    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
+    const data_response = await fetch(
+      backend_address + "/api/methods/Method/get-list",
+      {
+        headers: {
+          "accept": "text/plain",
+          "Authorization": "Bearer " + auth_token
+        }
+      }
+    );
+    return await data_response.json();
   }
 
-  public static getVotesIDs(): VotesID[] {
-    let result: VotesID[] = [
-      new VotesID("2019"),
-      new VotesID("2023")
-    ];
-    return result;
+  public static async getVotesIDs(): Promise<VotesID[]> {
+    const backend_address = apiClient.getBackendAddress();
+    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
+    const data_response = await fetch(
+      backend_address + "/api/sim-data/SimulationData/get-list",
+      {
+        headers: {
+          "accept": "text/plain",
+          "Authorization": "Bearer " + auth_token
+        }
+      }
+    );
+    return await data_response.json();
   }
 
   public static getConstituencySetIDs(): ConstituencySetID[] {
@@ -47,6 +61,7 @@ export default class apiClient {
 
   public static async getAuthToken(username: string, password: string): Promise<string> {
     const backend_address = apiClient.getBackendAddress();
+    console.log(username);
     const auth = await fetch(
       backend_address + "/api/Auth/login",
       {
@@ -69,7 +84,7 @@ export default class apiClient {
     }
     else {
       const backend_address = apiClient.getBackendAddress();
-      const auth_token = await apiClient.getAuthToken("string", "string");
+      const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
       data_response = await fetch(
         backend_address + "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method}),
         {
@@ -80,7 +95,7 @@ export default class apiClient {
         }
       );
     }
-    const data = (await data_response.json()).result;
+    const data = await data_response.json();
     let results: ResultsTableRow[] = [];
     const constituencyCount: number = 41;
     let sumSeatsArray: Array<number> = [];

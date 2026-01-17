@@ -1,4 +1,4 @@
-export default class VotesID {
+export default class ApportionmentMethod {
     name: string;
     id: string;
 

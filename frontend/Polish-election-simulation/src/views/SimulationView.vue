@@ -10,6 +10,23 @@
       <div class="map">
         <PowiatMap :constituencies="constituencies"/>
       </div>
+      <div class="select">
+        <Select
+          v-model="selectData.simData"
+          :options="simData"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Select data"
+        />
+        <Select
+            v-model="selectData.method"
+            :options="methods"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select method"
+        />
+        <Button label="View" @click="loadNewResults"/>
+      </div>
       <div class="seats">
         <Parliament
             :resultsToDisplay="resultsToDisplay"
@@ -44,6 +61,8 @@ import { onMounted, ref } from "vue";
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import Select from 'primevue/select';
+import Button from 'primevue/button';
 
 import PowiatMap from "@/components/PowiatMap.vue";
 import Parliament from "@/components/Parliament.vue";
@@ -51,6 +70,8 @@ import Parliament from "@/components/Parliament.vue";
 import apiClient from "@/api/apiClient.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import {generateConstituencies} from "@/api/constituencyLoader.ts";
+import ApportionmentMethod from "@/api/ApportionmentMethod.ts";
+import VotesID from "@/api/VotesID.ts";
 const _apiClient = apiClient.getInstance();
 
 const resultsToDisplay = ref<ResultsTableRow[]>([]);
@@ -60,14 +81,29 @@ const resultsToDisplay = ref<ResultsTableRow[]>([]);
 const constituencies = ref<any>(null);
 const isLoading = ref(true);
 
+const methods = ref<ApportionmentMethod[]>([]);
+const simData = ref<VotesID[]>([]);
+const selectData = ref({
+  method: "",
+  simData: ""
+})
+
 onMounted(async () => {
   constituencies.value = await generateConstituencies();
+  methods.value = await apiClient.getApportionmentMethodIDs();
+  simData.value = await apiClient.getVotesIDs();
   resultsToDisplay.value = await apiClient.getTotalResults("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000");
   isLoading.value = false;
 });
 
 function formatPercent(percent: number): string {
   return `${(percent * 100).toFixed(2)}%`;
+}
+
+async function loadNewResults() {
+  isLoading.value = true;
+  resultsToDisplay.value = await apiClient.getTotalResults(selectData.value.simData, selectData.value.method);
+  isLoading.value = false;
 }
 
 </script>
@@ -85,6 +121,7 @@ function formatPercent(percent: number): string {
 .container {
   display: grid;
   grid: "header header" 50px
+        "select select" 50px
         "map seats" 40vh
         "table table" auto
         / 50% 50%;
@@ -113,5 +150,9 @@ function formatPercent(percent: number): string {
 
 .table {
   grid-area: table;
+}
+
+.select {
+  grid-area: select;
 }
 </style>
