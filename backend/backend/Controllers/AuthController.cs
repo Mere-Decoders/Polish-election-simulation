@@ -22,8 +22,17 @@ public class AuthController : ControllerBase
         _config = config;
         _authService = authService;
     }
-    
+
+    /// <summary>
+    /// Authenticates a user and returns a JWT access token.
+    /// </summary>
+    /// <param name="request">User login credentials.</param>
+    /// <returns>JWT token if authentication succeeds.</returns>
+    /// <response code="200">Login successful, JWT token returned.</response>
+    /// <response code="401">Invalid username or password.</response>
     [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> LoginAuth([FromBody] LoginRequest request)
     {
         var user = await _authService.LoginAsync(
@@ -39,7 +48,16 @@ public class AuthController : ControllerBase
         return Ok(new { token });
     }
 
+    /// <summary>
+    /// Registers a new user account.
+    /// </summary>
+    /// <param name="request">User registration data.</param>
+    /// <returns>Empty response if registration succeeds.</returns>
+    /// <response code="200">User registered successfully.</response>
+    /// <response code="400">Invalid input or user already exists.</response>
     [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         try
