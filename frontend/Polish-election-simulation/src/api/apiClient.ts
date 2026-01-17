@@ -61,7 +61,6 @@ export default class apiClient {
 
   public static async getAuthToken(username: string, password: string): Promise<string> {
     const backend_address = apiClient.getBackendAddress();
-    console.log(username);
     const auth = await fetch(
       backend_address + "/api/Auth/login",
       {
