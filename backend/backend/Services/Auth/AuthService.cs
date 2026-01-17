@@ -1,4 +1,6 @@
-﻿namespace backend.Services.Auth;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace backend.Services.Auth;
 
 using backend.Infrastructure.Repositories;
 using backend.Models;
@@ -6,10 +8,11 @@ using backend.Models;
 public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
-
-    public AuthService(IUserRepository userRepository)
+    private readonly IDataClaimRepository _claimRepository;
+    public AuthService(IUserRepository userRepository, IDataClaimRepository dataClaimRepository)
     {
         _userRepository = userRepository;
+        _claimRepository = dataClaimRepository;
     }
 
     public async Task RegisterAsync(string email, string username, string password)
@@ -21,13 +24,16 @@ public class AuthService : IAuthService
             throw new InvalidOperationException("Email already taken");
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-
+        
+        Guid guid = Guid.NewGuid();
         await _userRepository.AddAsync(
-            Guid.NewGuid(),
+            guid,
             email,
             username,
             passwordHash
         );
+        
+        await _claimRepository.AddAsync(guid, Guid.Empty, "Wybory 2023");
     }
 
 

@@ -10,6 +10,12 @@ public class SimDataService:ISimDataService
 {
     private readonly IDataClaimRepository _dataClaimRepository;
     private readonly ISimDataRepository _simDataRepository;
+
+    public SimDataService(IDataClaimRepository dataClaimRepository, ISimDataRepository simDataRepository)
+    {
+        _dataClaimRepository = dataClaimRepository;
+        _simDataRepository = simDataRepository;
+    }
     public async Task<SimulationData> GetSimDataByGuid(Guid dataGuid)
     {
         var result= await _simDataRepository.GetAsync(dataGuid);

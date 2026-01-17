@@ -53,6 +53,8 @@ builder.Services.AddScoped<ISimContextService, SimContextService>();
 builder.Services.AddScoped<IMethodService, MethodService>();
 builder.Services.AddScoped<ISimDataService, SimDataService> ();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDataClaimRepository, DataClaimRepository>();
+builder.Services.AddScoped<ISimDataRepository, SimDataRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
