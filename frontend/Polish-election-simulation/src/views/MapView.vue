@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
   <div class="about">
     <h1>testing maps</h1>
@@ -9,6 +6,9 @@
     not testing maps?
   </div>
 </template>
+
+<script setup lang="ts">
+</script>
 
 <style>
 @media (min-width: 1024px) {

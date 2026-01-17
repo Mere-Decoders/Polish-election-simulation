@@ -1,15 +1,3 @@
-<script setup lang='ts'>
-  import PageTabs from './PageTabs.vue'
-  import FillableSelect from './FillableSelect.vue'
-  
-  import VisualizationTab from './tabs/VisualizationTab.vue'
-  import MethodsTab from './tabs/MethodsTab.vue'
-  import ConstituenciesTab from './tabs/ConstituenciesTab.vue'
-
-  import apiClient from '../api/apiClient.ts'
-  import Results from '../api/Results.ts'
-</script>
-
 <template>
   <PageTabs :tabs="[
     { name: 'visualization', title: 'Wizualizacja wyników'},
@@ -29,3 +17,14 @@
     </template>
   </PageTabs>
 </template>
+
+<script setup lang='ts'>
+import PageTabs from './PageTabs.vue'
+
+import VisualizationTab from './tabs/VisualizationTab.vue'
+import MethodsTab from './tabs/MethodsTab.vue'
+import ConstituenciesTab from './tabs/ConstituenciesTab.vue'
+
+import apiClient from '../api/apiClient.ts'
+import Results from '../api/Results.ts'
+</script>

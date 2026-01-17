@@ -1,29 +1,77 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import Composition from './components/Composition.vue'
-</script>
-
 <template>
-  <Composition/>
+  <Menubar :model="items" class="nav">
+    <template #item="{ item, props }">
+      <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+        <a :href="href" v-bind="props.action" @click="navigate">
+          <span>{{ item.label }}</span>
+        </a>
+      </router-link>
+      <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+        <span>{{ item.label }}</span>
+      </a>
+    </template>
+  </Menubar>
+  <main>
+    <RouterView/>
+  </main>
 </template>
 
+<script setup lang="ts">
+import { RouterLink, RouterView } from 'vue-router'
+import { ref } from 'vue';
+import Menubar from 'primevue/menubar'
+
+const items = ref([
+  { label: 'Home', route: '/' },
+  { label: 'About', route: '/about' },
+  { label: 'Election simulation', route: '/simulation' },
+  { label: 'Login', route: '/login' }
+]);
+</script>
+
+<style>
+
+html {
+  scrollbar-gutter: stable; /* Reserves space for scrollbar */
+}
+
+</style>
+
 <style scoped>
+
+body {
+  font-size: 16px;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+main {
+  width: 85%;
+  max-width: 85%;
+  text-align: left;
+  justify-content: left;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
+.nav {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  font-size: 1rem;
   text-align: center;
-  margin-top: 2rem;
+  background-color: var(--color-background); /* Add background so content doesn't show through */
+  z-index: 100; /* Ensure nav stays on top */
+}
+
+main {
+  padding-top: 80px; /* Add this to push content below the fixed nav */
 }
 
 nav a.router-link-exact-active {
@@ -35,6 +83,8 @@ nav a.router-link-exact-active:hover {
 }
 
 nav a {
+  color: var(--color-text-navigation);
+  font-weight: bold;
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
