@@ -27,12 +27,14 @@ public class SimulationDataController : ControllerBase
         options.Add("wiarygodne wybory", Guid.Parse("00000000-0000-0000-0000-000000000001"));
         return Ok(options);
     }
+
     [HttpGet("get-list")]
     public async Task<IActionResult> GetSimDataList()
     {
-        var datas = await _simDataService.GetUsersSimData(_currentUser.Value.Id);
-        return Ok(datas.Select(r => (r.Label, r.DataId)));
-    }
+        Guid guid = _currentUser.Value.Id;
+        var datas = await _simDataService.GetUsersSimData(guid);
+        return Ok(datas.Select(r => new { name = r.Label, id = r.DataId }));
+}
     
     [HttpGet("details/{guid:guid}")]
     public async Task<ActionResult<SimulationData>> GetSimData(Guid guid)
