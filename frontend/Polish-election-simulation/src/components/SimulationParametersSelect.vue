@@ -35,6 +35,8 @@
 
   const props = defineProps<Props>()
 </script>
+
+
 <style>
   .title {
     margin: 0 auto;
