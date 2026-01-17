@@ -15,8 +15,12 @@ export default class apiClient {
     return apiClient.instance;
   }
 
-  // All methods can be static and if needed acess the data in the singleton by using getInstance()
-  // Making them static makes the invokation cleaner (you don't need to use the getInstance() method)
+  private static getBackendAddress() {
+    return "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
+  }
+
+  // All methods can be static and if needed access the data in the singleton by using getInstance()
+  // Making them static makes the invocation cleaner (you don't need to use the getInstance() method)
   public static getApportionmentMethodIDs(): ApportionmentMethodID[] {
     let result: ApportionmentMethodID[] = [
         new ApportionmentMethodID("D'Hondta"),
@@ -41,31 +45,37 @@ export default class apiClient {
     return result;
   }
 
-  public async getTotalResults(year: number, method: string): Promise<ResultsTableRow[]>  {
+  public static async getAuthToken(username: string, password: string): Promise<string> {
+    const backend_address = apiClient.getBackendAddress();
+    const auth = await fetch(
+      backend_address + "/api/Auth/login",
+      {
+        method: "POST",
+        headers: {
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: username, password: password })
+      }
+    );
+    return (await auth.json()).token;
+  }
+
+  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
     const mockup = false;
     let data_response;
     if (mockup) {
       data_response = await fetch("/mock_results.json");
     }
     else {
-      const backend_address = "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
-      const auth = await fetch(
-        backend_address + "/api/Auth/login",
-        {
-          method: "POST",
-          headers: {
-            "accept": "*/*",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({username: "string", password: "string"})
-        }
-      );
+      const backend_address = apiClient.getBackendAddress();
+      const auth_token = await apiClient.getAuthToken("string", "string");
       data_response = await fetch(
-        backend_address + "/api/Simulation?simDataGuid=00000000-0000-0000-0000-000000000001&methodGuid=00000000-0000-0000-0000-000000000001",
+        backend_address + "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method}),
         {
           headers: {
             "accept": "text/plain",
-            "Authorization": "Bearer " + (await auth.json()).token
+            "Authorization": "Bearer " + auth_token
           }
         }
       );

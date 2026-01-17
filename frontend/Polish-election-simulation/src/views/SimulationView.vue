@@ -40,17 +40,16 @@
 </template>
 
 <script setup lang="ts">
-import Composition from "@/components/Composition.vue";
-import PowiatMap from "@/components/PowiatMap.vue";
-import VisualizationTab from "@/components/tabs/VisualizationTab.vue";
+import { onMounted, ref } from "vue";
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
-import apiClient from "@/api/apiClient.ts";
-import { onMounted, ref } from "vue";
-import ResultsTableRow from "@/api/ResultsTableRow.ts";
+import PowiatMap from "@/components/PowiatMap.vue";
 import Parliament from "@/components/Parliament.vue";
+
+import apiClient from "@/api/apiClient.ts";
+import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import {generateConstituencies} from "@/api/constituencyLoader.ts";
 const _apiClient = apiClient.getInstance();
 
@@ -63,7 +62,7 @@ const isLoading = ref(true);
 
 onMounted(async () => {
   constituencies.value = await generateConstituencies();
-  resultsToDisplay.value = await _apiClient.getTotalResults(2023, "D'Hondt");
+  resultsToDisplay.value = await apiClient.getTotalResults("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000");
   isLoading.value = false;
 });
 
