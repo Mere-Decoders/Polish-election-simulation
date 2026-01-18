@@ -11,27 +11,9 @@
         :cx="calculateDotX(dot)"
         :cy="calculateDotY(dot)"
         :r="dotRadius * 0.7"
-        :fill="getColorForDot(dot.colorIndex)"
+        :fill="resultsToDisplay[dot.partyIndex].color"
       />
     </svg>
-    
-<!--    <div class="legend-container">-->
-<!--      <div -->
-<!--        v-for="(party, index) in resultsToDisplay"-->
-<!--        :key="index"-->
-<!--        class="legend-item"-->
-<!--      >-->
-<!--        <svg :width="dotRadius * 2" :height="dotRadius * 2" xmlns="http://www.w3.org/2000/svg">-->
-<!--          <circle -->
-<!--            :cx="dotRadius" -->
-<!--            :cy="dotRadius" -->
-<!--            :r="dotRadius * 0.8" -->
-<!--            :fill="getColorForDot(index)" -->
-<!--          />-->
-<!--        </svg>-->
-<!--        <span class="legend-text"> &nbsp {{ party.seats }} ~ {{ party.partyName }} </span>-->
-<!--      </div>-->
-<!--    </div>-->
   </div>
 </template>
 
@@ -63,7 +45,7 @@ interface ParliamentCoord {
 
 interface Dot {
   position: ParliamentCoord
-  colorIndex: number
+  partyIndex: number
 }
 
 // Utility functions
@@ -174,8 +156,6 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
 
   dots.sort((a, b) => -(calculateDotAngle(a) - calculateDotAngle(b)))
 
-  initPartyColors(resultsToDisplay);
-
   for (let i = 0; i < desiredDots; i++) {
     if (partyIndex < resultsToDisplay.length) {
       if (seatIndex >= resultsToDisplay[partyIndex]!.seats) {
@@ -183,7 +163,7 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
         partyIndex++
       }
 
-      dots[i]!.colorIndex = partyIndex;
+      dots[i]!.partyIndex = partyIndex;
       seatIndex++
     }
   }
@@ -218,29 +198,6 @@ const calculateDotY = (dot: Dot): number => {
 const calculateDotAngle = (dot: Dot): number => {
   const orbit = orbits.value[dot.position.orbit]!;
   return orbit.anglePerBall * dot.position.index;
-}
-
-let partyColors: number[] = []
-let maxColorIndex: number = -1
-
-const initPartyColors= (resultsToDisplay: ResultsTableRow[]) => {
-  partyColors = []
-
-  maxColorIndex = resultsToDisplay.length
-  if (maxColorIndex % 2 == 0)
-  	maxColorIndex++;
-
-  for (let i = 0; i < resultsToDisplay.length; i++)
-    partyColors.push(i * (maxColorIndex / 2 + 0.5) % maxColorIndex)
-}
-
-const getColorForDot = (colorIndex: number): string => {
-  if (colorIndex === -1) {
-    return 'hsl(0, 0%, 0%)'
-  }
-
-  const hue = maxColorIndex > 0 ? (partyColors[colorIndex]! / maxColorIndex) * 360 : 0
-  return `hsl(${hue}, 100%, 50%)`
 }
 </script>
 

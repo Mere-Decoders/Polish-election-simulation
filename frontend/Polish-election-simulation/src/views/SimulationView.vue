@@ -19,6 +19,18 @@
       </div>
       <div class="table">
         <DataTable :value="resultsToDisplay">
+	  <Column header="">
+            <template #body="slotProps">
+	      <svg :width="10" :height="10" xmlns="http://www.w3.org/2000/svg">
+                <circle
+                  :cx="5"
+                  :cy="5"
+                  :r="5"
+                  :fill="slotProps.data.color"
+		/>
+              </svg>
+	    </template>
+	  </Column>
           <Column field="partyName" header="Nazwa partii"></Column>
           <Column field="votes" header="Liczba głosów"></Column>
           <Column field="percentVotes" header="Procent głosów">

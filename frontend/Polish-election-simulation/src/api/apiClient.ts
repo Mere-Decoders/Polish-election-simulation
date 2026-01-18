@@ -2,6 +2,7 @@ import ApportionmentMethodID from "./ApportionmentMethodID.ts"
 import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
+import get_color_for_index from "@/api/get_color_for_index.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -57,7 +58,7 @@ export default class apiClient {
             "accept": "*/*",
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({username: "string", password: "string"})
+          body: JSON.stringify({username: "kamil", password: "kamilslimak"})
         }
       );
       data_response = await fetch(
@@ -70,7 +71,7 @@ export default class apiClient {
         }
       );
     }
-    const data = (await data_response.json()).result;
+    const data = await data_response.json();
     let results: ResultsTableRow[] = [];
     const constituencyCount: number = 41;
     let sumSeatsArray: Array<number> = [];
@@ -92,6 +93,7 @@ export default class apiClient {
         results.push(
             new ResultsTableRow(
                 data.partyNames[i],
+		get_color_for_index(i),
                 sumVotesArray[i]!,
                 sumVotesArray[i]! / totalSumVotes,
                 sumSeatsArray[i]!,
