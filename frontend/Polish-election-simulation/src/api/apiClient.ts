@@ -93,7 +93,7 @@ export default class apiClient {
         results.push(
             new ResultsTableRow(
                 data.partyNames[i],
-		get_color_for_index(i),
+		get_color_for_index(i, data.partyNames.length),
                 sumVotesArray[i]!,
                 sumVotesArray[i]! / totalSumVotes,
                 sumSeatsArray[i]!,
