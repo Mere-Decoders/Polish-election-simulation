@@ -15,7 +15,7 @@ public class MethodController : ControllerBase
     {
         var options = new[]
         {
-            new { name = "Metoda Dhondt'a", id = Guid.Empty },
+            new { name = "Metoda D'Hondta", id = Guid.Empty },
             new { name = "Metoda High Stakes", id = Guid.Parse("00000000-0000-0000-0000-000000000001") },
             new { name = "Metoda Sainte-Lague", id = Guid.Parse("00000000-0000-0000-0000-000000000002") }
         };
