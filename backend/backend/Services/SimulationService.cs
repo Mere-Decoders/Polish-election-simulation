@@ -14,6 +14,7 @@ public class SimulationService:ISimulationService
     public async Task<ElectionResult> Simulate(Guid simDataGuid, Guid methodGuid)
     {
         var context =  await SimContextService.FetchContextByGuid(simDataGuid, methodGuid);
-        return context.CountingMethod(context.Data);
+        var res = context.CountingMethod(context.Data);
+        return res;
     }
 }

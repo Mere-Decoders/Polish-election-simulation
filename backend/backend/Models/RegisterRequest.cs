@@ -1,9 +1,14 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models
 {
-    public class LoginRequest
+    public class RegisterRequest
     {
+        [Required]
+        [MaxLength(100)]
+        [EmailAddress]
+        public required string Email { get; set; }
+
         [Required]
         [MinLength(3)]
         [MaxLength(32)]

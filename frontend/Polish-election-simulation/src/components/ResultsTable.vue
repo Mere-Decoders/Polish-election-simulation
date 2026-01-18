@@ -35,15 +35,11 @@
 
 <script setup lang='ts'>
   import ResultsTableRow from '../api/ResultsTableRow.ts'
-  import {computed} from 'vue'
+  import { computed } from 'vue'
 
-  const props = defineProps({
-    resultsToDisplay: {
-      type: Array,
-      required: true,
-    }
-  })
-
+  const props = defineProps<{
+    resultsToDisplay: ResultsTableRow[]
+  }>()
   function formatPercentage(percentage: number) {
     return Math.floor(percentage * 10000) / 100;
   }
@@ -51,7 +47,7 @@
   const processedResults = computed(() => {
     let result = []
     for (let row of props.resultsToDisplay) {
-      let newRow = {...row}
+      let newRow = {...row!}
       newRow.percentVotes = formatPercentage(newRow.percentVotes)
       newRow.percentSeats = formatPercentage(newRow.percentSeats)
 

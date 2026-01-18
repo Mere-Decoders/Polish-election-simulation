@@ -1,11 +1,14 @@
-using System.Text;
-using backend.Data;
+using backend.Infrastructure;
+using backend.Infrastructure.Repositories;
 using backend.Services;
 using backend.Services.Methods;
+using backend.Services.Auth;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +52,13 @@ builder.Services.AddScoped<ISimulationService, SimulationService>();
 builder.Services.AddScoped<ISimContextService, SimContextService>();
 builder.Services.AddScoped<IMethodService, MethodService>();
 builder.Services.AddScoped<ISimDataService, SimDataService> ();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDataClaimRepository, DataClaimRepository>();
+builder.Services.AddScoped<ISimDataRepository, SimDataRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -82,13 +92,12 @@ builder.Services.AddAuthentication(options =>
     });
 builder.Services.AddAuthorization();
 
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -96,13 +105,12 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors("AllowLocalhost");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

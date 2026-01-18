@@ -1,8 +1,8 @@
-import ApportionmentMethodID from "./ApportionmentMethodID.ts"
 import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import get_color_for_index from "@/api/get_color_for_index.ts";
+import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -16,22 +16,40 @@ export default class apiClient {
     return apiClient.instance;
   }
 
-  // All methods can be static and if needed acess the data in the singleton by using getInstance()
-  // Making them static makes the invokation cleaner (you don't need to use the getInstance() method)
-  public static getApportionmentMethodIDs(): ApportionmentMethodID[] {
-    let result: ApportionmentMethodID[] = [
-        new ApportionmentMethodID("D'Hondta"),
-        new ApportionmentMethodID("Sainte-Lague")
-    ];
-    return result;
+  private static getBackendAddress() {
+    return "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
   }
 
-  public static getVotesIDs(): VotesID[] {
-    let result: VotesID[] = [
-      new VotesID("2019"),
-      new VotesID("2023")
-    ];
-    return result;
+  // All methods can be static and if needed access the data in the singleton by using getInstance()
+  // Making them static makes the invocation cleaner (you don't need to use the getInstance() method)
+  public static async getApportionmentMethodIDs(): Promise<ApportionmentMethod[]> {
+    const backend_address = apiClient.getBackendAddress();
+    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
+    const data_response = await fetch(
+      backend_address + "/api/methods/Method/get-list",
+      {
+        headers: {
+          "accept": "text/plain",
+          "Authorization": "Bearer " + auth_token
+        }
+      }
+    );
+    return await data_response.json();
+  }
+
+  public static async getVotesIDs(): Promise<VotesID[]> {
+    const backend_address = apiClient.getBackendAddress();
+    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
+    const data_response = await fetch(
+      backend_address + "/api/sim-data/SimulationData/get-list",
+      {
+        headers: {
+          "accept": "text/plain",
+          "Authorization": "Bearer " + auth_token
+        }
+      }
+    );
+    return await data_response.json();
   }
 
   public static getConstituencySetIDs(): ConstituencySetID[] {
@@ -42,31 +60,37 @@ export default class apiClient {
     return result;
   }
 
-  public async getTotalResults(year: number, method: string): Promise<ResultsTableRow[]>  {
+  public static async getAuthToken(username: string, password: string): Promise<string> {
+    const backend_address = apiClient.getBackendAddress();
+    const auth = await fetch(
+      backend_address + "/api/Auth/login",
+      {
+        method: "POST",
+        headers: {
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: username, password: password })
+      }
+    );
+    return (await auth.json()).token;
+  }
+
+  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
     const mockup = false;
     let data_response;
     if (mockup) {
       data_response = await fetch("/mock_results.json");
     }
     else {
-      const backend_address = "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
-      const auth = await fetch(
-        backend_address + "/api/Auth/login",
-        {
-          method: "POST",
-          headers: {
-            "accept": "*/*",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({username: "kamil", password: "kamilslimak"})
-        }
-      );
+      const backend_address = apiClient.getBackendAddress();
+      const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
       data_response = await fetch(
-        backend_address + "/api/Simulation?simDataGuid=00000000-0000-0000-0000-000000000001&methodGuid=00000000-0000-0000-0000-000000000001",
+        backend_address + "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method}),
         {
           headers: {
             "accept": "text/plain",
-            "Authorization": "Bearer " + (await auth.json()).token
+            "Authorization": "Bearer " + auth_token
           }
         }
       );
