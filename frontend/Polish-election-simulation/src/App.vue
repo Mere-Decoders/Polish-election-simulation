@@ -31,10 +31,10 @@ import { ref } from 'vue'
 import Menubar from 'primevue/menubar'
 
 const items = ref([
-  { label: 'Home', route: '/' },
-  { label: 'About', route: '/about' },
-  { label: 'Election simulation', route: '/simulation' },
-  { label: 'Login', route: '/login' }
+  { label: 'Strona główna', route: '/' },
+  { label: 'O stronie', route: '/about' },
+  { label: 'Symulacja wyborów', route: '/simulation' },
+  { label: 'Logowanie', route: '/login' }
 ])
 </script>
 
