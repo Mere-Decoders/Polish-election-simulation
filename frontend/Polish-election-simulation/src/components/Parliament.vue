@@ -1,38 +1,18 @@
 <template>
-  <div class="parliament-container">
-    <svg 
-      :width="2 * outerRadius"
-      :height="outerRadius"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle
-        v-for="(dot, index) in dots"
-        :key="index"
-        :cx="calculateDotX(dot)"
-        :cy="calculateDotY(dot)"
-        :r="dotRadius * 0.7"
-        :fill="getColorForDot(dot.colorIndex)"
-      />
-    </svg>
-    
-<!--    <div class="legend-container">-->
-<!--      <div -->
-<!--        v-for="(party, index) in resultsToDisplay"-->
-<!--        :key="index"-->
-<!--        class="legend-item"-->
-<!--      >-->
-<!--        <svg :width="dotRadius * 2" :height="dotRadius * 2" xmlns="http://www.w3.org/2000/svg">-->
-<!--          <circle -->
-<!--            :cx="dotRadius" -->
-<!--            :cy="dotRadius" -->
-<!--            :r="dotRadius * 0.8" -->
-<!--            :fill="getColorForDot(index)" -->
-<!--          />-->
-<!--        </svg>-->
-<!--        <span class="legend-text"> &nbsp {{ party.seats }} ~ {{ party.partyName }} </span>-->
-<!--      </div>-->
-<!--    </div>-->
-  </div>
+  <svg 
+    :width="2 * outerRadius"
+    :height="outerRadius"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      v-for="(dot, index) in dots"
+      :key="index"
+      :cx="calculateDotX(dot)"
+      :cy="calculateDotY(dot)"
+      :r="dotRadius * 0.7"
+      :fill="getColorForDot(dot.colorIndex)"
+    />
+  </svg>
 </template>
 
 <script setup lang="ts">
@@ -253,29 +233,8 @@ const getColorForDot = (colorIndex: number): string => {
   padding: 1.5rem;
 }
 
-.legend-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  columns: 2;
-  margin-left: 3.8vw;
-
-  gap: 1rem;
-  justify-content: center;
-}
-
-.legend-item {
-}
-
 svg {
   display: inline-block;
-}
-
-.legend-text {
-  font-size: 0.875rem;
-  text-align: justify;
-  text-align-last: justify;
-  text-justify: inter-word;
-  font-weight: 500;
 }
 
 </style>
