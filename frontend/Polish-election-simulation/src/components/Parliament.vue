@@ -222,6 +222,17 @@ const getColorForDot = (colorIndex: number): string => {
   const hue = maxColorIndex > 0 ? (partyColors[colorIndex]! / maxColorIndex) * 360 : 0
   return `hsl(${hue}, 100%, 50%)`
 }
+
+// If data is bad (eg. number of seats > 460) print a warning
+const actualTotalSeats = props.resultsToDisplay.reduce(
+  (sum, item) => sum + item.seats,
+  0
+);
+
+if (actualTotalSeats != DESIRED_DOTS) {
+  console.error("The number of mandates does not equal the amount of seats.\nSeats: " + String(DESIRED_DOTS) + "\nTotal mandates: " + String(actualTotalSeats));
+}
+
 </script>
 
 <style scoped>
