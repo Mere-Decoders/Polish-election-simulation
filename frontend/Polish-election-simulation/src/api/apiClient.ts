@@ -1,6 +1,7 @@
 import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
+import get_color_for_index from "@/api/get_color_for_index.ts";
 import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 
 export default class apiClient {
@@ -116,6 +117,7 @@ export default class apiClient {
         results.push(
             new ResultsTableRow(
                 data.partyNames[i],
+                get_color_for_index(i, data.partyNames.length),
                 sumVotesArray[i]!,
                 sumVotesArray[i]! / totalSumVotes,
                 sumSeatsArray[i]!,
