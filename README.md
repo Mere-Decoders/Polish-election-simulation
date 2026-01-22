@@ -25,13 +25,13 @@ You are expected to provide your own values.
 ### Recommended: .env file
 
 Instead of passing secrets inline, you can use an .env file:
-
+```
 ConnectionStrings__DefaultConnection=...
 Jwt__Key=...
 Jwt__Issuer=...
 Jwt__Audience=...
 Jwt__ExpireMinutes=60
-
+```
 
 Run the container with:
 ```bash
