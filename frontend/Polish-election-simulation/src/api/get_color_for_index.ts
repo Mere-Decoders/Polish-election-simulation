@@ -12,7 +12,7 @@ export default function get_color_for_index(colorIndex: number, maxColorIndex: n
 
 const GOLDEN_RATIO = 0.61803398875
 
-function nextColor(hue) {
+function nextColor(hue :number) {
   hue = (hue + GOLDEN_RATIO) % 1
   return hue
 }

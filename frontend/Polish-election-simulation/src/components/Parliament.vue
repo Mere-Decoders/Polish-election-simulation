@@ -11,7 +11,7 @@
         :cx="calculateDotX(dot)"
         :cy="calculateDotY(dot)"
         :r="dotRadius * 0.7"
-        :fill="resultsToDisplay[dot.partyIndex].color"
+        :fill="resultsToDisplay[dot.partyIndex]?.color"
       />
     </svg>
   </div>
@@ -136,7 +136,7 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
     
     dots.push({
       position: { orbit: currentOrbit, index: currentIndex },
-      colorIndex: -1
+      partyIndex: -1
     })
 
     currentOrbit++
