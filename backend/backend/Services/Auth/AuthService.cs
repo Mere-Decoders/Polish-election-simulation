@@ -34,6 +34,7 @@ public class AuthService : IAuthService
         );
         
         await _claimRepository.AddAsync(guid, Guid.Empty, "Wybory 2023");
+        await _claimRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000002"), "Wybory 2019");
     }
 
 
