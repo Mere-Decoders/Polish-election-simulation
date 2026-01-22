@@ -129,8 +129,6 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
   const dots: Dot[] = []
   let currentOrbit = 0
   let currentIndex = 0
-  let partyIndex = 0
-  let seatIndex = 0
   
   for (let dotIndex = 0; dotIndex < desiredDots; dotIndex++) {
     
@@ -156,9 +154,11 @@ const createDots = (orbits: Orbit[], resultsToDisplay: ResultsTableRow[], desire
 
   dots.sort((a, b) => -(calculateDotAngle(a) - calculateDotAngle(b)))
 
+  let partyIndex = 0
+  let seatIndex = 0
   for (let i = 0; i < desiredDots; i++) {
     if (partyIndex < resultsToDisplay.length) {
-      if (seatIndex >= resultsToDisplay[partyIndex]!.seats) {
+      while (seatIndex >= resultsToDisplay[partyIndex]!.seats) {
         seatIndex = 0
         partyIndex++
       }
