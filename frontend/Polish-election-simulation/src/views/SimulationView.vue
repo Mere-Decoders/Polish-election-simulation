@@ -4,13 +4,12 @@
   </div>
   <div v-else>
     <div class="container">
-      <div class="header">
-        <h1>Symulacja</h1>
-      </div>
-      <div class="map">
-        <PowiatMap :constituencies="constituencies"/>
-      </div>
-      <div class="select">
+      <div class="top-row">
+        <div class="title-section">
+          <h1>Simulation</h1>
+        </div>
+        
+        <div class="controls">
         <Select
           v-model="selectData.simData"
           :options="simData"
@@ -26,13 +25,19 @@
             placeholder="Select method"
         />
         <Button label="View" @click="loadNewResults"/>
+          </div>
       </div>
-      <div class="seats">
-        <Parliament
-            :resultsToDisplay="resultsToDisplay"
-            :innerRadius = "50"
-            :outerRadius = "190"
-        />
+      <div class="map-seats-row">
+        <div class="map">
+          <PowiatMap :constituencies="constituencies"/>
+        </div>
+        <div class="seats">
+          <Parliament
+              :resultsToDisplay="resultsToDisplay"
+              :innerRadius = "50"
+              :outerRadius = "190"
+          />
+        </div>
       </div>
       <div class="table">
         <DataTable :value="resultsToDisplay">
@@ -131,40 +136,98 @@ async function loadNewResults() {
 }
 
 .container {
-  display: grid;
-  grid: "header header" 50px
-        "select select" 50px
-        "map seats" 40vh
-        "table table" auto
-        / 50% 50%;
-  margin-left: auto;
-  margin-right: auto;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  margin: 0 auto;
+  /* no fixed height, let content determine it */
 }
 
-.header {
-  grid-area: header;
-  justify-self: center;
+.top-row {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2rem;
+}
+
+.title-section {
+  flex: 1;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.map-seats-row {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 0;
+}
+
+/* ensure a sensible row height when items are side-by-side */
+@media (min-width: 769px) {
+  .map-seats-row {
+    height: 50vh;
+  }
 }
 
 .map {
-  grid-area: map;
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
+  flex: 1 0 300px;
   height: 100%;
+  overflow: hidden;
 }
 
 .seats {
-  grid-area: seats;
+  flex: 1 0 300px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .table {
-  grid-area: table;
+  flex: 0 0 auto;
+  overflow: auto;
+  padding: 10px;
 }
 
-.select {
-  grid-area: select;
+@media (max-width: 768px) {
+  .map-seats-row {
+    flex-direction: column;
+    flex: 0 0 auto; /* size to children */
+    min-height: 0;
+    height: auto;
+  }
+  
+  .map {
+    flex: 0 0 40vh;
+    height: 40vh;
+  }
+  
+  .seats {
+    flex: 0 0 40vh;
+    height: 40vh;
+  }
+  
+  .container {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 600px) {
+  .top-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 </style>

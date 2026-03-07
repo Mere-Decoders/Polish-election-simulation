@@ -1,8 +1,9 @@
 <template>
   <div class="parliament-container">
     <svg 
-      :width="2 * outerRadius"
-      :height="outerRadius"
+      width="100%"
+      height="100%"
+      :viewBox="`0 0 ${2 * outerRadius} ${outerRadius}`"
       xmlns="http://www.w3.org/2000/svg"
     >
       <circle
@@ -203,36 +204,17 @@ const calculateDotAngle = (dot: Dot): number => {
 
 <style scoped>
 .parliament-container {
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
-}
-
-.legend-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  columns: 2;
-  margin-left: 3.8vw;
-
-  gap: 1rem;
   justify-content: center;
-}
-
-.legend-item {
+  align-items: center;
 }
 
 svg {
-  display: inline-block;
-}
-
-.legend-text {
-  font-size: 0.875rem;
-  text-align: justify;
-  text-align-last: justify;
-  text-justify: inter-word;
-  font-weight: 500;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 </style>
