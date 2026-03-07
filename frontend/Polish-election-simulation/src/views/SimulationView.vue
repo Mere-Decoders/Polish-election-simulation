@@ -1,7 +1,5 @@
 <template>
-  <div v-if="isLoading">
-    <p>Loading...</p>
-  </div>
+  <LoadingComponent v-if="isLoading" spinner-color="lightgreen" />
   <div v-else>
     <div class="container">
       <div class="top-row">
@@ -83,6 +81,7 @@ import Button from 'primevue/button';
 
 import PowiatMap from "@/components/PowiatMap.vue";
 import Parliament from "@/components/Parliament.vue";
+import LoadingComponent from "@/components/LoadingComponent.vue";
 
 import apiClient from "@/api/apiClient.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
