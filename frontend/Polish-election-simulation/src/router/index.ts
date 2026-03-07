@@ -1,5 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuth } from '@/auth/useAuth'
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    requiresAuth?: boolean
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,13 +28,44 @@ const router = createRouter({
       path: '/simulation',
       name: 'simulation',
       component: () => import('../views/SimulationView.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
     },
+    {
+      path: '/logout',
+      name: 'logout',
+      redirect: () => {
+        const auth = useAuth()
+        auth.logout()
+        return { name: 'login' }
+      },
+    },
   ],
+})
+
+router.beforeEach(async (to) => {
+  if (!to.meta.requiresAuth) {
+    return true
+  }
+
+  const auth = useAuth()
+  const hasActiveSession = await auth.ensureSession()
+  if (hasActiveSession) {
+    return true
+  }
+
+  return {
+    name: 'login',
+    query: {
+      redirect: to.fullPath,
+    },
+  }
 })
 
 export default router
