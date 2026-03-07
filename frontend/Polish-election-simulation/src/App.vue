@@ -18,14 +18,26 @@
 
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import { ref } from 'vue';
+import { computed } from 'vue';
 import Menubar from 'primevue/menubar'
+import { useAuth } from '@/auth/useAuth';
 
-const items = ref([
+type NavItem = {
+  label: string;
+  route?: string;
+  url?: string;
+  target?: string;
+};
+
+const auth = useAuth();
+
+const items = computed<NavItem[]>(() => [
   { label: 'Home', route: '/' },
   { label: 'About', route: '/about' },
   { label: 'Election simulation', route: '/simulation' },
-  { label: 'Login', route: '/login' }
+  auth.isAuthenticated.value
+    ? { label: 'Logout', route: '/logout' }
+    : { label: 'Login', route: '/login' }
 ]);
 </script>
 
