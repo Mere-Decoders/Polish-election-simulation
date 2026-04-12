@@ -34,12 +34,50 @@ public class SimulationDataController : ControllerBase
         Guid guid = _currentUser.Value.Id;
         var datas = await _simDataService.GetUsersSimData(guid);
         return Ok(datas.Select(r => new { name = r.Label, id = r.DataId }));
-}
+    }
     
     [HttpGet("details/{guid:guid}")]
     public async Task<ActionResult<SimulationData>> GetSimData(Guid guid)
     {
         var simData = await _simDataService.GetSimDataByGuid(guid);
         return Ok(simData);
+    }
+
+    [HttpPost("details")]
+    public async Task<IActionResult> CreateSimData([FromQuery] string label, [FromBody] SimulationData data)
+    {
+        label = (label ?? string.Empty).Trim();
+        if (label.Length == 0)
+            return BadRequest("Label cannot be empty.");
+        if (label.Length > 200)
+            return BadRequest("Label is too long.");
+
+        var claim = await _simDataService.CreateSimDataForUserAsync(
+            _currentUser.Value.Id,
+            label,
+            data);
+
+        return CreatedAtAction(
+            nameof(GetSimData),
+            new { guid = claim.DataId },
+            new { name = claim.Label, id = claim.DataId });
+    }
+
+    [HttpPut("details/{guid:guid}")]
+    public async Task<IActionResult> UpdateSimData(Guid guid, [FromBody] SimulationData data)
+    {
+        try
+        {
+            await _simDataService.UpdateSimDataForUserAsync(_currentUser.Value.Id, guid, data);
+            return NoContent();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }
