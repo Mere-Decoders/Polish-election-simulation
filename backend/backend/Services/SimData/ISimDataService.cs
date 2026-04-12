@@ -8,4 +8,8 @@ public interface ISimDataService
     public Task<SimulationData> GetSimDataByGuid(Guid simdataGuid);
 
     public Task<List<DataClaim>> GetUsersSimData(Guid userGuid);
+
+    public Task<DataClaim> CreateSimDataForUserAsync(Guid userId, string label, SimulationData data);
+
+    public Task UpdateSimDataForUserAsync(Guid userId, Guid dataId, SimulationData data);
 }
