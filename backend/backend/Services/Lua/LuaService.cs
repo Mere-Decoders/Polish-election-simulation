@@ -6,13 +6,24 @@ using backend.Services.Methods;
 namespace backend.Services.Lua;
 using MoonSharp.Interpreter;
 
-/// <summary>
-/// OOO
-/// </summary>
 public class LuaService : IMethodService
 {
     private static string dhondtMethod = "";
-    private static string highStakesMethod = "";
+    private static string highStakesMethod = @"
+local winningParty = 1
+local maxVotes = DistrictPartyVotes(1)
+for i = 2,TotalParties() do
+    if DistrictPartyVotes(i) > maxVotes then
+        maxVotes = DistrictPartyVotes(i)
+        winningParty = i
+    end
+end
+local t = {}
+for i = 1, TotalParties() do
+    t[i] = (i == winningParty) and DistrictSeats() or 0
+end
+return t
+";
     private static string sainteLagueMethod = "";
 
     private ILuaScriptRunner _scriptRunner;
@@ -27,6 +38,8 @@ public class LuaService : IMethodService
         var partyNames = data.Parties.Select(p => p.Name).ToArray();
         var constituencyVotes = new Dictionary<string, int[]>();
         var constituencySeats = new Dictionary<string, int[]>();
+        _scriptRunner.Code = code;
+        _scriptRunner.SimulationData = data;
 
         try
         {
@@ -43,8 +56,7 @@ public class LuaService : IMethodService
                 constituencyVotes.Add(district.Key, votes);
 
                 var seats = new int[partyNames.Length];
-                var result = _scriptRunner.RunLuaCode(code, data, district.Value);
-                //var result = _script.DoString(code);
+                var result = _scriptRunner.RunLuaCode(district.Value);
                 if (result.Type != DataType.Table)
                     throw new Exception("Script must return a table.");
                 var table = result.Table;
@@ -62,7 +74,6 @@ public class LuaService : IMethodService
                 }
                 constituencySeats.Add(district.Key, seats);
             }
-            
             return new LuaResult(true,
                 new ElectionResult(partyNames, constituencyVotes, constituencySeats),
                 null);
