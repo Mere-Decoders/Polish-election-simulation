@@ -175,6 +175,8 @@ async function submit() {
 .auth-view {
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   margin: 2rem 0;
 }
 

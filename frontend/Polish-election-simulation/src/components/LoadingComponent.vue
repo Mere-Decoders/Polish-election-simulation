@@ -11,7 +11,7 @@ withDefaults(defineProps<{
   spinnerColor?: string;
 }>(), {
   text: "Loading...",
-  spinnerColor: "var(--tomato-jam)"
+  spinnerColor: "#e14b4b"
 });
 </script>
 
@@ -30,7 +30,6 @@ withDefaults(defineProps<{
   width: 2.5rem;
   height: 2.5rem;
   border: 0.3rem solid var(--color-border);
-  border-top-color: var(--tomato-jam);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
