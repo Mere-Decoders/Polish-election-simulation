@@ -3,7 +3,7 @@ import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import get_color_for_index from "@/api/get_color_for_index.ts";
 import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
-import { buildBackendUrl } from "@/api/backendAddress.ts";
+import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
 
 export default class apiClient {
@@ -66,8 +66,7 @@ export default class apiClient {
     const mockup = false;
     let data_response;
     if (mockup) {
-      data_response = await fetch("/mock_results.json");
-      await apiClient.ensureSuccess(data_response);
+      data_response = await apiClient.authenticatedGet("/mock_results.json");
     }
     else {
       data_response = await apiClient.authenticatedGet(

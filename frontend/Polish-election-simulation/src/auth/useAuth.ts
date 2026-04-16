@@ -1,5 +1,5 @@
 import { computed, readonly, ref } from "vue";
-import { buildBackendUrl } from "@/api/backendAddress";
+import { buildBackendUrl } from "@/api/buildBackendUrl";
 
 const ACCESS_TOKEN_STORAGE_KEY = "auth.access_token";
 const TOKEN_EXPIRY_SKEW_MS = 15_000;
