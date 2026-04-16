@@ -6,5 +6,7 @@ namespace backend.Services.Lua;
 
 public interface ILuaScriptRunner
 {
-    public DynValue RunLuaCode(string code, SimulationData data, DistrictDetails districtDetails);
+    SimulationData SimulationData { get; set; }
+    string Code { get; set; }
+    public DynValue RunLuaCode(DistrictDetails districtDetails);
 }
