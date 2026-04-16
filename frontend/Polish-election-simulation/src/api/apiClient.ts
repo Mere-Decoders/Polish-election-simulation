@@ -17,7 +17,8 @@ export default class apiClient {
   }
 
   private static getBackendAddress() {
-    return "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
+    //return "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
+    return "https://localhost:7218"
   }
 
   // All methods can be static and if needed access the data in the singleton by using getInstance()
@@ -76,7 +77,7 @@ export default class apiClient {
     return (await auth.json()).token;
   }
 
-  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
+  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]> {
     const mockup = false;
     let data_response;
     if (mockup) {
@@ -86,7 +87,7 @@ export default class apiClient {
       const backend_address = apiClient.getBackendAddress();
       const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
       data_response = await fetch(
-        backend_address + "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method}),
+        backend_address + "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method }),
         {
           headers: {
             "accept": "text/plain",
@@ -124,5 +125,22 @@ export default class apiClient {
                 sumSeatsArray[i]! / totalSumSeats));
     }
     return results;
+  }
+
+  public static async runLua(code: string): Promise<any> {
+    const backend_address = apiClient.getBackendAddress();
+    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
+    const data_response = await fetch(
+      backend_address + "/api/lua/execute?" + new URLSearchParams({ request: code }),
+      {
+        headers: {
+          "accept": "text/plain",
+          "Authorization": "Bearer " + auth_token
+        }
+      }
+    );
+    let result = await data_response.json();
+    console.log(result);
+    return result;
   }
 }
