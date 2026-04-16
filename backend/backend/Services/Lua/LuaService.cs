@@ -8,8 +8,9 @@ using MoonSharp.Interpreter;
 
 public class LuaService : IMethodService
 {
-    private static string dhondtMethod = "";
-    private static string highStakesMethod = @"
+    //TODO
+    private const string DhondtMethod = "";
+    private const string HighStakesMethod = @"
 local winningParty = 1
 local maxVotes = DistrictPartyVotes(1)
 for i = 2,TotalParties() do
@@ -24,7 +25,8 @@ for i = 1, TotalParties() do
 end
 return t
 ";
-    private static string sainteLagueMethod = "";
+    //TODO
+    private const string SainteLagueMethod = "";
 
     private ILuaScriptRunner _scriptRunner;
 
@@ -33,6 +35,12 @@ return t
         _scriptRunner = new LuaScriptRunner();
     }
     
+    /// <summary>
+    /// Runs <c>code</c> 
+    /// </summary>
+    /// <param name="code">Script to be run.</param>
+    /// <param name="data">Simulation data for the script.</param>
+    /// <returns>Result of the script, containing either <c>ElectionResult</c> or an error message.</returns>
     private LuaResult Execute(string code, SimulationData data)
     {
         var partyNames = data.Parties.Select(p => p.Name).ToArray();
@@ -54,24 +62,8 @@ return t
                     }
                 }
                 constituencyVotes.Add(district.Key, votes);
-
-                var seats = new int[partyNames.Length];
                 var result = _scriptRunner.RunLuaCode(district.Value);
-                if (result.Type != DataType.Table)
-                    throw new Exception("Script must return a table.");
-                var table = result.Table;
-                if (table.Length != partyNames.Length)
-                    throw new Exception($"Table must have exactly {partyNames.Length} elements, it had {table.Length}.");
-                for (var i = 1; i <= table.Length; i++)
-                {
-                    var val = table.Get(i);
-                    if (val.Type != DataType.Number)
-                        throw new Exception($"Element [{i}] must be an integer, was of the type {val.Type}.");
-                    var doubleVal = val.Number;
-                    if (doubleVal != Math.Floor(doubleVal))
-                        throw new Exception($"Element [{i}] must be an integer, had value {doubleVal}.");
-                    seats[i - 1] = (int)doubleVal;
-                }
+                var seats = LuaTableToArray(partyNames.Length, result);
                 constituencySeats.Add(district.Key, seats);
             }
             return new LuaResult(true,
@@ -84,16 +76,46 @@ return t
         }
     }
 
+    /// <summary>
+    /// Converts a Lua value <c>result</c> into a C# <c>int[]</c>.
+    /// Throws <c>Exception</c> if the result is not a table of integers of the right length.
+    /// </summary>
+    /// <param name="intCount">Expected table length.</param>
+    /// <param name="result">Result of Lua program.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private static int[] LuaTableToArray(int intCount, DynValue result)
+    {
+        var array = new int[intCount];
+        if (result.Type != DataType.Table)
+            throw new Exception("Script must return a table.");
+        var table = result.Table;
+        if (table.Length != intCount)
+            throw new Exception($"Table must have exactly {intCount} elements, it had {table.Length}.");
+        for (var i = 1; i <= table.Length; i++)
+        {
+            var val = table.Get(i);
+            if (val.Type != DataType.Number)
+                throw new Exception($"Element [{i}] must be an integer, was of the type {val.Type}.");
+            var doubleVal = val.Number;
+            if (doubleVal != Math.Floor(doubleVal))
+                throw new Exception($"Element [{i}] must be an integer, had value {doubleVal}.");
+            array[i - 1] = (int)doubleVal;
+        }
+
+        return array;
+    }
+
     public Func<SimulationData, ElectionResult> GetMethodByGuid(Guid methodGuid)
     {
         switch (methodGuid.ToString())
         {
             case ("00000000-0000-0000-0000-000000000000"):
-                return (data => Execute(dhondtMethod, data).Output );
+                return (data => Execute(DhondtMethod, data).Output );
             case ("00000000-0000-0000-0000-000000000001"):
-                return (data => Execute(highStakesMethod, data).Output );
+                return (data => Execute(HighStakesMethod, data).Output );
             case ("00000000-0000-0000-0000-000000000002"):
-                return (data => Execute(sainteLagueMethod, data).Output);
+                return (data => Execute(SainteLagueMethod, data).Output);
             default:
                 throw new ArgumentException("The method you are requesting doesn't exist");
         }
