@@ -169,7 +169,7 @@ async function submit() {
       } catch (e) {
         errorMessage.value = error.message;
       }
-    }else {
+    } else {
       errorMessage.value = "Authentication failed.";
     }
   } finally {
