@@ -125,69 +125,69 @@ async function loadNewResults() {
 </script>
 
 <style>
-@reference "tailwindcss";
+  @reference "tailwindcss";
 
-@media (min-width: 1024px) {
-  .about {
-    @apply min-h-screen flex items-center w-full;
-  }
-}
-.container {
-  @apply flex flex-col w-full mx-auto my-0;
-
-  /* no fixed height, let content determine it */
-}
-.top-row {
-  @apply shrink-0 flex justify-between gap-2.5 p-8;
-}
-.title-section {
-  @apply flex-1 text-center text-3xl;
-}
-.controls {
-  @apply flex flex-wrap gap-2.5 items-center;
-}
-.map-seats-row {
-  @apply flex flex-wrap min-h-0;
-}
-
-/* ensure a sensible row height when items are side-by-side */
-@media (min-width: 769px) {
-  .map-seats-row {
-    @apply h-[50vh];
-  }
-}
-.map {
-  @apply flex-[1_0_300px] h-full overflow-hidden;
-}
-.seats {
-  @apply flex-[1_0_300px] h-full flex justify-center items-center overflow-hidden;
-}
-.table {
-  @apply flex-[0_0_auto] overflow-auto p-2.5;
-}
-@media (max-width: 768px) {
-  .map-seats-row {
-    @apply flex-col flex-[0_0_auto] min-h-0 h-auto;
-
-    /* size to children */
-  }
-  .map {
-    @apply flex-[0_0_40vh] h-[40vh];
-  }
-  .seats {
-    @apply flex-[0_0_40vh] h-[40vh];
+  @media (min-width: 1024px) {
+    .about {
+      @apply min-h-screen flex items-center w-full;
+    }
   }
   .container {
-    @apply overflow-visible;
+    @apply flex flex-col w-full mx-auto my-0;
+
+    /* no fixed height, let content determine it */
   }
-}
-@media (max-width: 600px) {
   .top-row {
-    @apply flex-col items-start;
+    @apply shrink-0 flex justify-between gap-2.5 p-8;
+  }
+  .title-section {
+    @apply flex-1 text-center text-3xl;
   }
   .controls {
-    @apply w-full justify-start;
+    @apply flex flex-wrap gap-2.5 items-center;
   }
-}
+  .map-seats-row {
+    @apply flex flex-wrap min-h-0;
+  }
+
+  /* ensure a sensible row height when items are side-by-side */
+  @media (min-width: 769px) {
+    .map-seats-row {
+      @apply h-[50vh];
+    }
+  }
+  .map {
+    @apply flex-[1_0_300px] h-full overflow-hidden;
+  }
+  .seats {
+    @apply flex-[1_0_300px] h-full flex justify-center items-center overflow-hidden;
+  }
+  .table {
+    @apply flex-[0_0_auto] overflow-auto p-2.5;
+  }
+  @media (max-width: 768px) {
+    .map-seats-row {
+      @apply flex-col flex-[0_0_auto] min-h-0 h-auto;
+
+      /* size to children */
+    }
+    .map {
+      @apply flex-[0_0_40vh] h-[40vh];
+    }
+    .seats {
+      @apply flex-[0_0_40vh] h-[40vh];
+    }
+    .container {
+      @apply overflow-visible;
+    }
+  }
+  @media (max-width: 600px) {
+    .top-row {
+      @apply flex-col items-start;
+    }
+    .controls {
+      @apply w-full justify-start;
+    }
+  }
 
 </style>

@@ -42,94 +42,50 @@ const items = computed<NavItem[]>(() => [
 </script>
 
 <style>
+  @reference "tailwindcss";
 
-html {
-  scrollbar-gutter: stable; /* Reserves space for scrollbar */
-}
+  html {
+    scrollbar-gutter: stable;
+    /* Reserves space for scrollbar */
+  }
 
 </style>
 
 <style scoped>
+  @reference "tailwindcss";
 
-body {
-  font-size: 16px;
-}
-
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-main {
-  width: 85%;
-  max-width: 85%;
-  text-align: left;
-  justify-content: left;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.nav {
-  display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  justify-content: center;
-  font-size: 1rem;
-  text-align: center;
-  background-color: var(--color-background); /* Add background so content doesn't show through */
-  z-index: 100; /* Ensure nav stays on top */
-}
-
-main {
-  padding-top: 80px; /* Add this to push content below the fixed nav */
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  color: var(--color-text-navigation);
-  font-weight: bold;
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
+  body {
+    @apply text-base;
+  }
   header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    @apply leading-normal max-h-screen lg:flex lg:place-items-center lg:pr-[calc(var(--section-gap)_/_2)];
+  }
+  main {
+    @apply w-[85%] max-w-[85%] text-left mx-auto pt-20;
+    justify-content: left;
+  }
+  .nav {
+    @apply flex fixed justify-center text-base text-center bg-[color:var(--color-background)] z-[100] top-0 inset-x-0;
+    /* Add background so content doesn't show through */
+    /* Ensure nav stays on top */
+  }
+  nav a.router-link-exact-active {
+    @apply text-[color:var(--color-text)] hover:bg-transparent;
+  }
+  nav a {
+    @apply text-[color:var(--color-text-navigation)] font-[bold] inline-block border-l-[color:var(--color-border)] px-4 py-0 border-l border-solid first-of-type:border-0;
+  }
+  @media (min-width: 1024px) {
+    .logo {
+      @apply ml-0 mr-8 my-0;
+    }
+    header .wrapper {
+      @apply flex flex-wrap;
+      place-items: flex-start;
+    }
+    nav {
+      @apply text-left ml-[-1rem] text-base mt-4 px-0 py-4;
+    }
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>

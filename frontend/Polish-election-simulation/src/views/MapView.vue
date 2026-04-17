@@ -11,10 +11,11 @@
 </script>
 
 <style>
-@reference "tailwindcss";
-@media (min-width: 1024px) {
-  .about {
-    @apply min-h-screen flex items-center;
+  @reference "tailwindcss";
+  
+  @media (min-width: 1024px) {
+    .about {
+      @apply min-h-screen flex items-center;
+    }
   }
-}
 </style>

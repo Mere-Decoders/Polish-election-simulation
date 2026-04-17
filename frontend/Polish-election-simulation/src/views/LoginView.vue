@@ -179,28 +179,28 @@ async function submit() {
 </script>
 
 <style scoped>
-@reference "tailwindcss";
+  @reference "tailwindcss";
 
-.auth-view {
-  @apply flex justify-center items-center min-h-screen mx-0 my-8;
-}
-.auth-card {
-  @apply w-[min(520px,100%)];
-}
-.mode-switch {
-  @apply grid grid-cols-[1fr_1fr] gap-2 mb-4;
-}
-.auth-form {
-  @apply flex flex-col gap-[0.9rem];
-}
-.field-group {
-  @apply flex flex-col gap-[0.35rem];
-}
-.submit-button {
-  @apply mt-[0.4rem];
-}
+  .auth-view {
+    @apply flex justify-center items-center min-h-screen mx-0 my-8;
+  }
+  .auth-card {
+    @apply w-[min(520px,100%)];
+  }
+  .mode-switch {
+    @apply grid grid-cols-[1fr_1fr] gap-2 mb-4;
+  }
+  .auth-form {
+    @apply flex flex-col gap-[0.9rem];
+  }
+  .field-group {
+    @apply flex flex-col gap-[0.35rem];
+  }
+  .submit-button {
+    @apply mt-[0.4rem];
+  }
 
-:deep(.p-password .p-password-toggle-mask-icon) {
-  cursor: pointer;
-}
+  :deep(.p-password .p-password-toggle-mask-icon) {
+    cursor: pointer;
+  }
 </style>

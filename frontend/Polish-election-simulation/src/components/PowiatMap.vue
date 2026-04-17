@@ -61,15 +61,14 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+  @reference "tailwindcss";
 
-.constituencies-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+  .constituencies-svg {
+    @apply w-full h-full block;
+  }
+  .constituency {
+    @apply fill-[var(--color-constituency)];
+  }
 
-.constituency {
-  fill: var(--color-constituency);
-}
 
 </style>
