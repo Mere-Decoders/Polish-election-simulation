@@ -206,4 +206,8 @@ async function submit() {
 .submit-button {
   margin-top: 0.4rem;
 }
+
+:deep(.p-password .p-password-toggle-mask-icon) {
+  cursor: pointer;
+}
 </style>
