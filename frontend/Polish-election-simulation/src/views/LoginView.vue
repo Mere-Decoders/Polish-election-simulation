@@ -161,8 +161,15 @@ async function submit() {
     await router.replace(redirectPath.value);
   } catch (error) {
     if (error instanceof Error) {
-      errorMessage.value = error.message;
-    } else {
+      try {
+        const data = JSON.parse(error.message);
+        const errorObj = typeof data.errors === "string"
+          ? JSON.parse(data.errors) : data.errors;
+        errorMessage.value = Object.values(errorObj).flat().join('\n');
+      } catch (e) {
+        errorMessage.value = error.message;
+      }
+    }else {
       errorMessage.value = "Authentication failed.";
     }
   } finally {
