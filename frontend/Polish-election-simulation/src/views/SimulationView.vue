@@ -4,7 +4,7 @@
     <div class="container">
       <div class="top-row">
         <div class="title-section">
-          <h3>Simulation</h3>
+          <h1>Simulation</h1>
         </div>
         
         <div class="controls">
