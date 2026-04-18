@@ -10,35 +10,26 @@
         <a 
           :href="href" 
           v-bind="props.action" 
-          @click="navigate(); ($event.target as HTMLElement).blur()" 
-          :class="{ 'active-nav-item': isExactActive }"
+          @click="navigate" 
+          :class="['nav-link', { 'active-nav-item': isExactActive }]"
         >
           <span>{{ item.label }}</span>
         </a>
       </router-link>
 
-      <a 
-        v-else 
-        :href="item.url" 
-        :target="item.target" 
-        v-bind="props.action"
-      >
+      <a v-else :href="item.url" :target="item.target" v-bind="props.action">
         <span>{{ item.label }}</span>
       </a>
     </template>
   </Menubar>
 
   <main>
-    <RouterView v-slot="{ Component }">
-      <Transition name="fade-slide" mode="out-in">
-        <component :is="Component" />
-      </Transition>
-    </RouterView>
+    <RouterView />
   </main>
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import { computed } from 'vue'
 import Menubar from 'primevue/menubar'
 import { useAuth } from '@/auth/useAuth'
@@ -63,33 +54,27 @@ const items = computed<NavItem[]>(() => [
 </script>
 
 <style scoped>
-@reference "tailwindcss";
+  @reference "tailwindcss";
+.nav {
+  @apply fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100];
+}
 
 main {
-  @apply w-[85%] mx-auto pt-20;
+  @apply w-[85%] mx-auto pt-20 text-left;
 }
 
-.nav {
-  @apply fixed top-0 inset-x-0 flex justify-center z-[100] w-full bg-[color:var(--color-background)];
+/* bazowy stan */
+.nav-link {
+  @apply px-3 py-1 rounded-md transition-all duration-200 text-[color:var(--color-text-muted)];
 }
 
-/* aktywny link */
+.nav-link:hover {
+  background: color-mix(in srgb, var(--color-text) 10%, transparent);
+}
+
 .active-nav-item {
+  background: color-mix(in srgb, var(--color-text) 15%, transparent);
   @apply text-[color:var(--color-text)];
-}
-
-/* usuwa focus background z PrimeVue */
-:deep(.p-menubar-item.p-focus .p-menubar-item-content) {
-  background: transparent !important;
-}
-
-:deep(.p-menubar-item.p-focus:hover .p-menubar-item-content) {
-  background: var(--p-menubar-item-focus-background) !important;
-}
-
-/* aktywne tło */
-:deep(.p-menubar-item:has(.active-nav-item) .p-menubar-item-content) {
-  background: var(--p-menubar-item-focus-background);
 }
 
 /* underline animation */
@@ -115,5 +100,25 @@ main {
 
 :deep(.p-menubar-item:has(.active-nav-item) .p-menubar-item-content::after) {
   width: 100%;
+}
+
+/* usuń podświetlenie (tło) aktywnego elementu */
+:deep(.p-menubar-item.p-highlight > .p-menubar-item-content),
+:deep(.p-menubar-item.p-focus > .p-menubar-item-content),
+:deep(.p-menubar-item-content:focus),
+:deep(.p-menubar-item-content:active) {
+  background: transparent !important;
+}
+
+:deep(.p-menubar-root-list > .p-menubar-item:first-child.p-highlight > .p-menubar-item-content) {
+  background: transparent !important;
+}
+
+:deep(.p-menubar-item.p-highlight) {
+  background: transparent !important;
+}
+
+:deep(.p-menubar-item-content:hover) {
+  background: transparent !important;
 }
 </style>
