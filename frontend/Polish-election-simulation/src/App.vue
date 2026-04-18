@@ -2,7 +2,7 @@
   <Menubar :model="items" class="nav">
     <template #item="{ item, props }">
       <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-        <a :href="href" v-bind="props.action" @click="navigate">
+        <a :href="href" v-bind="props.action" @click="navigate" :class="{ 'active-nav-item': route.path === item.route }">
           <span>{{ item.label }}</span>
         </a>
       </router-link>
@@ -21,6 +21,9 @@ import { RouterLink, RouterView } from 'vue-router'
 import { computed } from 'vue';
 import Menubar from 'primevue/menubar'
 import { useAuth } from '@/auth/useAuth';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 type NavItem = {
   label: string;
@@ -76,6 +79,16 @@ const items = computed<NavItem[]>(() => [
     nav {
       @apply text-left ml-[-1rem] text-base mt-4 px-0 py-4;
     }
+  }
+  .active-nav-item {
+    @apply text-[color:var(--color-text)];
+  }
+
+  :deep(.p-menubar-item.p-focus .p-menubar-item-content) {
+    background: transparent !important;
+  }
+  :deep(.p-menubar-item.p-focus:hover .p-menubar-item-content) {
+    background: var(--p-menubar-item-focus-background) !important;
   }
 
 </style>
