@@ -1,9 +1,11 @@
 <template>
-  <Menubar :model="items" class="nav">
+  <!-- Main navigation bar using PrimeVue -->
+  <Menubar :model="items" class="nav">   
+    <!-- Custom rendering for each menu item -->
     <template #item="{ item, props }">
       <router-link 
         v-if="item.route" 
-        v-slot="{ href, navigate, isExactActive }" 
+        v-slot="{ href, navigate, isActive }" 
         :to="item.route" 
         custom
       >
@@ -11,18 +13,18 @@
           :href="href" 
           v-bind="props.action" 
           @click="navigate" 
-          :class="['nav-link', { 'active-nav-item': isExactActive }]"
+          :class="['nav-link', { 'active-nav-item': isActive }]"
         >
           <span>{{ item.label }}</span>
         </a>
       </router-link>
-
       <a v-else :href="item.url" :target="item.target" v-bind="props.action">
         <span>{{ item.label }}</span>
       </a>
     </template>
   </Menubar>
 
+  <!-- Page content gets rendered here -->
   <main>
     <RouterView />
   </main>
@@ -54,7 +56,8 @@ const items = computed<NavItem[]>(() => [
 </script>
 
 <style scoped>
-  @reference "tailwindcss";
+@reference "tailwindcss";
+
 .nav {
   @apply fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100];
 }
@@ -63,25 +66,37 @@ main {
   @apply w-[85%] mx-auto pt-20 text-left;
 }
 
-/* bazowy stan */
 .nav-link {
   @apply px-3 py-1 rounded-md transition-all duration-200 text-[color:var(--color-text-muted)];
 }
 
+/*
+  Hover state:
+  - subtle background highlight (custom instead of PrimeVue default)
+*/
 .nav-link:hover {
   background: color-mix(in srgb, var(--color-text) 10%, transparent);
 }
 
+/*
+  Active navigation item:
+  - stronger background
+  - full text color
+*/
 .active-nav-item {
   background: color-mix(in srgb, var(--color-text) 15%, transparent);
   @apply text-[color:var(--color-text)];
 }
 
-/* underline animation */
 :deep(.p-menubar-item-content) {
   position: relative;
 }
 
+/*
+  Underline (initial state):
+  - centered horizontally
+  - width 0 → grows via animation
+*/
 :deep(.p-menubar-item-content::after) {
   content: "";
   position: absolute;
@@ -94,31 +109,29 @@ main {
   transition: width 0.25s ease;
 }
 
+/*
+  Hover effect:
+  - underline expands to 60%
+*/
 :deep(.p-menubar-item:hover .p-menubar-item-content::after) {
   width: 60%;
 }
 
+/*
+  Active item:
+  - underline expands to full width
+  - detected via presence of .active-nav-item
+*/
 :deep(.p-menubar-item:has(.active-nav-item) .p-menubar-item-content::after) {
   width: 100%;
 }
 
-/* usuń podświetlenie (tło) aktywnego elementu */
-:deep(.p-menubar-item.p-highlight > .p-menubar-item-content),
-:deep(.p-menubar-item.p-focus > .p-menubar-item-content),
-:deep(.p-menubar-item-content:focus),
-:deep(.p-menubar-item-content:active) {
-  background: transparent !important;
-}
-
-:deep(.p-menubar-root-list > .p-menubar-item:first-child.p-highlight > .p-menubar-item-content) {
-  background: transparent !important;
-}
-
-:deep(.p-menubar-item.p-highlight) {
-  background: transparent !important;
-}
-
-:deep(.p-menubar-item-content:hover) {
+/*
+  Remove default PrimeVue background styles:
+  - prevents unwanted highlight/focus background
+  - ensures full visual control
+*/
+:deep(.p-menubar-item-content) {
   background: transparent !important;
 }
 </style>
