@@ -134,4 +134,5 @@ main {
 :deep(.p-menubar-item-content) {
   background: transparent !important;
 }
+
 </style>
