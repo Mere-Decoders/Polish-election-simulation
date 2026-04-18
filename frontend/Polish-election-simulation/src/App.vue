@@ -41,16 +41,6 @@ const items = computed<NavItem[]>(() => [
 ]);
 </script>
 
-<style>
-  @reference "tailwindcss";
-
-  html {
-    scrollbar-gutter: stable;
-    /* Reserves space for scrollbar */
-  }
-
-</style>
-
 <style scoped>
   @reference "tailwindcss";
 
@@ -65,7 +55,7 @@ const items = computed<NavItem[]>(() => [
     justify-content: left;
   }
   .nav {
-    @apply flex fixed justify-center text-base text-center bg-[color:var(--color-background)] z-[100] top-0 inset-x-0;
+    @apply flex fixed justify-center text-base text-center bg-[color:var(--color-background)] z-[100] top-0 inset-x-0 w-full;
     /* Add background so content doesn't show through */
     /* Ensure nav stays on top */
   }

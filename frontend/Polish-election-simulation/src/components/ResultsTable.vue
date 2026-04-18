@@ -57,7 +57,7 @@
   })
 </script>
 
-<style>
+<style scoped>
   @reference "tailwindcss";
 
   .numberCell {

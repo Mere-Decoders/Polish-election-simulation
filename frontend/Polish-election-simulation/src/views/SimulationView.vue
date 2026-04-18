@@ -124,7 +124,7 @@ async function loadNewResults() {
 
 </script>
 
-<style>
+<style scoped>
   @reference "tailwindcss";
 
   @media (min-width: 1024px) {
