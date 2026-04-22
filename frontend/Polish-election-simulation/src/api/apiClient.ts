@@ -125,21 +125,4 @@ export default class apiClient {
     }
     return results;
   }
-
-  public static async runLua(code: string): Promise<any> {
-    const backend_address = apiClient.getBackendAddress();
-    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
-    const data_response = await fetch(
-      backend_address + "/api/lua/execute?" + new URLSearchParams({ request: code }),
-      {
-        headers: {
-          "accept": "text/plain",
-          "Authorization": "Bearer " + auth_token
-        }
-      }
-    );
-    let result = await data_response.json();
-    console.log(result);
-    return result;
-  }
 }
