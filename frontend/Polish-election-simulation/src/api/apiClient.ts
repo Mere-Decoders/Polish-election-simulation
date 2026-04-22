@@ -17,8 +17,7 @@ export default class apiClient {
   }
 
   private static getBackendAddress() {
-    //return "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
-    return "https://localhost:7218"
+    return "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
   }
 
   // All methods can be static and if needed access the data in the singleton by using getInstance()
