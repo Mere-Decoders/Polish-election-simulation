@@ -51,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
 //our own Services
 builder.Services.AddScoped<ISimulationService, SimulationService>();
 builder.Services.AddScoped<ISimContextService, SimContextService>();
-builder.Services.AddScoped<IMethodService, MethodService>();
+builder.Services.AddScoped<IMethodService, LuaService>();
 builder.Services.AddScoped<ISimDataService, SimDataService> ();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDataClaimRepository, DataClaimRepository>();
@@ -59,9 +59,6 @@ builder.Services.AddScoped<ISimDataRepository, SimDataRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
-
-// testing Lua
-builder.Services.AddScoped<LuaService>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
