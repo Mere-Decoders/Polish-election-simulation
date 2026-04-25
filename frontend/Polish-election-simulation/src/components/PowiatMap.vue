@@ -14,28 +14,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { geoMercator, geoPath, type GeoPath } from "d3-geo";
 import { generateConstituencies } from "@/api/constituencyLoader.ts";
 
 const geoGenerator = ref<GeoPath>(geoPath().projection(geoMercator()));
 const svgRef = ref<SVGSVGElement | null>(null);
+let resizeObserver: ResizeObserver | null = null;
 
 const props = defineProps<{
   constituencies: any
 }>();
 
-onMounted(async () => {
-  await new Promise(resolve => setTimeout(resolve, 0));
+const updateProjection = () => {
   if (svgRef.value) {
     const width = svgRef.value.clientWidth;
     const height = svgRef.value.clientHeight;
 
-    const projection = geoMercator();
-    // Create projection fitted to actual size
-    projection.fitSize([width, height], props.constituencies);
+    if (width > 0 && height > 0) {
+      const projection = geoMercator();
+      // Create projection fitted to actual size
+      projection.fitSize([width, height], props.constituencies);
+      geoGenerator.value = geoPath().projection(projection);
+    }
+  }
+};
 
-    geoGenerator.value = geoPath().projection(projection);
+onMounted(async () => {
+  await new Promise(resolve => setTimeout(resolve, 0));
+  updateProjection();
+
+  // Watch for container resize and recalculate projection
+  if (svgRef.value) {
+    resizeObserver = new ResizeObserver(() => {
+      updateProjection();
+    });
+    resizeObserver.observe(svgRef.value);
+  }
+});
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
   }
 });
 </script>
@@ -45,6 +65,7 @@ onMounted(async () => {
 .constituencies-svg {
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .constituency {

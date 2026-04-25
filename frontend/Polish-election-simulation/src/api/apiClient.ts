@@ -3,12 +3,14 @@ import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import get_color_for_index from "@/api/get_color_for_index.ts";
 import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
+import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
+import { authFetch } from "@/auth/useAuth.ts";
 
 export default class apiClient {
   private static instance: apiClient;
-    // Private constructor prevents direct instantiation
+  // Private constructor prevents direct instantiation
   private constructor() {}
-    // Static method to access the single instance
+  // Static method to access the single instance
   public static getInstance(): apiClient {
     if (!apiClient.instance) {
       apiClient.instance = new apiClient();
@@ -16,39 +18,39 @@ export default class apiClient {
     return apiClient.instance;
   }
 
-  private static getBackendAddress() {
-    return "https://polishelectionsimulation-dnevb2c4fse7dwc6.polandcentral-01.azurewebsites.net"
+  private static async ensureSuccess(response: Response): Promise<void> {
+    if (response.ok) {
+      return;
+    }
+
+    const errorText = await response.text().catch(() => "");
+    if (errorText.length > 0) {
+      throw new Error(errorText);
+    }
+
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+
+  private static async authenticatedGet(path: string): Promise<Response> {
+    const response = await authFetch(buildBackendUrl(path), {
+      headers: {
+        accept: "application/json",
+      },
+    });
+
+    await apiClient.ensureSuccess(response);
+    return response;
   }
 
   // All methods can be static and if needed access the data in the singleton by using getInstance()
   // Making them static makes the invocation cleaner (you don't need to use the getInstance() method)
   public static async getApportionmentMethodIDs(): Promise<ApportionmentMethod[]> {
-    const backend_address = apiClient.getBackendAddress();
-    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
-    const data_response = await fetch(
-      backend_address + "/api/methods/Method/get-list",
-      {
-        headers: {
-          "accept": "text/plain",
-          "Authorization": "Bearer " + auth_token
-        }
-      }
-    );
+    const data_response = await apiClient.authenticatedGet("/api/methods/Method/get-list");
     return await data_response.json();
   }
 
   public static async getVotesIDs(): Promise<VotesID[]> {
-    const backend_address = apiClient.getBackendAddress();
-    const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
-    const data_response = await fetch(
-      backend_address + "/api/sim-data/SimulationData/get-list",
-      {
-        headers: {
-          "accept": "text/plain",
-          "Authorization": "Bearer " + auth_token
-        }
-      }
-    );
+    const data_response = await apiClient.authenticatedGet("/api/sim-data/SimulationData/get-list");
     return await data_response.json();
   }
 
@@ -60,39 +62,15 @@ export default class apiClient {
     return result;
   }
 
-  public static async getAuthToken(username: string, password: string): Promise<string> {
-    const backend_address = apiClient.getBackendAddress();
-    const auth = await fetch(
-      backend_address + "/api/Auth/login",
-      {
-        method: "POST",
-        headers: {
-          "accept": "*/*",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username: username, password: password })
-      }
-    );
-    return (await auth.json()).token;
-  }
-
-  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]> {
+  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
     const mockup = false;
     let data_response;
     if (mockup) {
-      data_response = await fetch("/mock_results.json");
+      data_response = await apiClient.authenticatedGet("/mock_results.json");
     }
     else {
-      const backend_address = apiClient.getBackendAddress();
-      const auth_token = await apiClient.getAuthToken("kamil", "kamilslimak");
-      data_response = await fetch(
-        backend_address + "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method }),
-        {
-          headers: {
-            "accept": "text/plain",
-            "Authorization": "Bearer " + auth_token
-          }
-        }
+      data_response = await apiClient.authenticatedGet(
+        "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
       );
     }
     const data = await data_response.json();
