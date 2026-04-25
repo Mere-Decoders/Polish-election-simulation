@@ -29,5 +29,13 @@ public class ElectionResult
             WriteIndented = true
         });
     }
+
+    public ElectionResult(string json)
+    {
+        var result = JsonSerializer.Deserialize<ElectionResult>(json);
+        this.PartyNames = result.PartyNames;
+        this.ConstituencySeats = result.ConstituencySeats;
+        this.ConstituencyVotes = result.ConstituencyVotes;
+    }
 }
 

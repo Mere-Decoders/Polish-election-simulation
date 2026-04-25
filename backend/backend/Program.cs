@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using backend.Services.Lua;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
 //our own Services
 builder.Services.AddScoped<ISimulationService, SimulationService>();
 builder.Services.AddScoped<ISimContextService, SimContextService>();
-builder.Services.AddScoped<IMethodService, MethodService>();
+builder.Services.AddScoped<IMethodService, LuaService>();
 builder.Services.AddScoped<ISimDataService, SimDataService> ();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDataClaimRepository, DataClaimRepository>();
