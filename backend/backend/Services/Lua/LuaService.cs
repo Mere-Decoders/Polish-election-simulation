@@ -147,7 +147,7 @@ return t
                 constituencySeats.Add(district.Key, seats);
             }
             return new LuaResult(true,
-                new ElectionResult(partyNames, constituencyVotes, constituencySeats),
+                new ElectionResult(partyNames, constituencySeats, constituencyVotes),
                 null);
         }
         catch (Exception ex)
