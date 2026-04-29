@@ -8,8 +8,48 @@ using MoonSharp.Interpreter;
 
 public class LuaService : IMethodService
 {
-    //TODO
-    private const string DhondtMethod = "";
+    private const string DhondtMethod = @"
+local coalitionThreshold = 0.08
+local lowerThreshold = 0.05
+local passesThreshold = {}
+for i = 1, TotalParties() do
+    if not NeedsThreshold(i) then
+        passesThreshold[i] = true
+    else
+        local percentage = NationalPartyVotes(i) / NationalTotalVotes()
+        if IsCoalition(i) then
+            passesThreshold[i] = percentage >= coalitionThreshold
+        else
+            passesThreshold[i] = percentage >= lowerThreshold
+        end
+    end
+end
+
+local quotients = {}
+for i = 1, TotalParties() do
+    if passesThreshold[i] then
+        for d = 1, DistrictSeats() do
+            table.insert(quotients, { party = i, quotient = DistrictPartyVotes(i) / d })
+        end
+    end
+end
+
+local function compareQuotients(a, b)
+    return a.quotient > b.quotient
+end
+
+table.sort(quotients, compareQuotients)
+local t = {}
+for i = 1, TotalParties() do
+    t[i] = 0
+end
+for i = 1, DistrictSeats() do
+    local index = quotients[i].party
+    t[index] = t[index] + 1
+end
+
+return t
+";
     private const string HighStakesMethod = @"
 local winningParty = 1
 local maxVotes = DistrictPartyVotes(1)
@@ -25,8 +65,48 @@ for i = 1, TotalParties() do
 end
 return t
 ";
-    //TODO
-    private const string SainteLagueMethod = "";
+    private const string SainteLagueMethod = @"
+local coalitionThreshold = 0.08
+local lowerThreshold = 0.05
+local passesThreshold = {}
+for i = 1, TotalParties() do
+    if not NeedsThreshold(i) then
+        passesThreshold[i] = true
+    else
+        local percentage = NationalPartyVotes(i) / NationalTotalVotes()
+        if IsCoalition(i) then
+            passesThreshold[i] = percentage >= coalitionThreshold
+        else
+            passesThreshold[i] = percentage >= lowerThreshold
+        end
+    end
+end
+
+local quotients = {}
+for i = 1, TotalParties() do
+    if passesThreshold[i] then
+        for d = 0, DistrictSeats() - 1 do
+            table.insert(quotients, { party = i, quotient = DistrictPartyVotes(i) / (d + 0.5) })
+        end
+    end
+end
+
+local function compareQuotients(a, b)
+    return a.quotient > b.quotient
+end
+
+table.sort(quotients, compareQuotients)
+local t = {}
+for i = 1, TotalParties() do
+    t[i] = 0
+end
+for i = 1, DistrictSeats() do
+    local index = quotients[i].party
+    t[index] = t[index] + 1
+end
+
+return t
+";
 
     private ILuaScriptRunner _scriptRunner;
 
@@ -72,6 +152,7 @@ return t
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
             return new LuaResult(false, null, ex.Message);
         }
     }
