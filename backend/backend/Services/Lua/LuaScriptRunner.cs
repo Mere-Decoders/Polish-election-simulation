@@ -6,7 +6,7 @@ namespace backend.Services.Lua;
 
 public class LuaScriptRunner : ILuaScriptRunner
 {
-    private readonly Script _script = new Script(CoreModules.None);
+    private readonly Script _script = new Script(CoreModules.Preset_SoftSandbox);
     private DistrictDetails? _districtDetails;
     public SimulationData SimulationData { get; set; }
     public string? Code { get; set; }
