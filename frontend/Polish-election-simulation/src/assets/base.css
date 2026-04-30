@@ -45,6 +45,7 @@
     --color-text-navigation: var(--velvet-orchid);
     --color-button-hover: var(--vanilla-custard);
     --color-constituency: var(--vt-c-white-soft);
+    --color-constituency-active: var(--tomato-jam);
 
     --section-gap: 160px;
 }
