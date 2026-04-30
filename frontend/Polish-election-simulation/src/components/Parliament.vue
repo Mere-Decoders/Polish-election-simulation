@@ -204,18 +204,13 @@ const calculateDotAngle = (dot: Dot): number => {
 </script>
 
 <style scoped>
-.parliament-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  @reference "tailwindcss";
 
-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+  .parliament-container {
+    @apply w-full h-full flex justify-center items-center;
+  }
+  svg {
+    @apply w-full h-full block;
+  }
 
 </style>

@@ -124,109 +124,70 @@ async function loadNewResults() {
 
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    width: 100%;
+<style scoped>
+  @reference "tailwindcss";
+
+  @media (min-width: 1024px) {
+    .about {
+      @apply min-h-screen flex items-center w-full;
+    }
   }
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin: 0 auto;
-  /* no fixed height, let content determine it */
-}
-
-.top-row {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 2rem;
-}
-
-.title-section {
-  flex: 1;
-  text-align: center;
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.map-seats-row {
-  display: flex;
-  flex-wrap: wrap;
-  min-height: 0;
-}
-
-/* ensure a sensible row height when items are side-by-side */
-@media (min-width: 769px) {
-  .map-seats-row {
-    height: 50vh;
-  }
-}
-
-.map {
-  flex: 1 0 300px;
-  height: 100%;
-  overflow: hidden;
-}
-
-.seats {
-  flex: 1 0 300px;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.table {
-  flex: 0 0 auto;
-  overflow: auto;
-  padding: 10px;
-}
-
-@media (max-width: 768px) {
-  .map-seats-row {
-    flex-direction: column;
-    flex: 0 0 auto; /* size to children */
-    min-height: 0;
-    height: auto;
-  }
-  
-  .map {
-    flex: 0 0 40vh;
-    height: 40vh;
-  }
-  
-  .seats {
-    flex: 0 0 40vh;
-    height: 40vh;
-  }
-  
   .container {
-    overflow: visible;
-  }
-}
+    @apply flex flex-col w-full mx-auto my-0;
 
-@media (max-width: 600px) {
+    /* no fixed height, let content determine it */
+  }
   .top-row {
-    flex-direction: column;
-    align-items: flex-start;
+    @apply shrink-0 flex justify-between gap-2.5 p-8;
+  }
+  .title-section {
+    @apply flex-1 text-center text-3xl;
   }
   .controls {
-    width: 100%;
-    justify-content: flex-start;
+    @apply flex flex-wrap gap-2.5 items-center;
   }
-}
+  .map-seats-row {
+    @apply flex flex-wrap min-h-0;
+  }
+
+  /* ensure a sensible row height when items are side-by-side */
+  @media (min-width: 769px) {
+    .map-seats-row {
+      @apply h-[50vh];
+    }
+  }
+  .map {
+    @apply flex-[1_0_300px] h-full overflow-hidden;
+  }
+  .seats {
+    @apply flex-[1_0_300px] h-full flex justify-center items-center overflow-hidden;
+  }
+  .table {
+    @apply flex-[0_0_auto] overflow-auto p-2.5;
+  }
+  @media (max-width: 768px) {
+    .map-seats-row {
+      @apply flex-col flex-[0_0_auto] min-h-0 h-auto;
+
+      /* size to children */
+    }
+    .map {
+      @apply flex-[0_0_40vh] h-[40vh];
+    }
+    .seats {
+      @apply flex-[0_0_40vh] h-[40vh];
+    }
+    .container {
+      @apply overflow-visible;
+    }
+  }
+  @media (max-width: 600px) {
+    .top-row {
+      @apply flex-col items-start;
+    }
+    .controls {
+      @apply w-full justify-start;
+    }
+  }
+
 </style>

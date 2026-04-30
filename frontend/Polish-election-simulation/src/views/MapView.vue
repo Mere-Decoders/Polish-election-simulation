@@ -10,12 +10,12 @@
 <script setup lang="ts">
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+<style scoped>
+  @reference "tailwindcss";
+
+  @media (min-width: 1024px) {
+    .about {
+      @apply min-h-screen flex items-center;
+    }
   }
-}
 </style>

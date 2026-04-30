@@ -1,8 +1,20 @@
 <template>
-  <Menubar :model="items" class="nav">
+  <!-- Main navigation bar using PrimeVue -->
+  <Menubar :model="items" class="nav">   
+    <!-- Custom rendering for each menu item -->
     <template #item="{ item, props }">
-      <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-        <a :href="href" v-bind="props.action" @click="navigate">
+      <router-link 
+        v-if="item.route" 
+        v-slot="{ href, navigate, isActive }" 
+        :to="item.route" 
+        custom
+      >
+        <a 
+          :href="href" 
+          v-bind="props.action" 
+          @click="navigate" 
+          :class="['nav-link', { 'active-nav-item': isActive }]"
+        >
           <span>{{ item.label }}</span>
         </a>
       </router-link>
@@ -11,25 +23,27 @@
       </a>
     </template>
   </Menubar>
+
+  <!-- Page content gets rendered here -->
   <main>
-    <RouterView/>
+    <RouterView />
   </main>
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { computed } from 'vue';
+import { RouterView } from 'vue-router'
+import { computed } from 'vue'
 import Menubar from 'primevue/menubar'
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/auth/useAuth'
 
 type NavItem = {
-  label: string;
-  route?: string;
-  url?: string;
-  target?: string;
-};
+  label: string
+  route?: string
+  url?: string
+  target?: string
+}
 
-const auth = useAuth();
+const auth = useAuth()
 
 const items = computed<NavItem[]>(() => [
   { label: 'Home', route: '/' },
@@ -38,98 +52,87 @@ const items = computed<NavItem[]>(() => [
   auth.isAuthenticated.value
     ? { label: 'Logout', route: '/logout' }
     : { label: 'Login', route: '/login' }
-]);
+])
 </script>
 
-<style>
-
-html {
-  scrollbar-gutter: stable; /* Reserves space for scrollbar */
-}
-
-</style>
-
 <style scoped>
-
-body {
-  font-size: 16px;
-}
-
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-main {
-  width: 85%;
-  max-width: 85%;
-  text-align: left;
-  justify-content: left;
-  margin-left: auto;
-  margin-right: auto;
-}
+@reference "tailwindcss";
 
 .nav {
-  display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  justify-content: center;
-  font-size: 1rem;
-  text-align: center;
-  background-color: var(--color-background); /* Add background so content doesn't show through */
-  z-index: 100; /* Ensure nav stays on top */
+  @apply fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100];
 }
 
 main {
-  padding-top: 80px; /* Add this to push content below the fixed nav */
+  @apply w-[85%] mx-auto pt-20 text-left;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.nav-link {
+  @apply px-3 py-1 rounded-md transition-all duration-200 text-[color:var(--color-text-muted)];
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+/*
+  Hover state:
+  - subtle background highlight (custom instead of PrimeVue default)
+*/
+.nav-link:hover {
+  background: color-mix(in srgb, var(--color-text) 10%, transparent);
 }
 
-nav a {
-  color: var(--color-text-navigation);
-  font-weight: bold;
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+/*
+  Active navigation item:
+  - stronger background
+  - full text color
+*/
+.active-nav-item {
+  background: color-mix(in srgb, var(--color-text) 15%, transparent);
+  @apply text-[color:var(--color-text)];
 }
 
-nav a:first-of-type {
-  border: 0;
+:deep(.p-menubar-item-content) {
+  position: relative;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+/*
+  Underline (initial state):
+  - centered horizontally
+  - width 0 → grows via animation
+*/
+:deep(.p-menubar-item-content::after) {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--color-text);
+  transform: translateX(-50%);
+  transition: width 0.25s ease;
 }
+
+/*
+  Hover effect:
+  - underline expands to 60%
+*/
+:deep(.p-menubar-item:hover .p-menubar-item-content::after) {
+  width: 60%;
+}
+
+/*
+  Active item:
+  - underline expands to full width
+  - detected via presence of .active-nav-item
+*/
+:deep(.p-menubar-item:has(.active-nav-item) .p-menubar-item-content::after) {
+  width: 100%;
+}
+
+/*
+  Remove default PrimeVue background styles:
+  - prevents unwanted highlight/focus background
+  - ensures full visual control
+*/
+:deep(.p-menubar-item-content) {
+  background: transparent !important;
+}
+
 </style>

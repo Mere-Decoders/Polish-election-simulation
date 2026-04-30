@@ -57,45 +57,34 @@
   })
 </script>
 
-<style>
+<style scoped>
+  @reference "tailwindcss";
+
   .numberCell {
-    text-align: center;
+    @apply text-center;
   }
-
   table {
-    border-collapse: collapse;
-    width: 130%;
-    border-radius: 30px;
-    overflow: hidden;
+    @apply w-[130%] overflow-hidden rounded-[30px] border-collapse;
   }
-
-  td, th {
-    padding: 5px;
-    text-align: justify;
+  td,
+  th {
+    @apply text-justify p-[5px];
   }
-
   table tr > :first-child,
   table th > :first-child {
-    padding-left: 50px;
+    @apply pl-[50px];
   }
-  
   table tr > :last-child,
   table th > :last-child {
-    padding-right: 30px;
+    @apply pr-[30px];
   }
-
   tr:nth-child(odd) {
-    background-color: #222222;
+    @apply bg-[#222222];
   }
-
   tr:nth-child(even) {
-    background-color: #0a0a0a;
+    @apply bg-[#0a0a0a];
   }
-
   th {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    background-color: darkred;
-    color: white;
+    @apply bg-[darkred] text-[white] py-[15px];
   }
 </style>
