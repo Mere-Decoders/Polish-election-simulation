@@ -38,19 +38,19 @@
         </div>
       </div>
       <div class="table">
-        <DataTable :value="resultsToDisplay">
-	  <Column header="">
+        <DataTable :value="selectedConstituencyResults">
+          <Column header="">
             <template #body="slotProps">
-	      <svg :width="10" :height="10" xmlns="http://www.w3.org/2000/svg">
+              <svg :width="10" :height="10" xmlns="http://www.w3.org/2000/svg">
                 <circle
                   :cx="5"
                   :cy="5"
                   :r="5"
                   :fill="slotProps.data.color"
-		/>
+                />
               </svg>
-	    </template>
-	  </Column>
+	          </template>
+          </Column>
           <Column field="partyName" header="Nazwa partii"></Column>
           <Column field="votes" header="Liczba głosów"></Column>
           <Column field="percentVotes" header="Procent głosów">
@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import {computed, type ComputedRef, onMounted, ref} from "vue";
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -88,7 +88,74 @@ import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import {generateConstituencies} from "@/api/constituencyLoader.ts";
 import ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import VotesID from "@/api/VotesID.ts";
+
+import { useMapStore } from '@/stores/useMapStore.ts'
+import { storeToRefs } from 'pinia'
+import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
+import get_color_for_index from "@/api/get_color_for_index.ts";
+
+const mapStore = useMapStore()
+const { currentConstituency } = storeToRefs(mapStore)
+
 const _apiClient = apiClient.getInstance();
+
+const detailedResults = ref<DetailedResultsRow[]>([]);
+const totalResults: ComputedRef<ResultsTableRow[]> = computed(() => {
+  const partyCount = detailedResults.value.length;
+  let results: ResultsTableRow[] = [];
+  let sumSeatsArray: number[] = [];
+  let sumVotesArray: number[] = [];
+  for (let i = 0; i < partyCount; i++) {
+    let sumVotes: number = 0;
+    let sumSeats: number = 0;
+    for (let j = 0; j < detailedResults.value[i]!.votes.length; j++) {
+      sumVotes += detailedResults.value[i]!.votes[j]!;
+      sumSeats += detailedResults.value[i]!.seats[j]!;
+    }
+    sumSeatsArray.push(sumSeats);
+    sumVotesArray.push(sumVotes);
+  }
+  const totalSumVotes: number = sumVotesArray.reduce((a, b) => a + b);
+  const totalSumSeats: number = sumSeatsArray.reduce((a, b) => a + b);
+  for (let i = 0; i < partyCount; i++) {
+    results.push(new ResultsTableRow(
+        detailedResults.value[i]!.partyName,
+        get_color_for_index(i, partyCount),
+        sumVotesArray[i]!,
+        sumVotesArray[i]! / totalSumVotes,
+        sumSeatsArray[i]!,
+        sumSeatsArray[i]! / totalSumSeats
+    ));
+  }
+  return results;
+});
+
+const selectedConstituencyResults: ComputedRef<ResultsTableRow[]> = computed(() => {
+  if (mapStore.selectedConstituency === 0) {
+    return totalResults.value;
+  }
+  const index = mapStore.selectedConstituency;
+  let results: ResultsTableRow[] = [];
+  const totalSumVotes: number = detailedResults.value.reduce(
+      (a, b) => a + b.votes[index]!, 0
+  )
+  const totalSumSeats: number = detailedResults.value.reduce(
+      (a, b) => a + b.seats[index]!, 0
+  )
+  for (let i = 0; i < detailedResults.value.length; i++) {
+    const votes = detailedResults.value[i]!.votes[index]!;
+    const seats = detailedResults.value[i]!.seats[index]!;
+    results.push(new ResultsTableRow(
+        detailedResults.value[i]!.partyName,
+        get_color_for_index(i, detailedResults.value.length),
+        votes,
+        votes / totalSumVotes,
+        seats,
+        seats / totalSumSeats
+    ));
+  }
+  return results;
+});
 
 const resultsToDisplay = ref<ResultsTableRow[]>([]);
 
@@ -104,11 +171,14 @@ const selectData = ref({
   simData: ""
 })
 
+const defaultGUID = "00000000-0000-0000-0000-000000000000";
+
 onMounted(async () => {
   constituencies.value = await generateConstituencies();
   methods.value = await apiClient.getApportionmentMethodIDs();
   simData.value = await apiClient.getVotesIDs();
-  resultsToDisplay.value = await apiClient.getTotalResults("00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000");
+  detailedResults.value = await apiClient.getDetailedResults(defaultGUID, defaultGUID);
+  resultsToDisplay.value = await apiClient.getTotalResults(defaultGUID, defaultGUID);
   isLoading.value = false;
 });
 
@@ -118,6 +188,8 @@ function formatPercent(percent: number): string {
 
 async function loadNewResults() {
   isLoading.value = true;
+  mapStore.selectConstituency(0);
+  detailedResults.value = await apiClient.getDetailedResults(selectData.value.simData, selectData.value.method);
   resultsToDisplay.value = await apiClient.getTotalResults(selectData.value.simData, selectData.value.method);
   isLoading.value = false;
 }

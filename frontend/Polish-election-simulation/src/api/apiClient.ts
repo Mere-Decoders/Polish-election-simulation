@@ -1,10 +1,10 @@
-import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import get_color_for_index from "@/api/get_color_for_index.ts";
 import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
+import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -54,25 +54,35 @@ export default class apiClient {
     return await data_response.json();
   }
 
-  public static getConstituencySetIDs(): ConstituencySetID[] {
-    let result: ConstituencySetID[] = [
-      new ConstituencySetID("Oficjalne"),
-      new ConstituencySetID("Zestaw Lorem ipsum")
-    ];
-    return result;
+  public static async getDetailedResults(sim_data: string, method: string): Promise<DetailedResultsRow[]> {
+    let data_response = await apiClient.authenticatedGet(
+      "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
+    );
+    const data = await data_response.json();
+    let results: DetailedResultsRow[] = [];
+    const constituencyCount: number = 41;
+    for (let i = 0; i < data.partyNames.length; i++) {
+      let votes: number[] = [];
+      let seats: number[] = [];
+      for (let j = 1; j <= constituencyCount; j++) {
+        votes.push(data.constituencyVotes[j][i]);
+        seats.push(data.constituencySeats[j][i]);
+      }
+      results.push(
+        new DetailedResultsRow(
+          data.partyNames[i],
+          votes,
+          seats
+        )
+      );
+    }
+    return results;
   }
 
   public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
-    const mockup = false;
-    let data_response;
-    if (mockup) {
-      data_response = await apiClient.authenticatedGet("/mock_results.json");
-    }
-    else {
-      data_response = await apiClient.authenticatedGet(
-        "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
-      );
-    }
+    let data_response = await apiClient.authenticatedGet(
+      "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
+    );
     const data = await data_response.json();
     let results: ResultsTableRow[] = [];
     const constituencyCount: number = 41;
