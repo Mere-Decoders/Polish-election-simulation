@@ -4,16 +4,16 @@
   <Menubar :model="items" class="fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100]">
     <!-- Custom rendering for each menu item -->
     <template #item="{ item, props }">
-      <router-link 
-        v-if="item.route" 
-        v-slot="{ href, navigate, isActive }" 
-        :to="item.route" 
+      <router-link
+        v-if="item.route"
+        v-slot="{ href, navigate, isActive }"
+        :to="item.route"
         custom
       >
-        <a 
-          :href="href" 
-          v-bind="props.action" 
-          @click="navigate" 
+        <a
+          :href="href"
+          v-bind="props.action"
+          @click="navigate"
           :class="['nav-link', { 'active-nav-item': isActive }]"
         >
           <span>{{ item.label }}</span>
@@ -52,6 +52,7 @@ const items = computed<NavItem[]>(() => [
   { label: 'About', route: '/about' },
   { label: 'Election simulation', route: '/simulation' },
   { label: 'Method editor', route: '/method_editor'},
+  { label: 'Votes & map editor', route: '/vote_map_editor'},
   auth.isAuthenticated.value
     ? { label: 'Logout', route: '/logout' }
     : { label: 'Login', route: '/login' }
