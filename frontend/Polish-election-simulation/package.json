@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@primeuix/themes": "^2.0.2",
+    "@tanstack/vue-table": "^8.21.3",
     "@turf/bbox": "^7.3.0",
     "@turf/rewind": "^7.3.1",
     "@turf/union": "^7.3.0",
