@@ -18,6 +18,7 @@
     "@turf/bbox": "^7.3.0",
     "@turf/rewind": "^7.3.1",
     "@turf/union": "^7.3.0",
+    "ace-builds": "^1.43.6",
     "d3": "^7.9.0",
     "d3-geo": "^3.1.1",
     "d3-selection": "^3.0.0",

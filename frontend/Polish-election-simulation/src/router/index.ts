@@ -46,6 +46,14 @@ const router = createRouter({
         return { name: 'login' }
       },
     },
+    {
+      path: '/method_editor',
+      name: 'method_editor',
+      component: () => import('../views/MethodEditorView.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    }
   ],
 })
 

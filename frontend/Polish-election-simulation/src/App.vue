@@ -37,7 +37,8 @@ const items = computed<NavItem[]>(() => [
   { label: 'Election simulation', route: '/simulation' },
   auth.isAuthenticated.value
     ? { label: 'Logout', route: '/logout' }
-    : { label: 'Login', route: '/login' }
+    : { label: 'Login', route: '/login' },
+  { label: 'Method editor', route: '/method_editor'}
 ]);
 </script>
 
