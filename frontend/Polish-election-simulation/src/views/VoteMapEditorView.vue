@@ -28,17 +28,26 @@
           <button class="add-btn" @click="addColumn">+</button>
         </div>
       </div>
-      <div class="table">
-        <DataTable :value="rows">
-          <Column field="name" header="Powiat name"></Column>
-          <Column
-              v-for="column in columns"
-              :key="column.id"
-              :field="'party' + String(column.id)"
-              :header="column.name"
-          />
-        </DataTable>
-      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>Powiat</th>
+          <th v-for="col in columns" :key="col.id">{{ col.name }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="row in rows" :key="row.name">
+          <td>{{ row.name }}</td>
+          <td v-for="col in columns" :key="col.id">
+            <input
+                type="number"
+                :value="row[`party${col.id}`]"
+                @change="row[`party${col.id}`] = Number(($event.target as HTMLInputElement).value)"
+            />
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -47,19 +56,25 @@
 import {nextTick, onMounted, ref} from "vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
 import {loadPowiaty} from "@/api/constituencyLoader.ts";
-import Column from "primevue/column";
 import PowiatMap from "@/components/PowiatMap.vue";
 import Button from "primevue/button";
-import DataTable from "primevue/datatable";
 import VoteMapEditorColumn from "@/types/VoteMapEditorColumn.ts";
 
 const isLoading = ref(true);
 const powiats = ref<any>(null);
+
 const columns = ref<VoteMapEditorColumn[]>([
   { id: 1, name: "Party 1", prev: "Party 1"},
   { id: 2, name: "Party 2", prev: "Party 2"}
 ]);
-const rows = ref<any>([]);
+let idCounter = columns.value.length + 1;
+
+
+interface VoteMapEditorRow {
+  name: string,
+  [key: string]: any
+}
+const rows = ref<VoteMapEditorRow[]>([]);
 
 onMounted(async () => {
   powiats.value = await loadPowiaty();
@@ -86,16 +101,25 @@ function revert(column: VoteMapEditorColumn, event: KeyboardEvent) {
   (event.target as HTMLInputElement).blur()
 }
 
+
+
 function removeColumn(id: number) {
-  columns.value = columns.value.filter(c => c.id !== id)
+  columns.value = columns.value.filter(c => c.id !== id);
+  const field = `party${id}`;
+  rows.value = rows.value.map(row => {
+    const { [field]: _, ...rest } = row
+    return rest
+  }) as VoteMapEditorRow[];
 }
 
-let idCounter = columns.value.length + 1;
+
 
 async function addColumn() {
   const id = idCounter++;
   const name = `Party ${columns.value.length + 1}`;
   columns.value.push({ id, name, prev: name });
+  const field = `party${id}`
+  rows.value = rows.value.map(row => ({ ...row, [field]: 0 }))
 
   await nextTick();
   const inputs = document.querySelectorAll<HTMLInputElement>('.column-pill input')
@@ -105,11 +129,4 @@ async function addColumn() {
 </script>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
 </style>
