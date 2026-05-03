@@ -7,7 +7,7 @@
           <h1>Votes & map editor</h1>
         </div>
         <div class="controls">
-          <Button label="Upload" @click=""/>
+          <Button label="Upload" icon="pi pi-upload" @click=""/>
         </div>
       </div>
       <div class="map-palette-row">
@@ -20,22 +20,32 @@
         </div>
         <div class="constituency-creator">
           <div class="palette-toolbar">
-            <button
+            <Button
+                :label="eraserActive ? 'Erasing' : 'Erase'"
+                icon="pi pi-eraser"
+                :outlined="!eraserActive"
+                :severity="eraserActive ? 'danger' : 'secondary'"
                 :class="{ active: eraserActive }"
                 @click="toggleEraser"
+                size="small"
                 title="Eraser"
-            >Erase</button>
-            <button
+            />
+            <Button
+                label="Add constituency"
+                icon="pi pi-plus"
+                outlined
+                severity="secondary"
+                size="small"
                 @click="addGroupToView"
                 :disabled="visibleGroupIds.size >= 100"
-                title="Add group"
-            >+</button>
+                title="Add constituency"
+            >Add constituency</Button>
           </div>
-          <div class="group-list">
+          <div class="palette">
             <div
                 v-for="group in visibleGroups"
                 :key="group.id"
-                class="group-pill"
+                class="constituency-circle"
                 :class="{ selected: selectedGroupId === group.id && !eraserActive }"
                 @click="selectGroup(group.id)"
             >
@@ -55,20 +65,64 @@
           </div>
         </div>
         <div class="party-creator">
-          <div v-for="column in columns" :key="column.id" class="column-pill">
-            <input
-                v-model="column.name"
-                :class="{ error: column.name.trim() === '' }"
-                @blur="validateName(column)"
-                @keydown.enter="($event.target as HTMLInputElement).blur()"
-                @keydown.esc="revert(column, $event)"
-            />
-            <button @click="removeColumn(column.id)">×</button>
-          </div>
-          <button class="add-btn" @click="addColumn">+</button>
+          <table>
+            <thead>
+            <tr>
+              <th>Party name</th>
+              <th>Needs threshold</th>
+              <th>Coalition</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="column in columns" :key="column.id" class="column-pill">
+              <td>
+                <InputText
+                    v-model="column.name"
+                    :class="{ 'p-invalid': column.name.trim() === '' }"
+                    size="small"
+                    @blur="validateName(column)"
+                    @keydown.enter="($event.target as HTMLInputElement).blur()"
+                    @keydown.esc="revert(column, $event)"
+                />
+              </td>
+              <td class="center-cell">
+                <input
+                    type="checkbox"
+                    v-model="column.needsThreshold"
+                />
+              </td>
+              <td class="center-cell">
+                <input
+                    type="checkbox"
+                    v-model="column.isCoalition"
+                />
+              </td>
+              <td class="center-cell">
+                <Button
+                    icon="pi pi-times"
+                    text
+                    rounded
+                    severity="danger"
+                    size="small"
+                    @click="removeColumn(column.id)"
+                />
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <Button
+              class="add-btn"
+              label="Add party"
+              icon="pi pi-plus"
+              outlined
+              severity="secondary"
+              size="small"
+              @click="addColumn"
+          />
         </div>
       </div>
-      <table>
+      <table class="p-datatable-table data-table">
         <thead>
         <tr>
           <th>Powiat</th>
@@ -80,6 +134,7 @@
           <td>{{ row.name }}</td>
           <td v-for="col in columns" :key="col.id">
             <input
+                class="votes-input"
                 type="number"
                 :value="row[`party${col.id}`]"
                 @change="row[`party${col.id}`] = Number(($event.target as HTMLInputElement).value)"
@@ -97,6 +152,7 @@ import {computed, nextTick, onMounted, ref} from "vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
 import {loadPowiaty} from "@/api/constituencyLoader.ts";
 import Button from "primevue/button";
+import InputText from "primevue/inputtext";
 import {loadColors} from "@/api/colorLoader.ts";
 import ConstituencyEditorMap from "@/components/ConstituencyEditorMap.vue";
 
@@ -251,4 +307,221 @@ function handleFeatureClick(terc: string) {
 </script>
 
 <style>
+@media (min-width: 1024px) {
+  .about {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  /* no fixed height, let content determine it */
+}
+
+.top-row {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2rem;
+}
+
+.title-section {
+  flex: 1;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.constituency-creator {
+  flex: 1 0 300px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;        /* stack toolbar above palette */
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.map-palette-row {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 0;
+}
+
+.palette-toolbar {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: flex-start;
+  max-width: calc(8 * (32px)); /* up to 8 circles per row */
+  overflow-y: auto;
+}
+
+.constituency-circle {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.constituency-circle.selected {
+  box-shadow: 0 0 0 2px;
+}
+
+.remove-btn {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.constituency-circle:hover .remove-btn {
+  display: flex;
+}
+
+.p-datatable-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.p-datatable-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 1px solid;
+  white-space: nowrap;
+}
+
+.p-datatable-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid;
+  vertical-align: middle;
+}
+
+.center-cell {
+  text-align: center;
+}
+
+.party-creator {
+  flex: 1 0 280px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.add-btn {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.data-table {
+  margin-top: 1.5rem;
+}
+
+.votes-input {
+  width: 80px !important;
+}
+
+/* ensure a sensible row height when items are side-by-side */
+@media (min-width: 769px) {
+  .map-palette-row {
+    height: 50vh;
+  }
+}
+
+.map {
+  flex: 1 0 300px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.constituency-creator {
+  flex: 1 0 300px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.table {
+  flex: 0 0 auto;
+  overflow: auto;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .map-palette-row {
+    flex-direction: column;
+    flex: 0 0 auto; /* size to children */
+    min-height: 0;
+    height: auto;
+  }
+
+  .map {
+    flex: 0 0 40vh;
+    height: 40vh;
+  }
+
+  .constituency-creator {
+    flex: 0 0 40vh;
+    height: 40vh;
+  }
+
+  .container {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 600px) {
+  .top-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
 </style>
