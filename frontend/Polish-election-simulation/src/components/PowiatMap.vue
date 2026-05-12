@@ -1,5 +1,5 @@
 <template>
-  <svg ref="svgRef" class="constituencies-svg" v-if="constituencies && geoGenerator" @click="mapStore.selectConstituency(0)">
+  <svg ref="svgRef" class="constituencies-svg" v-if="constituencies && geoGenerator" @click="mapStore.clearConstituency()">
     <rect width="100%" height="100%" fill="transparent" />
     <g class="map">
       <path

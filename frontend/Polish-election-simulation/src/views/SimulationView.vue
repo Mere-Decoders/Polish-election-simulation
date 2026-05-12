@@ -38,6 +38,14 @@
         </div>
       </div>
       <div class="table">
+        <div class="table-header">
+          <b>
+            <span v-if="currentConstituency">Constituency Results</span>
+            <span v-else>National results</span>
+          </b>
+        </div>
+        <span v-if="currentConstituency">press selected constituency again to see national results</span>
+        <span v-else>press a constituency on the map to see it's results</span>
         <DataTable :value="selectedConstituencyResults">
           <Column header="">
             <template #body="slotProps">
@@ -134,7 +142,7 @@ const selectedConstituencyResults: ComputedRef<ResultsTableRow[]> = computed(() 
   if (mapStore.selectedConstituency === 0) {
     return totalResults.value;
   }
-  const index = mapStore.selectedConstituency;
+  const index = Number(mapStore.selectedConstituency);
   let results: ResultsTableRow[] = [];
   const totalSumVotes: number = detailedResults.value.reduce(
       (a, b) => a + b.votes[index]!, 0
@@ -266,6 +274,19 @@ async function loadNewResults() {
   flex: 0 0 auto;
   overflow: auto;
   padding: 10px;
+}
+
+.table-header {
+  margin: 0 0 0.6rem;
+  padding: 0 0 0.35rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.table-header span {
+  display: inline-block;
 }
 
 @media (max-width: 768px) {
