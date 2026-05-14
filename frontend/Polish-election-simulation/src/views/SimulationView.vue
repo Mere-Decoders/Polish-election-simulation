@@ -40,12 +40,12 @@
       <div class="table">
         <div class="table-header">
           <b>
-            <span v-if="currentConstituency">Constituency Results</span>
+            <span v-if="currentConstituency">Constituency results</span>
             <span v-else>National results</span>
           </b>
         </div>
-        <span v-if="currentConstituency">press selected constituency again to see national results</span>
-        <span v-else>press a constituency on the map to see it's results</span>
+        <span v-if="currentConstituency">Press selected constituency again to see national results.</span>
+        <span v-else>Press a constituency on the map to see its results.</span>
         <DataTable :value="selectedConstituencyResults">
           <Column header="">
             <template #body="slotProps">
