@@ -1,6 +1,6 @@
 <template>
-  <div class="parliament-container">
-    <svg 
+  <div class="w-full h-full flex justify-center items-center">
+    <svg class="w-full h-full block"
       width="100%"
       height="100%"
       :viewBox="`0 0 ${2 * outerRadius} ${outerRadius}`"
@@ -201,15 +201,3 @@ const calculateDotAngle = (dot: Dot): number => {
   return orbit.anglePerBall * dot.position.index;
 }
 </script>
-
-<style scoped>
-  @reference "tailwindcss";
-
-  .parliament-container {
-    @apply w-full h-full flex justify-center items-center;
-  }
-  svg {
-    @apply w-full h-full block;
-  }
-
-</style>

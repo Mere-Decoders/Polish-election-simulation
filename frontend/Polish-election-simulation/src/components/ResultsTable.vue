@@ -1,35 +1,28 @@
 <template>
-  <table>
+  <table class="w-[130%] overflow-hidden rounded-[30px] border-collapse">
+
     <thead>
-      <tr>
+      <tr class="[&>th]:text-justify [&>th]:p-[5px] [&>th]:py-[15px] [&>th]:bg-[darkred] [&>th]:text-white [&>th]:first:pl-[50px] [&>th]:last:pr-[30px]">
         <th>Nazwa partii</th>
-	<th class="numberCell">Liczba głosów</th>
-	<th class="numberCell">Procent głosów</th>
-	<th class="numberCell">Liczba mandatów</th>
-	<th class="numberCell">Procent mandatów</th>
+        <th class="text-center">Liczba głosów</th>
+        <th class="text-center">Procent głosów</th>
+        <th class="text-center">Liczba mandatów</th>
+        <th class="text-center">Procent mandatów</th>
       </tr>
     </thead>
-    <tbody class="mainTable">
-      <tr
-        v-for='row in processedResults'
-      >
-        <td>
-	  {{ row.partyName }}
-	</td>
-        <td class="numberCell">
-	  {{ row.votes}}
-	</td>
-        <td class="numberCell">
-	  {{ row.percentVotes}}%
-	</td>
-        <td class="numberCell">
-	  {{ row.seats}}
-	</td>
-        <td class="numberCell">
-	  {{ row.percentSeats }}%
-	</td>
+
+    <tbody class="[&>tr:nth-child(odd)]:bg-[#222222] [&>tr:nth-child(even)]:bg-[#0a0a0a] [&>td]:p-[5px] [&>td]:first:pl-[50px] [&>td]:last:pr-[30px]">
+      <tr v-for="row in processedResults" :key="row.partyName">
+
+        <td class="text-justify">{{ row.partyName }}</td>
+        <td class="text-center">{{ row.votes }}</td>
+        <td class="text-center">{{ row.percentVotes }}%</td>
+        <td class="text-center">{{ row.seats }}</td>
+        <td class="text-center">{{ row.percentSeats }}%</td>
+
       </tr>
     </tbody>
+
   </table>
 </template>
 
@@ -58,33 +51,6 @@
 </script>
 
 <style scoped>
-  @reference "tailwindcss";
 
-  .numberCell {
-    @apply text-center;
-  }
-  table {
-    @apply w-[130%] overflow-hidden rounded-[30px] border-collapse;
-  }
-  td,
-  th {
-    @apply text-justify p-[5px];
-  }
-  table tr > :first-child,
-  table th > :first-child {
-    @apply pl-[50px];
-  }
-  table tr > :last-child,
-  table th > :last-child {
-    @apply pr-[30px];
-  }
-  tr:nth-child(odd) {
-    @apply bg-[#222222];
-  }
-  tr:nth-child(even) {
-    @apply bg-[#0a0a0a];
-  }
-  th {
-    @apply bg-[darkred] text-[white] py-[15px];
-  }
+
 </style>

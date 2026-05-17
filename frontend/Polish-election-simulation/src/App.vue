@@ -1,6 +1,6 @@
 <template>
   <!-- Main navigation bar using PrimeVue -->
-  <Menubar :model="items" class="nav">   
+  <Menubar :model="items" class="fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100]">   
     <!-- Custom rendering for each menu item -->
     <template #item="{ item, props }">
       <router-link 
@@ -57,10 +57,6 @@ const items = computed<NavItem[]>(() => [
 
 <style scoped>
 @reference "tailwindcss";
-
-.nav {
-  @apply fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100];
-}
 
 main {
   @apply w-[85%] mx-auto pt-20 text-left;

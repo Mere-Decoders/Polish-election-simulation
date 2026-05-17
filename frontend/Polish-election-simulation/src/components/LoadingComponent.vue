@@ -1,7 +1,7 @@
 <template>
-  <div class="loading-wrapper" role="status" aria-live="polite" aria-label="Loading">
-    <span class="spinner" :style="{ borderTopColor: spinnerColor }" aria-hidden="true"></span>
-    <p class="loading-text">{{ text }}</p>
+  <div class="w-full min-h-[220px] flex flex-col justify-center items-center gap-3" role="status" aria-live="polite" aria-label="Loading">
+    <span class="w-10 h-10 border-[color:var(--color-border)] animate-spin rounded-full border-[0.3rem] border-solid" :style="{ borderTopColor: spinnerColor }" aria-hidden="true"></span>
+    <p class="text-[color:var(--color-text)] text-[0.95rem]">{{ text }}</p>
   </div>
 </template>
 
@@ -14,17 +14,3 @@ withDefaults(defineProps<{
   spinnerColor: "#e14b4b"
 });
 </script>
-
-<style scoped>
-  @reference "tailwindcss";
-
-  .loading-wrapper {
-    @apply w-full min-h-[220px] flex flex-col justify-center items-center gap-3;
-  }
-  .spinner {
-    @apply w-10 h-10 border-[color:var(--color-border)] animate-spin rounded-full border-[0.3rem] border-solid;
-  }
-  .loading-text {
-    @apply text-[color:var(--color-text)] text-[0.95rem];
-  }
-</style>

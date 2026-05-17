@@ -16,12 +16,6 @@ a,
   padding: 3px;
 }
 
-@media (hover: hover) {
-  a:hover {
-    /*background-color: var(--color-button-hover);*/
-  }
-}
-
 @media (min-width: 1024px) {
   body {
     place-items: center;

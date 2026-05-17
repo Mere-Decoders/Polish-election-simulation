@@ -1,8 +1,8 @@
 <template>
-  <svg ref="svgRef" class="constituencies-svg" v-if="constituencies && geoGenerator">
+  <svg ref="svgRef" class="w-full h-full block" v-if="constituencies && geoGenerator">
     <g class="map">
       <path
-          class="constituency"
+          class="fill-[var(--color-constituency)]"
           v-for="(feature, index) in constituencies.features"
           :key="index"
           :d="geoGenerator(feature)!"
@@ -60,15 +60,3 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
-  @reference "tailwindcss";
-
-  .constituencies-svg {
-    @apply w-full h-full block;
-  }
-  .constituency {
-    @apply fill-[var(--color-constituency)];
-  }
-
-
-</style>

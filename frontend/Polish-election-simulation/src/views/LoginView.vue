@@ -1,11 +1,11 @@
 <template>
-  <section class="auth-view">
-    <Card class="auth-card">
+  <section class="flex justify-center items-start min-h-screen pt-2 mx-4 my-8">
+    <Card class="w-[min(520px,100%)]">
       <template #title>
         {{ isRegisterMode ? "Create account" : "Login" }}
       </template>
       <template #content>
-        <div class="mode-switch">
+        <div class="grid grid-cols-[1fr_1fr] gap-2 mb-4 pb-4">
           <Button
             label="Login"
             :outlined="isRegisterMode"
@@ -20,8 +20,8 @@
           />
         </div>
 
-        <form class="auth-form" @submit.prevent="submit">
-          <div v-if="isRegisterMode" class="field-group">
+        <form class="flex flex-col gap-[0.9rem]" @submit.prevent="submit">
+          <div v-if="isRegisterMode" class="flex flex-col gap-[0.35rem]">
             <label for="email">Email</label>
             <InputText
               id="email"
@@ -33,7 +33,7 @@
             />
           </div>
 
-          <div class="field-group">
+          <div class="flex flex-col gap-[0.35rem]">
             <label for="username">Username</label>
             <InputText
               id="username"
@@ -46,7 +46,7 @@
             />
           </div>
 
-          <div class="field-group">
+          <div class="flex flex-col gap-[0.35rem]">
             <label for="password">Password</label>
             <Password
               id="password"
@@ -60,7 +60,7 @@
             />
           </div>
 
-          <div v-if="isRegisterMode" class="field-group">
+          <div v-if="isRegisterMode" class="flex flex-col gap-[0.35rem]">
             <label for="confirmPassword">Confirm password</label>
             <Password
               id="confirmPassword"
@@ -80,7 +80,7 @@
 
           <Button
             type="submit"
-            class="submit-button"
+            class="mt-[0.4rem]"
             :label="submitButtonLabel"
             :loading="isSubmitting"
             :disabled="isSubmitting"
@@ -179,27 +179,6 @@ async function submit() {
 </script>
 
 <style scoped>
-  @reference "tailwindcss";
-
-  .auth-view {
-    @apply flex justify-center items-center min-h-screen mx-0 my-8;
-  }
-  .auth-card {
-    @apply w-[min(520px,100%)];
-  }
-  .mode-switch {
-    @apply grid grid-cols-[1fr_1fr] gap-2 mb-4;
-  }
-  .auth-form {
-    @apply flex flex-col gap-[0.9rem];
-  }
-  .field-group {
-    @apply flex flex-col gap-[0.35rem];
-  }
-  .submit-button {
-    @apply mt-[0.4rem];
-  }
-
   :deep(.p-password .p-password-toggle-mask-icon) {
     cursor: pointer;
   }
