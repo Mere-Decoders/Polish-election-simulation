@@ -1,5 +1,5 @@
 <template>
-  <section class="flex justify-center items-start min-h-screen pt-2 mx-4 my-8">
+  <section class="flex justify-center items-start pt-2 mx-4 my-8">
     <Card class="w-[min(520px,100%)]">
       <template #title>
         {{ isRegisterMode ? "Create account" : "Login" }}
