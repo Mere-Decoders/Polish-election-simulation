@@ -1,8 +1,11 @@
 <template>
-  <svg ref="svgRef" class="w-full h-full block" v-if="constituencies && geoGenerator">
+  <svg ref="svgRef" class="constituencies-svg" v-if="constituencies && geoGenerator" @click="mapStore.clearConstituency()">
+    <rect width="100%" height="100%" fill="transparent" />
     <g class="map">
       <path
-          class="fill-[var(--color-constituency)]"
+          class="constituency"
+          :class="{ active: mapStore.currentConstituency === feature.id }"
+          @click.stop="mapStore.selectConstituency(feature.id)"
           v-for="(feature, index) in constituencies.features"
           :key="index"
           :d="geoGenerator(feature)!"
@@ -17,6 +20,8 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { geoMercator, geoPath, type GeoPath } from "d3-geo";
 import { generateConstituencies } from "@/api/constituencyLoader.ts";
+import { useMapStore } from "@/stores/useMapStore.ts";
+const mapStore = useMapStore();
 
 const geoGenerator = ref<GeoPath>(geoPath().projection(geoMercator()));
 const svgRef = ref<SVGSVGElement | null>(null);
@@ -60,3 +65,20 @@ onUnmounted(() => {
 });
 </script>
 
+<style scoped>
+
+.constituencies-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.constituency {
+  fill: var(--color-constituency);
+}
+
+.constituency.active {
+  fill: var(--color-constituency-active);
+}
+
+</style>
