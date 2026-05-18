@@ -1,10 +1,10 @@
 <template>
-  <svg ref="svgRef" class="constituencies-svg" v-if="constituencies && geoGenerator" @click="mapStore.clearConstituency()">
+  <svg ref="svgRef" class="w-full h-full block" v-if="constituencies && geoGenerator" @click="mapStore.clearConstituency()">
     <rect width="100%" height="100%" fill="transparent" />
     <g class="map">
       <path
-          class="constituency"
-          :class="{ active: mapStore.currentConstituency === feature.id }"
+          class="cursor-pointer fill-[var(--color-constituency)]"
+          :class="{ 'fill-[var(--color-constituency-active)]': mapStore.currentConstituency === feature.id }"
           @click.stop="mapStore.selectConstituency(feature.id)"
           v-for="(feature, index) in constituencies.features"
           :key="index"
@@ -64,21 +64,3 @@ onUnmounted(() => {
   }
 });
 </script>
-
-<style scoped>
-
-.constituencies-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.constituency {
-  fill: var(--color-constituency);
-}
-
-.constituency.active {
-  fill: var(--color-constituency-active);
-}
-
-</style>

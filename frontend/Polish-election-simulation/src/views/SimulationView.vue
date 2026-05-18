@@ -37,11 +37,11 @@
           />
         </div>
       </div>
-      <div class="table">
-        <div class="table-header">
+      <div class="flex-[0_0_auto] overflow-auto p-2.5">
+        <div class="text-[1.2rem] font-semibold text-[rgba(0,0,0,0.72)] mt-0 mb-[0.6rem] mx-0 pt-0 pb-[0.35rem] px-0 border-b-[rgba(0,0,0,0.1)] border-b border-solid">
           <b>
-            <span v-if="currentConstituency">Constituency results</span>
-            <span v-else>National results</span>
+            <span class="inline-block" v-if="currentConstituency">Constituency results</span>
+            <span class="inline-block" v-else>National results</span>
           </b>
         </div>
         <span v-if="currentConstituency">Press selected constituency again to see national results.</span>
@@ -203,123 +203,3 @@ async function loadNewResults() {
 }
 
 </script>
-
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin: 0 auto;
-  /* no fixed height, let content determine it */
-}
-
-.top-row {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 2rem;
-}
-
-.title-section {
-  flex: 1;
-  text-align: center;
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.map-seats-row {
-  display: flex;
-  flex-wrap: wrap;
-  min-height: 0;
-}
-
-/* ensure a sensible row height when items are side-by-side */
-@media (min-width: 769px) {
-  .map-seats-row {
-    height: 50vh;
-  }
-}
-
-.map {
-  flex: 1 0 300px;
-  height: 100%;
-  overflow: hidden;
-}
-
-.seats {
-  flex: 1 0 300px;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.table {
-  flex: 0 0 auto;
-  overflow: auto;
-  padding: 10px;
-}
-
-.table-header {
-  margin: 0 0 0.6rem;
-  padding: 0 0 0.35rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.72);
-}
-
-.table-header span {
-  display: inline-block;
-}
-
-@media (max-width: 768px) {
-  .map-seats-row {
-    flex-direction: column;
-    flex: 0 0 auto; /* size to children */
-    min-height: 0;
-    height: auto;
-  }
-  
-  .map {
-    flex: 0 0 40vh;
-    height: 40vh;
-  }
-  
-  .seats {
-    flex: 0 0 40vh;
-    height: 40vh;
-  }
-  
-  .container {
-    overflow: visible;
-  }
-}
-
-@media (max-width: 600px) {
-  .top-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .controls {
-    width: 100%;
-    justify-content: flex-start;
-  }
-}
-</style>
