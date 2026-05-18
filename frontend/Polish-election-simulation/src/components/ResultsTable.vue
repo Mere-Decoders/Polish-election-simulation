@@ -49,8 +49,3 @@
     return result
   })
 </script>
-
-<style scoped>
-
-
-</style>
