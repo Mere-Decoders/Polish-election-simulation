@@ -1,13 +1,13 @@
 <template>
   <LoadingComponent v-if="isLoading" spinner-color="lightgreen" />
   <div v-else>
-    <div class="container">
-      <div class="top-row">
-        <div class="title-section">
+    <div class="flex flex-col w-full mx-auto my-0 max-md:overflow-visible">
+      <div class="shrink-0 flex justify-between gap-2.5 p-8 max-[600px]:flex-col max-[600px]:items-start">
+        <div class="flex-1 text-center text-3xl">
           <h1>Simulation</h1>
         </div>
         
-        <div class="controls">
+        <div class="flex flex-wrap gap-2.5 items-center max-[600px]:w-full max-[600px]:justify-start">
         <Select
           v-model="selectData.simData"
           :options="simData"
@@ -25,11 +25,11 @@
         <Button label="View" @click="loadNewResults"/>
           </div>
       </div>
-      <div class="map-seats-row">
-        <div class="map">
+      <div class="flex flex-wrap min-h-0 min-[769px]:h-[50vh] max-md:flex-col max-md:flex-[0_0_auto] max-md:min-h-0 max-md:h-auto">
+        <div class="flex-[1_0_300px] h-full overflow-hidden max-md:flex-[0_0_40vh] max-md:h-[40vh]">
           <PowiatMap :constituencies="constituencies"/>
         </div>
-        <div class="seats">
+        <div class="flex-[1_0_300px] h-full flex justify-center items-center overflow-hidden max-md:flex-[0_0_40vh] max-md:h-[40vh]">
           <Parliament
               :resultsToDisplay="resultsToDisplay"
               :innerRadius = "50"
