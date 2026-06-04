@@ -53,7 +53,7 @@ onMounted(() => {
   aceInstance.setShowPrintMargin(false);
 
   // ENTRY POINT:
-  // fetch / load methods aquí si quieres
+  // fetch / load methods
   aceInstance.setValue(`function hola()
   print("Hola mundo")
 end`, -1);
@@ -71,7 +71,7 @@ function applyMode() {
 }
 
 function onMethodChange() {
-  // ENTRY POINT: lógica de selección de método
+  // ENTRY POINT: Changing method logic
   console.log("Method:", selectedMethod.value);
 }
 
