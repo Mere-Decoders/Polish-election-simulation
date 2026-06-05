@@ -39,11 +39,22 @@ public class SimulationDataController : ControllerBase
     [HttpGet("details/{guid:guid}")]
     public async Task<ActionResult<SimulationData>> GetSimData(Guid guid)
     {
-        var simData = await _simDataService.GetSimDataByGuid(guid);
-        return Ok(simData);
+        try
+        {
+            var simData = await _simDataService.GetSimDataByGuid(_currentUser.Value.Id, guid);
+            return Ok(simData);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            return Problem(e.Message, statusCode: 403);
+        }
+        catch (KeyNotFoundException e)
+        {
+            return Problem(e.Message, statusCode: 404);
+        }
     }
 
-    [HttpPost("details")]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateSimData([FromQuery] string label, [FromBody] SimulationData data)
     {
         label = (label ?? string.Empty).Trim();
@@ -63,7 +74,7 @@ public class SimulationDataController : ControllerBase
             new { name = claim.Label, id = claim.DataId });
     }
 
-    [HttpPut("details/{guid:guid}")]
+    [HttpPut("update/{guid:guid}")]
     public async Task<IActionResult> UpdateSimData(Guid guid, [FromBody] SimulationData data)
     {
         try
@@ -71,13 +82,25 @@ public class SimulationDataController : ControllerBase
             await _simDataService.UpdateSimDataForUserAsync(_currentUser.Value.Id, guid, data);
             return NoContent();
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException e)
         {
-            return Forbid();
+            return Problem(e.Message, statusCode: 403);
         }
-        catch (KeyNotFoundException)
+
+    }
+
+    [HttpDelete("delete/{guid:guid}")]
+    public async Task<IActionResult> DeleteSimData(Guid guid)
+    {
+        try
         {
-            return NotFound();
+            await _simDataService.DeleteSimDataForUserAsync(_currentUser.Value.Id, guid);
+            return NoContent();
         }
+        catch (UnauthorizedAccessException e)
+        {
+            return Problem(e.Message, statusCode: 403);
+        }
+
     }
 }

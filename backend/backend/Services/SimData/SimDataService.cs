@@ -1,14 +1,16 @@
 using backend.Data;
 using backend.Infrastructure.Entities;
 using backend.Infrastructure.Repositories;
-using backend.Models;
+using backend.Services;
 
-namespace backend.Services;
-
-public class SimDataService:ISimDataService
+public class SimDataService : ISimDataService
 {
-    private static readonly Guid WiarygodneWyboryTemplateId =
-        Guid.Parse("00000000-0000-0000-0000-000000000001");
+    private static readonly IReadOnlySet<Guid> ProtectedDataIds = new HashSet<Guid>
+    {
+        Guid.Parse("00000000-0000-0000-0000-000000000000"),
+        Guid.Parse("00000000-0000-0000-0000-000000000001"),
+        Guid.Parse("00000000-0000-0000-0000-000000000002"),
+    };
 
     private readonly IDataClaimRepository _dataClaimRepository;
     private readonly ISimDataRepository _simDataRepository;
@@ -18,9 +20,21 @@ public class SimDataService:ISimDataService
         _dataClaimRepository = dataClaimRepository;
         _simDataRepository = simDataRepository;
     }
-    public async Task<SimulationData> GetSimDataByGuid(Guid dataGuid)
+
+    public async Task<SimulationData> GetSimDataByGuid(Guid userId, Guid dataGuid)
     {
-        var result= await _simDataRepository.GetAsync(dataGuid);
+        var claim = await _dataClaimRepository.CheckExistanceAsync(userId, dataGuid);
+        if (claim == null)
+            throw new UnauthorizedAccessException("You do not have access to this data.");
+
+        var result = await _simDataRepository.GetAsync(dataGuid);
+        if (result != null) return result;
+        throw new KeyNotFoundException("The data you are requesting doesn't exist");
+    }
+
+    public async Task<SimulationData> GetSimDataByGuidBackendOnly(Guid dataGuid)
+    {
+        var result = await _simDataRepository.GetAsync(dataGuid);
         if (result != null) return result;
         throw new KeyNotFoundException("The data you are requesting doesn't exist");
     }
@@ -39,7 +53,7 @@ public class SimDataService:ISimDataService
 
     public async Task UpdateSimDataForUserAsync(Guid userId, Guid dataId, SimulationData data)
     {
-        if (dataId == Guid.Empty || dataId == WiarygodneWyboryTemplateId)
+        if (ProtectedDataIds.Contains(dataId))
             throw new UnauthorizedAccessException("This simulation dataset cannot be modified.");
 
         var claim = await _dataClaimRepository.CheckExistanceAsync(userId, dataId);
@@ -49,4 +63,16 @@ public class SimDataService:ISimDataService
         await _simDataRepository.UpdateAsync(dataId, data);
     }
 
+    public async Task DeleteSimDataForUserAsync(Guid userId, Guid dataId)
+    {
+        if (ProtectedDataIds.Contains(dataId))
+            throw new UnauthorizedAccessException("This simulation dataset cannot be deleted.");
+
+        var claim = await _dataClaimRepository.CheckExistanceAsync(userId, dataId);
+        if (claim == null)
+            throw new UnauthorizedAccessException("You do not have access to this simulation data.");
+
+        await _simDataRepository.DeleteAsync(dataId);
+        await _dataClaimRepository.DeleteAsync(userId, dataId);
+    }
 }
