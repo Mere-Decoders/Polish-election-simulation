@@ -1,9 +1,8 @@
-﻿namespace backend.Infrastructure.Entities;
+﻿using backend.Models;
 
-    public class SimulationMethodEntity
+namespace backend.Infrastructure.Entities;
+
+    public class SimulationMethodEntity : Method
     {
-        public Guid Id { get; set; }
-        public string Json { get; set; } = null!;
-
     }
 

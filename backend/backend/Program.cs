@@ -59,6 +59,7 @@ builder.Services.AddScoped<ISimDataRepository, SimDataRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<ISimMethodRepository, SimMethodRepository>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>

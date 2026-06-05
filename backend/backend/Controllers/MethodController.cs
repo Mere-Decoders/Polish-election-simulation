@@ -1,4 +1,6 @@
 using backend.Data;
+using backend.Infrastructure.Repositories;
+using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,22 +12,58 @@ namespace backend.Controllers;
 [Route("api/methods/[controller]")]
 public class MethodController : ControllerBase
 {
-    [HttpGet("get-list")]
-    public ActionResult< Dictionary<String, Guid>> GetMethodList()
-    {
-        var options = new[]
-        {
-            new { name = "Metoda D'Hondta", id = Guid.Empty },
-            new { name = "Metoda High Stakes", id = Guid.Parse("00000000-0000-0000-0000-000000000001") },
-            new { name = "Metoda Sainte-Lague", id = Guid.Parse("00000000-0000-0000-0000-000000000002") }
-        };
+    private readonly ISimMethodRepository _repo;
 
-        return Ok(options);
-    }
-    
-    [HttpGet("details")]
-    public ActionResult GetMethod(Guid guid)
+    public MethodController(ISimMethodRepository repo)
     {
-        return Ok(new NotImplementedException());
+        _repo = repo;
+    }
+
+    [HttpGet("get-list")]
+    public async Task<ActionResult<IEnumerable<Method>>> GetMethodList()
+    {
+        var methods = await _repo.GetAllAsync();
+        return Ok(methods);
+    }
+
+    [HttpGet("details")]
+    public async Task<ActionResult<Method>> GetMethod(Guid guid)
+    {
+        var method = await _repo.GetAsync(guid);
+        if (method == null)
+            return NotFound();
+        return Ok(method);
+    }
+
+    [HttpPost("add")]
+    public async Task<ActionResult<Method>> AddMethod([FromBody] Method request)
+    {
+        var method = await _repo.AddAsync(Guid.NewGuid(), request.Name!, request.LuaCode);
+        return CreatedAtAction(nameof(GetMethod), new { guid = method.Id }, method);
+    }
+
+    [HttpPut("update/{id:guid}")]
+    public async Task<IActionResult> UpdateMethod(Guid id, [FromBody] Method request)
+    {
+        try
+        {
+            await _repo.UpdateAsync(id, request.Name!, request.LuaCode);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("delete/{id:guid}")]
+    public async Task<IActionResult> DeleteMethod(Guid id)
+    {
+        var method = await _repo.GetAsync(id);
+        if (method == null)
+            return NotFound();
+
+        await _repo.DeleteAsync(id);
+        return NoContent();
     }
 }
