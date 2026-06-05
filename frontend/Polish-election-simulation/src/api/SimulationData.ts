@@ -1,8 +1,20 @@
-export default class SimulationData {
-  name: String;
+export interface Party {
+  name: string;
+  isCoalition: boolean;
+  needsThreshold: boolean;
+}
 
-  constructor(name: String) {
-    this.name = name;
-  }
+export interface  District {
+  seats: number;
+  terytCodes: string[];
+}
 
+export interface SimulationData {
+  parties: Party[];
+  districts: {
+    [key: string]: District;
+  };
+  votesInArea: {
+    [key: string]: number[];
+  };
 }

@@ -5,11 +5,8 @@ import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import type ApportionmentMethodDetails from "@/api/ApportionmentMethodDetails.ts";
 import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
-<<<<<<< HEAD
 import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
-=======
-import type SimulationData from "@/api/SimulationData.ts";
->>>>>>> f9230e6 (api methods)
+import { type SimulationData } from "@/api/SimulationData.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -139,7 +136,6 @@ export default class apiClient {
     return await data_response.json();
   }
 
-<<<<<<< HEAD
   public static async getDetailedResults(sim_data: string, method: string): Promise<DetailedResultsRow[]> {
     let data_response = await apiClient.authenticatedGet(
       "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
@@ -165,8 +161,6 @@ export default class apiClient {
     return results;
   }
 
-=======
->>>>>>> f9230e6 (api methods)
   public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
     let data_response = await apiClient.authenticatedGet(
       "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
