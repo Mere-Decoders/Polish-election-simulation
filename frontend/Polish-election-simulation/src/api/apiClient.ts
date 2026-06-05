@@ -5,7 +5,7 @@ import get_color_for_index from "@/api/get_color_for_index.ts";
 import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
-import type SimulationData from "@/api/SimulationData.ts";
+import { type SimulationData } from "@/api/SimulationData.ts";
 
 export default class apiClient {
   private static instance: apiClient;

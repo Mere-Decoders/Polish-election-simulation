@@ -7,8 +7,16 @@
           <h1>Votes & map editor</h1>
         </div>
         <div class="controls">
-          <Button label="Update" icon="pi pi-pen-to-square" @click=""/>
-          <Button label="Create new" icon="pi pi-plus" @click=""/>
+          <Select
+              v-model="simDataUUID"
+              :options="simDataList"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Select data"
+          />
+          <Button label="Load" icon="pi pi-arrow-down" @click="loadSimData"/>
+          <Button label="Update" icon="pi pi-pen-to-square" @click="updateSimData"/>
+          <Button label="Create new" icon="pi pi-plus" @click="createSimData"/>
         </div>
       </div>
       <div class="map-palette-row">
@@ -122,6 +130,14 @@
               @click="addColumn"
           />
         </div>
+        <div>
+          <InputNumber
+              v-if="selectedGroupId !== null"
+              v-model="selectedGroup!.seats"
+              :min="0"
+              placeholder="Seats"
+          />
+        </div>
       </div>
       <table class="p-datatable-table data-table">
         <thead>
@@ -154,8 +170,13 @@ import LoadingComponent from "@/components/LoadingComponent.vue";
 import {loadPowiaty} from "@/api/constituencyLoader.ts";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import {InputNumber} from "primevue";
 import {loadColors} from "@/api/colorLoader.ts";
+import apiClient from "@/api/apiClient.ts";
 import ConstituencyEditorMap from "@/components/ConstituencyEditorMap.vue";
+import Select from "primevue/select";
+import VotesID from "@/api/VotesID.ts";
+import type {SimulationData} from "@/api/SimulationData.ts";
 
 const isLoading = ref(true);
 const powiats = ref<any>(null);
@@ -185,19 +206,27 @@ const rows = ref<Row[]>([]);
 interface RowGroup {
   id: number,
   color: string,
+  seats: number,
   powiats: Set<string>
 }
 const rowGroups = ref<RowGroup[]>([]);
 
 const selectedGroupId = ref<number | null>(null);
+const selectedGroup = computed(() =>
+    rowGroups.value.find(g => g.id === selectedGroupId.value)
+);
 const eraserActive = ref(false);
 const visibleGroupIds = ref<Set<number>>(new Set());
 const visibleGroups = computed(() =>
     rowGroups.value.filter(g => visibleGroupIds.value.has(g.id))
 );
 
+const simDataList = ref<VotesID[]>([]);
+const simDataUUID = ref<string>("");
+
 onMounted(async () => {
   powiats.value = await loadPowiaty();
+  simDataList.value = await apiClient.getVotesIDs();
   for (const powiat of powiats.value.features) {
     rows.value.push(
         { terc: powiat.properties.terc, name: powiat.properties.name, party1: 0, party2: 0 }
@@ -207,7 +236,7 @@ onMounted(async () => {
   let i = 1;
   for (const color of colors) {
     rowGroups.value.push(
-        { id: i++, color, powiats: new Set() }
+        { id: i++, color, seats: 0, powiats: new Set() }
     );
   }
   visibleGroupIds.value = new Set(rowGroups.value.slice(0, 5).map(g => g.id));
@@ -304,6 +333,85 @@ function handleFeatureClick(terc: string) {
   }
   group.powiats.add(terc);
 }
+
+async function loadSimData() {
+  const data: SimulationData = await apiClient.getSimulationData(simDataUUID.value);
+  let new_columns: Column[] = [];
+  for (const [index, party] of data.parties.entries()) {
+    new_columns.push({
+      id: index + 1,
+      name: party.name,
+      prev: party.name,
+      isCoalition: party.isCoalition,
+      needsThreshold: party.needsThreshold
+    });
+  }
+  columns.value = new_columns;
+
+  visibleGroupIds.value = new Set();
+  for(const [index, district] of Object.entries(data.districts)) {
+    const id_num = Number(index) - 1;
+    rowGroups.value[id_num]!.powiats = new Set(district.terytCodes);
+    visibleGroupIds.value.add(id_num);
+  }
+
+  const districtByTerc = new Map<string, string>();
+  for(const [districtId, district] of Object.entries(data.districts)) {
+    for(const terc of district.terytCodes) {
+      districtByTerc.set(terc, districtId);
+    }
+  }
+
+  rows.value = rows.value.map(row => {
+    const votes = data.votesInArea[row.terc]!;
+    const updated: Row = {
+      terc: row.terc,
+      name: row.name
+    };
+    votes.forEach((vote, index) => {
+      updated[data.parties[index]!.name] = vote;
+    });
+    return updated;
+  });
+}
+
+async function gatherSimData() {
+  let result: SimulationData = {
+    parties: columns.value.map(col => ({
+      name: col.name,
+      isCoalition: col.isCoalition,
+      needsThreshold: col.needsThreshold,
+    })),
+    districts: {},
+    votesInArea: {}
+  };
+
+  for (const group of visibleGroups.value) {
+    result.districts[group.id.toString()] = {
+      seats: group.seats,
+      terytCodes: [...group.powiats],
+    };
+  }
+
+  for (const row of rows.value) {
+    result.votesInArea[row.terc] = columns.value.map(
+        col => row[col.name]
+    )
+  }
+
+  return result;
+}
+
+async function updateSimData() {
+  const data = await gatherSimData();
+  await apiClient.sendSimulationData(data, simDataUUID.value);
+}
+
+async function createSimData() {
+  const data = await gatherSimData();
+  await apiClient.sendSimulationData(data);
+}
+
 
 </script>
 
