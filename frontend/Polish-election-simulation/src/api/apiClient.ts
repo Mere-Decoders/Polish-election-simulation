@@ -5,7 +5,11 @@ import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import type ApportionmentMethodDetails from "@/api/ApportionmentMethodDetails.ts";
 import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
+<<<<<<< HEAD
 import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
+=======
+import type SimulationData from "@/api/SimulationData.ts";
+>>>>>>> f9230e6 (api methods)
 
 export default class apiClient {
   private static instance: apiClient;
@@ -32,15 +36,50 @@ export default class apiClient {
     throw new Error(`Request failed with status ${response.status}`);
   }
 
-  private static async authenticatedGet(path: string): Promise<Response> {
+  private static async authenticatedRequest(
+    path: string,
+    init: RequestInit = {}
+  ): Promise<Response> {
     const response = await authFetch(buildBackendUrl(path), {
+      ...init,
       headers: {
         accept: "application/json",
+        ...init.headers,
       },
     });
 
     await apiClient.ensureSuccess(response);
     return response;
+  }
+
+  private static async authenticatedGet(path: string): Promise<Response> {
+    return apiClient.authenticatedRequest(path);
+  }
+
+  private static async authenticatedPost<T>(
+    path: string,
+    body: T
+  ): Promise<Response> {
+    return apiClient.authenticatedRequest(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  private static async authenticatedPut<T>(
+    path: string,
+    body: T
+  ): Promise<Response> {
+    return apiClient.authenticatedRequest(path, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
   }
 
   // All methods can be static and if needed access the data in the singleton by using getInstance()
@@ -100,6 +139,7 @@ export default class apiClient {
     return await data_response.json();
   }
 
+<<<<<<< HEAD
   public static async getDetailedResults(sim_data: string, method: string): Promise<DetailedResultsRow[]> {
     let data_response = await apiClient.authenticatedGet(
       "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
@@ -125,6 +165,8 @@ export default class apiClient {
     return results;
   }
 
+=======
+>>>>>>> f9230e6 (api methods)
   public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
     let data_response = await apiClient.authenticatedGet(
       "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
@@ -159,4 +201,19 @@ export default class apiClient {
     }
     return results;
   }
+
+  public static async sendSimulationData(simulation_data: SimulationData, uuid?: string) {
+    if (uuid) {
+      await apiClient.authenticatedPut(`/api/sim-data/SimulationData/details/${uuid}`, simulation_data);
+    }
+    else {
+      await apiClient.authenticatedPost("/api/sim-data/SimulationData/details", simulation_data);
+    }
+  }
+
+  public static async getSimulationData(uuid: string): Promise<SimulationData> {
+    return (await apiClient.authenticatedGet(`/api/sim-data/SimulationData/details/${uuid}`)).json();
+  }
 }
+
+
