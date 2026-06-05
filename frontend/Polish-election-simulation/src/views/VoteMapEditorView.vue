@@ -7,7 +7,8 @@
           <h1>Votes & map editor</h1>
         </div>
         <div class="controls">
-          <Button label="Upload" icon="pi pi-upload" @click=""/>
+          <Button label="Update" icon="pi pi-pen-to-square" @click=""/>
+          <Button label="Create new" icon="pi pi-plus" @click=""/>
         </div>
       </div>
       <div class="map-palette-row">
