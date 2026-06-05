@@ -5,8 +5,8 @@ import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import type ApportionmentMethodDetails from "@/api/ApportionmentMethodDetails.ts";
 import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
+import { type SimulationData } from "@/api/SimulationData.ts";
 import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
-import type SimulationData from "@/api/SimulationData.ts";
 
 export default class apiClient {
   private static instance: apiClient;
