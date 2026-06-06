@@ -127,18 +127,20 @@ import "ace-builds/src-noconflict/mode-lua";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/keybinding-vim";
 
+import type { Editor } from "ace-builds";
+import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import apiClient from "@/api/apiClient.ts";
 
 const toast = useToast();
 
-const editor = ref(null);
-let aceInstance = null;
+const editor = ref<HTMLElement | null>(null);
+let aceInstance: Editor | null = null;
 
 const vimMode = ref(localStorage.getItem("vimMode") === "true");
 
-const selectedMethod = ref(null);
+const selectedMethod = ref<string | null>(null);
 const currentMethodName = ref("");
-const methods = ref([]);
+const methods = ref<ApportionmentMethod[]>([]);
 
 const showNewMethodDialog = ref(false);
 const newMethodName = ref("");
@@ -158,23 +160,24 @@ onMounted(async () => {
 });
 
 function applyMode() {
-  localStorage.setItem("vimMode", vimMode.value);
-  aceInstance.setKeyboardHandler(vimMode.value ? "ace/keyboard/vim" : null);
+  localStorage.setItem("vimMode", String(vimMode.value));
+  aceInstance?.setKeyboardHandler(vimMode.value ? "ace/keyboard/vim" : null);
 }
 
 async function onMethodChange() {
+  if (!selectedMethod.value) return;
   const details = await apiClient.getApportionmentMethodDetails(selectedMethod.value);
   currentMethodName.value = details.name;
-  aceInstance.setValue(details.luaCode, -1);
+  aceInstance?.setValue(details.luaCode, -1);
 }
 
 async function saveFile() {
   saving.value = true;
   try {
     await apiClient.updateApportionmentMethod({
-      id: selectedMethod.value,
+      id: selectedMethod.value!,
       name: currentMethodName.value,
-      luaCode: aceInstance.getValue(),
+      luaCode: aceInstance?.getValue() ?? "",
     });
     toast.add({ severity: "success", summary: "Saved", life: 3000 });
   } catch (err) {
@@ -195,7 +198,7 @@ async function createMethod() {
 
   creating.value = true;
   try {
-    const created = await apiClient.createApportionmentMethod(label, aceInstance.getValue());
+    const created = await apiClient.createApportionmentMethod(label, aceInstance?.getValue() ?? "");
     methods.value = await apiClient.getApportionmentMethodIDs();
     selectedMethod.value = created.id;
     currentMethodName.value = created.name;
