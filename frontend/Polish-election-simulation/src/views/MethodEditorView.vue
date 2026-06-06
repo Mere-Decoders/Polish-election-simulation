@@ -114,6 +114,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useToast } from "primevue/usetoast";
 import ace from "ace-builds";
 
 import Button from "primevue/button";
@@ -127,6 +128,8 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/keybinding-vim";
 
 import apiClient from "@/api/apiClient.ts";
+
+const toast = useToast();
 
 const editor = ref(null);
 let aceInstance = null;
@@ -147,6 +150,7 @@ onMounted(async () => {
   aceInstance.setTheme("ace/theme/github");
   aceInstance.session.setMode("ace/mode/lua");
   aceInstance.setShowPrintMargin(false);
+  aceInstance.setOption("useWorker", false);
   aceInstance.setValue("", -1);
   applyMode();
 
@@ -172,6 +176,14 @@ async function saveFile() {
       name: currentMethodName.value,
       luaCode: aceInstance.getValue(),
     });
+    toast.add({ severity: "success", summary: "Saved", life: 3000 });
+  } catch (err) {
+    let detail = String(err instanceof Error ? err.message : err);
+    try {
+      const parsed = JSON.parse(detail);
+      if (parsed.detail) detail = parsed.detail;
+    } catch { /* not JSON */ }
+    toast.add({ severity: "error", summary: "Save failed", detail, life: 5000 });
   } finally {
     saving.value = false;
   }

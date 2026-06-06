@@ -1,6 +1,7 @@
 <template>
+  <Toast />
   <!-- Main navigation bar using PrimeVue -->
-  <Menubar :model="items" class="fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100]">   
+  <Menubar :model="items" class="fixed top-0 inset-x-0 w-full flex justify-center text-base bg-[color:var(--color-background)] z-[100]">
     <!-- Custom rendering for each menu item -->
     <template #item="{ item, props }">
       <router-link 
@@ -34,6 +35,7 @@
 import { RouterView } from 'vue-router'
 import { computed } from 'vue'
 import Menubar from 'primevue/menubar'
+import Toast from 'primevue/toast'
 import { useAuth } from '@/auth/useAuth'
 
 type NavItem = {

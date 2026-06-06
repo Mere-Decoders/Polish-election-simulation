@@ -83,18 +83,16 @@ export default class apiClient {
     return await response.json();
   }
 
-  public static async updateApportionmentMethod(details: ApportionmentMethodDetails): Promise<ApportionmentMethodDetails> {
+  public static async updateApportionmentMethod(details: ApportionmentMethodDetails): Promise<void> {
     const response = await authFetch(buildBackendUrl(`/api/methods/Method/update/${details.id}`), {
       method: "PUT",
       headers: {
-        accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(details),
     });
 
     await apiClient.ensureSuccess(response);
-    return await response.json();
   }
 
   public static async getVotesIDs(): Promise<VotesID[]> {
