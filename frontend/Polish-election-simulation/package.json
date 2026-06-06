@@ -24,6 +24,7 @@
     "d3-selection": "^3.0.0",
     "patch-package": "^8.0.1",
     "pinia": "^3.0.4",
+    "primeicons": "^7.0.0",
     "primevue": "^4.5.2",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3"
