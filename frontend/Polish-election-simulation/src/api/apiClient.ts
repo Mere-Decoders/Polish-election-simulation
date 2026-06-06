@@ -2,6 +2,7 @@ import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import get_color_for_index from "@/api/get_color_for_index.ts";
 import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
+import type ApportionmentMethodDetails from "@/api/ApportionmentMethodDetails.ts";
 import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
 import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
@@ -47,6 +48,36 @@ export default class apiClient {
   public static async getApportionmentMethodIDs(): Promise<ApportionmentMethod[]> {
     const data_response = await apiClient.authenticatedGet("/api/methods/Method/get-list");
     return await data_response.json();
+  }
+
+  public static async getApportionmentMethodDetails(guid: string): Promise<ApportionmentMethodDetails> {
+    const data_response = await apiClient.authenticatedGet(`/api/methods/Method/details/${guid}`);
+    return await data_response.json();
+  }
+
+  public static async deleteApportionmentMethod(guid: string): Promise<void> {
+    const response = await authFetch(buildBackendUrl(`/api/methods/Method/delete/${guid}`), {
+      method: "DELETE",
+      headers: {
+        accept: "application/json",
+      },
+    });
+
+    await apiClient.ensureSuccess(response);
+  }
+
+  public static async updateApportionmentMethod(details: ApportionmentMethodDetails): Promise<ApportionmentMethodDetails> {
+    const response = await authFetch(buildBackendUrl(`/api/methods/Method/update/${details.id}`), {
+      method: "PUT",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
+
+    await apiClient.ensureSuccess(response);
+    return await response.json();
   }
 
   public static async getVotesIDs(): Promise<VotesID[]> {
