@@ -112,7 +112,7 @@
   </Dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useToast } from "primevue/usetoast";
 import ace from "ace-builds";
