@@ -66,6 +66,23 @@ export default class apiClient {
     await apiClient.ensureSuccess(response);
   }
 
+  public static async createApportionmentMethod(label: string, luaCode: string): Promise<ApportionmentMethodDetails> {
+    const response = await authFetch(
+      buildBackendUrl(`/api/methods/Method/create?${new URLSearchParams({ label })}`),
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ luaCode }),
+      }
+    );
+
+    await apiClient.ensureSuccess(response);
+    return await response.json();
+  }
+
   public static async updateApportionmentMethod(details: ApportionmentMethodDetails): Promise<ApportionmentMethodDetails> {
     const response = await authFetch(buildBackendUrl(`/api/methods/Method/update/${details.id}`), {
       method: "PUT",
