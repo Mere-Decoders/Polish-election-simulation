@@ -10,6 +10,8 @@ public class SimDataService : ISimDataService
         Guid.Parse("00000000-0000-0000-0000-000000000000"),
         Guid.Parse("00000000-0000-0000-0000-000000000001"),
         Guid.Parse("00000000-0000-0000-0000-000000000002"),
+        Guid.Parse("00000000-0000-0000-0000-000000000003"),
+        Guid.Parse("00000000-0000-0000-0000-000000000004"),
     };
 
     private readonly IDataClaimRepository _dataClaimRepository;

@@ -35,8 +35,8 @@ public class AuthService : IAuthService
             passwordHash
         );
         
-        await _claimRepository.AddAsync(guid, Guid.Empty, "Wybory 2023");
-        await _claimRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000002"), "Wybory 2019");
+        await _claimRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000003"), "Wybory 2019");
+        await _claimRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000004"), "Wybory 2023");
         await _methodRepository.AddAsync(guid, Guid.Empty, "Dhond't method");
         await _methodRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000001"), "High-stakes method");
         await _methodRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000002"), "Sainte-Lague method");
