@@ -29,7 +29,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-console.log(props.resultsToDisplay)
 
 const DESIRED_DOTS = 460
 

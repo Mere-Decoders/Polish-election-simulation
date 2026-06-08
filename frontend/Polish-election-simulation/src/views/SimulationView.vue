@@ -142,7 +142,7 @@ const selectedConstituencyResults: ComputedRef<ResultsTableRow[]> = computed(() 
   if (mapStore.selectedConstituency === 0) {
     return totalResults.value;
   }
-  const index = Number(mapStore.selectedConstituency);
+  const index = Number(mapStore.selectedConstituency) - 1;
   let results: ResultsTableRow[] = [];
   const totalSumVotes: number = detailedResults.value.reduce(
       (a, b) => a + b.votes[index]!, 0
