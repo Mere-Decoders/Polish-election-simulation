@@ -59,6 +59,14 @@
                 :disabled="visibleGroupIds.size >= 100"
                 title="Add constituency"
             >Add constituency</Button>
+            <InputNumber
+                class="seat-setter"
+                v-if="selectedGroupId !== null"
+                v-model="selectedGroup!.seats"
+                :min="0"
+                placeholder="Seats"
+                size="small"
+            />
           </div>
           <div class="palette">
             <div
@@ -140,36 +148,31 @@
               @click="addColumn"
           />
         </div>
-        <div>
-          <InputNumber
-              v-if="selectedGroupId !== null"
-              v-model="selectedGroup!.seats"
-              :min="0"
-              placeholder="Seats"
-          />
-        </div>
       </div>
-      <table class="p-datatable-table data-table">
-        <thead>
-        <tr>
-          <th>Powiat</th>
-          <th v-for="col in columns" :key="col.id">{{ col.name }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="row in rows" :key="row.name" :style="{ background: getRowColor(row.terc) ?? '' }">
-          <td>{{ row.name }}</td>
-          <td v-for="col in columns" :key="col.id">
-            <input
-                class="votes-input"
-                type="number"
-                :value="row[`party${col.id}`]"
-                @change="row[`party${col.id}`] = Number(($event.target as HTMLInputElement).value)"
-            />
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="data-table-wrapper">
+        <table class="p-datatable-table data-table">
+          <thead>
+          <tr>
+            <th>Powiat</th>
+            <th v-for="col in columns" :key="col.id">{{ col.name }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="row in rows" :key="row.name" :style="{ background: getRowColor(row.terc) ?? '' }">
+            <td>{{ row.name }}</td>
+            <td v-for="col in columns" :key="col.id">
+              <input
+                  class="votes-input"
+                  type="number"
+                  :value="row[`party${col.id}`]"
+                  @change="row[`party${col.id}`] = Number(($event.target as HTMLInputElement).value)"
+              />
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 </template>
@@ -562,8 +565,9 @@ async function createSimData() {
 
 .map-palette-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   min-height: 0;
+  overflow-x: auto;
 }
 
 .palette-toolbar {
@@ -626,12 +630,24 @@ async function createSimData() {
   font-size: 14px;
 }
 
+.data-table-wrapper {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+
+.data-table {
+  min-width: max-content;
+}
+
 .p-datatable-table th {
   padding: 10px 12px;
   text-align: left;
   font-weight: 600;
   font-size: 13px;
   border-bottom: 1px solid;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -645,9 +661,14 @@ async function createSimData() {
   text-align: center;
 }
 
+.seat-setter {
+  max-width: 20px !important;
+}
+
 .party-creator {
-  flex: 1 0 280px;
+  flex: 1 0 420px;
   height: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -658,6 +679,7 @@ async function createSimData() {
 .add-btn {
   align-self: flex-start;
   margin-top: 4px;
+  line-height: normal;
 }
 
 .data-table {
