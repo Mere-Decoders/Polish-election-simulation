@@ -14,7 +14,7 @@ export interface SimulationData {
   districts: {
     [key: string]: District;
   };
-  votesInArea: {
+  votesInAreas: {
     [key: string]: number[];
   };
 }
