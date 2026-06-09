@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <Menubar :model="items" class="nav">
     <template #item="{ item, props }">
       <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
@@ -20,6 +21,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { computed } from 'vue';
 import Menubar from 'primevue/menubar'
+import Toast from 'primevue/toast'
 import { useAuth } from '@/auth/useAuth';
 
 type NavItem = {

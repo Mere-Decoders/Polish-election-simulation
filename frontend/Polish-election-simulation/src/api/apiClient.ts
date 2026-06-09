@@ -132,12 +132,14 @@ export default class apiClient {
     return results;
   }
 
-  public static async sendSimulationData(simulation_data: SimulationData, uuid?: string) {
+  public static async sendSimulationData(simulation_data: SimulationData, uuid?: string, label?: string) {
     if (uuid) {
-      await apiClient.authenticatedPut(`/api/sim-data/SimulationData/details/${uuid}`, simulation_data);
+      await apiClient.authenticatedPut(`/api/sim-data/SimulationData/update/${uuid}`, simulation_data);
     }
     else {
-      await apiClient.authenticatedPost("/api/sim-data/SimulationData/details", simulation_data);
+      const params = label ? '?' + new URLSearchParams({ label }) : "";
+      const response = await apiClient.authenticatedPost(`/api/sim-data/SimulationData/create${params}`, simulation_data);
+      return response.json();
     }
   }
 
