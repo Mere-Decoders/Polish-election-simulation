@@ -13,11 +13,21 @@
               optionLabel="name"
               optionValue="id"
               placeholder="Select data"
+              @change="loadSimData"
           />
-          <Button label="Load" icon="pi pi-arrow-down" @click="loadSimData"/>
-          <Button label="Update" icon="pi pi-pen-to-square" @click="updateSimData"/>
-          <Button label="Create new" icon="pi pi-plus" @click="createSimData"/>
+          <Button label="New" icon="pi pi-plus" severity="secondary" @click="showNewDataDialog = true"/>
+          <Button label="Save" icon="pi pi-save" :loading="saving" :disabled="!simDataUUID" @click="updateSimData"/>
         </div>
+        <Dialog v-model:visible="showNewDataDialog" header="New dataset" modal :style="{ width: '25rem' }">
+          <div class="dialog-body">
+            <label for="dataset-name">Dataset name</label>
+            <InputText id="dataset-name" v-model="newDataName" placeholder="Enter dataset name" autofocus />
+          </div>
+          <template #footer>
+            <Button label="Cancel" severity="secondary" @click="showNewDataDialog = false" />
+            <Button label="Create" icon="pi pi-check" :loading="creating" @click="createSimData" />
+          </template>
+        </Dialog>
       </div>
       <div class="map-palette-row">
         <div class="map">
@@ -166,17 +176,28 @@
 
 <script setup lang="ts">
 import {computed, nextTick, onMounted, ref} from "vue";
-import LoadingComponent from "@/components/LoadingComponent.vue";
-import {loadPowiaty} from "@/api/constituencyLoader.ts";
+
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-import {InputNumber} from "primevue";
-import {loadColors} from "@/api/colorLoader.ts";
-import apiClient from "@/api/apiClient.ts";
-import ConstituencyEditorMap from "@/components/ConstituencyEditorMap.vue";
 import Select from "primevue/select";
+import InputNumber from "primevue/inputnumber";
+import { useToast } from "primevue/usetoast";
+import Dialog from "primevue/dialog"
+
+import LoadingComponent from "@/components/LoadingComponent.vue";
+import ConstituencyEditorMap from "@/components/ConstituencyEditorMap.vue";
+import { loadPowiaty } from "@/api/constituencyLoader.ts";
+import { loadColors } from "@/api/colorLoader.ts";
+import apiClient from "@/api/apiClient.ts";
 import VotesID from "@/api/VotesID.ts";
 import type {SimulationData} from "@/api/SimulationData.ts";
+
+const toast = useToast();
+
+const saving = ref(false);
+const creating = ref(false);
+const showNewDataDialog = ref(false);
+const newDataName = ref("");
 
 const isLoading = ref(true);
 const powiats = ref<any>(null);
@@ -299,6 +320,8 @@ function addGroupToView() {
 
 function removeGroupFromView(id: number) {
   if (selectedGroupId.value === id) selectedGroupId.value = null;
+  const group = rowGroups.value.find(g => g.id === id);
+  if (group) group.powiats.clear();
   visibleGroupIds.value = new Set([...visibleGroupIds.value].filter(i => i !== id));
 }
 
@@ -337,6 +360,8 @@ function handleFeatureClick(terc: string) {
 async function loadSimData() {
   const data: SimulationData = await apiClient.getSimulationData(simDataUUID.value);
   let new_columns: Column[] = [];
+  for (const group of rowGroups.value) group.powiats.clear();
+  visibleGroupIds.value = new Set();
   for (const [index, party] of data.parties.entries()) {
     new_columns.push({
       id: index + 1,
@@ -350,8 +375,9 @@ async function loadSimData() {
 
   visibleGroupIds.value = new Set();
   for(const [index, district] of Object.entries(data.districts)) {
-    const id_num = Number(index) - 1;
-    rowGroups.value[id_num]!.powiats = new Set(district.terytCodes);
+    const id_num = Number(index);
+    rowGroups.value[id_num - 1]!.powiats = new Set(district.terytCodes);
+    rowGroups.value[id_num - 1]!.seats = district.seats;
     visibleGroupIds.value.add(id_num);
   }
 
@@ -363,17 +389,43 @@ async function loadSimData() {
   }
 
   rows.value = rows.value.map(row => {
-    const votes = data.votesInArea[row.terc]!;
+    const votes = data.votesInAreas[row.terc]!;
     const updated: Row = {
       terc: row.terc,
       name: row.name
     };
     votes.forEach((vote, index) => {
-      updated[data.parties[index]!.name] = vote;
+      updated[`party${index + 1}`] = vote;
     });
     return updated;
   });
 }
+
+function validateSimData(data: SimulationData): string[] {
+  const errors: string[] = [];
+
+  for (const [id, district] of Object.entries(data.districts)) {
+    if (!district.terytCodes || district.terytCodes.length === 0) {
+      errors.push(`District ${id} has no powiats assigned.`);
+    }
+  }
+
+  const assignedTercs = new Set(
+      Object.values(data.districts).flatMap(d => d.terytCodes)
+  );
+  const unassigned = rows.value
+      .filter(row => !assignedTercs.has(row.terc))
+      .map(row => row.name);
+
+  if (unassigned.length > 0) {
+    errors.push(
+        `${unassigned.length} powiat(s) not assigned to any district: ${unassigned.slice(0, 5).join(', ')}${unassigned.length > 5 ? '…' : ''}.`
+    );
+  }
+
+  return errors;
+}
+
 
 async function gatherSimData() {
   let result: SimulationData = {
@@ -383,7 +435,7 @@ async function gatherSimData() {
       needsThreshold: col.needsThreshold,
     })),
     districts: {},
-    votesInArea: {}
+    votesInAreas: {}
   };
 
   for (const group of visibleGroups.value) {
@@ -394,22 +446,66 @@ async function gatherSimData() {
   }
 
   for (const row of rows.value) {
-    result.votesInArea[row.terc] = columns.value.map(
-        col => row[col.name]
+    result.votesInAreas[row.terc] = columns.value.map(
+        col => row[`party${col.id}`]
     )
   }
-
+  console.log("districts tercs:", Object.values(result.districts).flatMap(d => d.terytCodes).length);
+  console.log("total rows:", rows.value.length);
+  console.log("visible groups:", visibleGroups.value.map(g => ({ id: g.id, powiats: g.powiats.size })));
   return result;
 }
 
 async function updateSimData() {
-  const data = await gatherSimData();
-  await apiClient.sendSimulationData(data, simDataUUID.value);
+  saving.value = true;
+  try {
+    const data = await gatherSimData();
+    const errors = validateSimData(data);
+    if (errors.length > 0) {
+      errors.forEach(err => toast.add({ severity: "error", summary: "Validation error", detail: err, life: 6000}));
+      return;
+    }
+    await apiClient.sendSimulationData(data, simDataUUID.value);
+    toast.add({ severity: "success", summary: "Saved", detail: "Dataset updated successfully", life: 3000});
+  } catch (err) {
+    let detail = String(err instanceof Error ? err.message : err);
+    try {
+      const parsed = JSON.parse(detail);
+      if (parsed.detail) detail = parsed.detail;
+    } catch { /* not JSON */ }
+    toast.add({ severity: "error", summary: "Save failed", detail, life: 6000 });
+  } finally {
+    saving.value = false;
+  }
 }
 
 async function createSimData() {
-  const data = await gatherSimData();
-  await apiClient.sendSimulationData(data);
+  const label = newDataName.value.trim();
+  if (!label) return;
+  creating.value = true;
+  try {
+    const data = await gatherSimData();
+    const errors = validateSimData(data);
+    if (errors.length > 0) {
+      errors.forEach(err => toast.add({ severity: "error", summary: "Validation error", detail: err, life: 6000}));
+      return;
+    }
+    const created = await apiClient.sendSimulationData(data, undefined, label);
+    simDataList.value = await apiClient.getVotesIDs();
+    simDataUUID.value = created.id;
+    showNewDataDialog.value = false;
+    newDataName.value = "";
+    toast.add({ severity: "success", summary: "Created", detail: "New dataset created successfully", life: 3000});
+  } catch (err) {
+    let detail = String(err instanceof Error ? err.message : err);
+    try {
+      const parsed = JSON.parse(detail);
+      if (parsed.detail) detail = parsed.detail;
+    } catch { /* not JSON */ }
+    toast.add({ severity: "error", summary: "Creating failed", detail, life: 6000 });
+  } finally {
+    creating.value = false;
+  }
 }
 
 

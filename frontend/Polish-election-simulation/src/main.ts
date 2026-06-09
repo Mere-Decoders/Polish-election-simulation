@@ -21,6 +21,7 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(router);
+app.use(ToastService);
 
 const pinia = createPinia();
 app.use(pinia);
