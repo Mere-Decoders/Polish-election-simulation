@@ -1,35 +1,28 @@
 <template>
-  <table>
+  <table class="w-[130%] overflow-hidden rounded-[30px] border-collapse">
+
     <thead>
-      <tr>
+      <tr class="[&>th]:text-justify [&>th]:p-[5px] [&>th]:py-[15px] [&>th]:bg-[darkred] [&>th]:text-white [&>th]:first:pl-[50px] [&>th]:last:pr-[30px]">
         <th>Nazwa partii</th>
-	<th class="numberCell">Liczba głosów</th>
-	<th class="numberCell">Procent głosów</th>
-	<th class="numberCell">Liczba mandatów</th>
-	<th class="numberCell">Procent mandatów</th>
+        <th class="text-center">Liczba głosów</th>
+        <th class="text-center">Procent głosów</th>
+        <th class="text-center">Liczba mandatów</th>
+        <th class="text-center">Procent mandatów</th>
       </tr>
     </thead>
-    <tbody class="mainTable">
-      <tr
-        v-for='row in processedResults'
-      >
-        <td>
-	  {{ row.partyName }}
-	</td>
-        <td class="numberCell">
-	  {{ row.votes}}
-	</td>
-        <td class="numberCell">
-	  {{ row.percentVotes}}%
-	</td>
-        <td class="numberCell">
-	  {{ row.seats}}
-	</td>
-        <td class="numberCell">
-	  {{ row.percentSeats }}%
-	</td>
+
+    <tbody class="[&>tr:nth-child(odd)]:bg-[#222222] [&>tr:nth-child(even)]:bg-[#0a0a0a] [&>td]:p-[5px] [&>td]:first:pl-[50px] [&>td]:last:pr-[30px]">
+      <tr v-for="row in processedResults" :key="row.partyName">
+
+        <td class="text-justify">{{ row.partyName }}</td>
+        <td class="text-center">{{ row.votes }}</td>
+        <td class="text-center">{{ row.percentVotes }}%</td>
+        <td class="text-center">{{ row.seats }}</td>
+        <td class="text-center">{{ row.percentSeats }}%</td>
+
       </tr>
     </tbody>
+
   </table>
 </template>
 
@@ -56,46 +49,3 @@
     return result
   })
 </script>
-
-<style>
-  .numberCell {
-    text-align: center;
-  }
-
-  table {
-    border-collapse: collapse;
-    width: 130%;
-    border-radius: 30px;
-    overflow: hidden;
-  }
-
-  td, th {
-    padding: 5px;
-    text-align: justify;
-  }
-
-  table tr > :first-child,
-  table th > :first-child {
-    padding-left: 50px;
-  }
-  
-  table tr > :last-child,
-  table th > :last-child {
-    padding-right: 30px;
-  }
-
-  tr:nth-child(odd) {
-    background-color: #222222;
-  }
-
-  tr:nth-child(even) {
-    background-color: #0a0a0a;
-  }
-
-  th {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    background-color: darkred;
-    color: white;
-  }
-</style>

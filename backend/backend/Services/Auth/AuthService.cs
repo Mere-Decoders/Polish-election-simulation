@@ -9,10 +9,12 @@ public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IDataClaimRepository _claimRepository;
-    public AuthService(IUserRepository userRepository, IDataClaimRepository dataClaimRepository)
+    private readonly IMethodClaimRepository _methodRepository;
+    public AuthService(IUserRepository userRepository, IDataClaimRepository dataClaimRepository, IMethodClaimRepository methodClaimRepository)
     {
         _userRepository = userRepository;
         _claimRepository = dataClaimRepository;
+        _methodRepository = methodClaimRepository;
     }
 
     public async Task RegisterAsync(string email, string username, string password)
@@ -33,8 +35,12 @@ public class AuthService : IAuthService
             passwordHash
         );
         
-        await _claimRepository.AddAsync(guid, Guid.Empty, "Wybory 2023");
-        await _claimRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000002"), "Wybory 2019");
+        await _claimRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000003"), "Wybory 2019");
+        await _claimRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000004"), "Wybory 2023");
+        await _methodRepository.AddAsync(guid, Guid.Empty, "Dhond't method");
+        await _methodRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000001"), "High-stakes method");
+        await _methodRepository.AddAsync(guid, Guid.Parse("00000000-0000-0000-0000-000000000002"), "Sainte-Lague method");
+
     }
 
 

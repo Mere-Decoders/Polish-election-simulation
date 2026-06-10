@@ -20,6 +20,7 @@ export async function generateConstituencies() {
             return row.powiaty.includes(item.properties.terc);
         });
         if (shapes.length === 1) {
+            shapes[0].id = row.num;
             return shapes[0];
         }
         let _union = union({
@@ -28,6 +29,7 @@ export async function generateConstituencies() {
         });
         // because union() puts the vertices in the wrong order, causing constituencies to be colored on the outside
         _union!.geometry = rewind(_union!.geometry, {reverse: true}) as Polygon | MultiPolygon;
+        _union!.id = row.num;
         return _union;
     });
     let geoCollection = {

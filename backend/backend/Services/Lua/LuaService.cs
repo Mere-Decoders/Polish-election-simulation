@@ -1,9 +1,11 @@
-﻿using System.Text;
-using backend.Data;
+﻿using backend.Data;
 using backend.Models;
 using backend.Services.Methods;
+using System.Text;
 
 namespace backend.Services.Lua;
+
+using backend.Infrastructure.Repositories;
 using MoonSharp.Interpreter;
 
 public class LuaService : IMethodService
@@ -109,10 +111,13 @@ return t
 ";
 
     private ILuaScriptRunner _scriptRunner;
+    private readonly ISimMethodRepository _methodRepository;
 
-    public LuaService()
+
+    public LuaService(ISimMethodRepository methodRepository)
     {
         _scriptRunner = new LuaScriptRunner();
+        _methodRepository = methodRepository;
     }
     
     /// <summary>
@@ -147,7 +152,7 @@ return t
                 constituencySeats.Add(district.Key, seats);
             }
             return new LuaResult(true,
-                new ElectionResult(partyNames, constituencyVotes, constituencySeats),
+                new ElectionResult(partyNames, constituencySeats, constituencyVotes),
                 null);
         }
         catch (Exception ex)
@@ -189,16 +194,14 @@ return t
 
     public Func<SimulationData, ElectionResult> GetMethodByGuid(Guid methodGuid)
     {
-        switch (methodGuid.ToString())
-        {
-            case ("00000000-0000-0000-0000-000000000000"):
-                return (data => Execute(DhondtMethod, data).Output );
-            case ("00000000-0000-0000-0000-000000000001"):
-                return (data => Execute(HighStakesMethod, data).Output );
-            case ("00000000-0000-0000-0000-000000000002"):
-                return (data => Execute(SainteLagueMethod, data).Output);
-            default:
-                throw new ArgumentException("The method you are requesting doesn't exist");
-        }
+        var method = _methodRepository
+            .GetAsync(methodGuid)
+            .GetAwaiter()
+            .GetResult();
+
+        if (method == null)
+            throw new ArgumentException("Method not found");
+
+        return data => Execute(method.LuaCode, data).Output;
     }
 }

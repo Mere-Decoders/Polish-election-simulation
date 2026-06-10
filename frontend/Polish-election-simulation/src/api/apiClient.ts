@@ -1,11 +1,12 @@
-import ConstituencySetID from "./ConstituencySetID.ts";
 import VotesID from "./VotesID.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
 import get_color_for_index from "@/api/get_color_for_index.ts";
 import type ApportionmentMethod from "@/api/ApportionmentMethod.ts";
+import type ApportionmentMethodDetails from "@/api/ApportionmentMethodDetails.ts";
 import { buildBackendUrl } from "@/api/buildBackendUrl.ts";
 import { authFetch } from "@/auth/useAuth.ts";
 import { type SimulationData } from "@/api/SimulationData.ts";
+import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
 
 export default class apiClient {
   private static instance: apiClient;
@@ -85,22 +86,85 @@ export default class apiClient {
     return await data_response.json();
   }
 
+  public static async getApportionmentMethodDetails(guid: string): Promise<ApportionmentMethodDetails> {
+    const data_response = await apiClient.authenticatedGet(`/api/methods/Method/details/${guid}`);
+    return await data_response.json();
+  }
+
+  public static async deleteApportionmentMethod(guid: string): Promise<void> {
+    const response = await authFetch(buildBackendUrl(`/api/methods/Method/delete/${guid}`), {
+      method: "DELETE",
+      headers: {
+        accept: "application/json",
+      },
+    });
+
+    await apiClient.ensureSuccess(response);
+  }
+
+  public static async createApportionmentMethod(label: string, luaCode: string): Promise<ApportionmentMethodDetails> {
+    const response = await authFetch(
+      buildBackendUrl(`/api/methods/Method/create?${new URLSearchParams({ label })}`),
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ luaCode }),
+      }
+    );
+
+    await apiClient.ensureSuccess(response);
+    return await response.json();
+  }
+
+  public static async updateApportionmentMethod(details: ApportionmentMethodDetails): Promise<void> {
+    const response = await authFetch(buildBackendUrl(`/api/methods/Method/update/${details.id}`), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
+
+    await apiClient.ensureSuccess(response);
+  }
+
   public static async getVotesIDs(): Promise<VotesID[]> {
     const data_response = await apiClient.authenticatedGet("/api/sim-data/SimulationData/get-list");
     return await data_response.json();
   }
 
-  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
-    const mockup = false;
-    let data_response;
-    if (mockup) {
-      data_response = await apiClient.authenticatedGet("/mock_results.json");
-    }
-    else {
-      data_response = await apiClient.authenticatedGet(
-        "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
+  public static async getDetailedResults(sim_data: string, method: string): Promise<DetailedResultsRow[]> {
+    let data_response = await apiClient.authenticatedGet(
+      "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
+    );
+    const data = await data_response.json();
+    let results: DetailedResultsRow[] = [];
+    const constituencyCount: number = 41;
+    for (let i = 0; i < data.partyNames.length; i++) {
+      let votes: number[] = [];
+      let seats: number[] = [];
+      for (let j = 1; j <= constituencyCount; j++) {
+        votes.push(data.constituencyVotes[j][i]);
+        seats.push(data.constituencySeats[j][i]);
+      }
+      results.push(
+        new DetailedResultsRow(
+          data.partyNames[i],
+          votes,
+          seats
+        )
       );
     }
+    return results;
+  }
+
+  public static async getTotalResults(sim_data: string, method: string): Promise<ResultsTableRow[]>  {
+    let data_response = await apiClient.authenticatedGet(
+      "/api/Simulation?" + new URLSearchParams({ simDataGuid: sim_data, methodGuid: method})
+    );
     const data = await data_response.json();
     let results: ResultsTableRow[] = [];
     const constituencyCount: number = 41;
