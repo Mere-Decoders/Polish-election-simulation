@@ -8,8 +8,7 @@
           :d="geoGenerator(feature)!"
           :fill="fillMap?.[feature.properties.terc] ?? 'var(--color-constituency)'"
           stroke="#000"
-          stroke-width="0.5"
-          style="cursor: pointer"
+          :stroke-width="highlighted.has(feature.properties.terc) ? 1.25 : 0.5"
           @click="$emit('feature-click', feature.properties.terc)"
       />
     </g>
@@ -17,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import {ref, onMounted, onUnmounted, computed} from 'vue';
 import { geoMercator, geoPath, type GeoPath } from "d3-geo";
 import { generateConstituencies } from "@/api/constituencyLoader.ts";
 
@@ -29,7 +28,12 @@ defineEmits<{ 'feature-click': [teryt: string] }>()
 const props = defineProps<{
   constituencies: any
   fillMap?: Record<string, string>
+  highlightedPowiats: Set<string> | undefined
 }>()
+
+const highlighted = computed(() =>
+    props.highlightedPowiats ?? new Set<string>()
+);
 
 const updateProjection = () => {
   if (svgRef.value) {
@@ -71,6 +75,16 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+.constituency {
+  cursor: pointer;
+  transition: filter 0.1s ease;
+}
+
+.constituency:hover {
+  stroke: #f00;
+  stroke-width: 1.5;
 }
 
 </style>

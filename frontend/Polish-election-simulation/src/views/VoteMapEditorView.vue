@@ -34,6 +34,7 @@
           <ConstituencyEditorMap
               :constituencies="powiats"
               :fillMap="fillMap"
+              :highlightedPowiats="selectedGroup?.powiats!"
               @feature-click="handleFeatureClick"
           />
         </div>
@@ -375,6 +376,7 @@ async function loadSimData() {
     });
   }
   columns.value = new_columns;
+  idCounter = new_columns.length + 1;
 
   visibleGroupIds.value = new Set();
   for(const [index, district] of Object.entries(data.districts)) {
@@ -558,6 +560,7 @@ async function createSimData() {
   display: flex;
   flex-direction: column;        /* stack toolbar above palette */
   align-items: flex-start;
+  justify-content: center;
   gap: 10px;
   padding: 12px;
   overflow: hidden;
@@ -637,6 +640,7 @@ async function createSimData() {
 
 .data-table {
   min-width: max-content;
+  margin-top: 1.5rem;
 }
 
 .p-datatable-table th {
@@ -682,10 +686,6 @@ async function createSimData() {
   line-height: normal;
 }
 
-.data-table {
-  margin-top: 1.5rem;
-}
-
 .votes-input {
   width: 80px !important;
 }
@@ -701,21 +701,6 @@ async function createSimData() {
   flex: 1 0 300px;
   height: 100%;
   overflow: hidden;
-}
-
-.constituency-creator {
-  flex: 1 0 300px;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.table {
-  flex: 0 0 auto;
-  overflow: auto;
-  padding: 10px;
 }
 
 @media (max-width: 768px) {
