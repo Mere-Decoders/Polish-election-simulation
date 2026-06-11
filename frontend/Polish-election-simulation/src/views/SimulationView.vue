@@ -101,6 +101,7 @@ import { useMapStore } from '@/stores/useMapStore.ts'
 import { storeToRefs } from 'pinia'
 import DetailedResultsRow from "@/api/DetailedResultsRow.ts";
 import get_color_for_index from "@/api/get_color_for_index.ts";
+import { generateConstituenciesFromDistrict } from "@/api/constituencyLoader.ts";
 
 const mapStore = useMapStore()
 const { currentConstituency } = storeToRefs(mapStore)
@@ -180,13 +181,15 @@ const selectData = ref({
 })
 
 const defaultGUID = "00000000-0000-0000-0000-000000000000";
+const defaultGUID2 = "00000000-0000-0000-0000-000000000003";
 
 onMounted(async () => {
-  constituencies.value = await generateConstituencies();
+  const defaultSimData = await apiClient.getSimulationData(defaultGUID2);
+  constituencies.value = await generateConstituenciesFromDistrict(defaultSimData.districts);
   methods.value = await apiClient.getApportionmentMethodIDs();
   simData.value = await apiClient.getVotesIDs();
-  detailedResults.value = await apiClient.getDetailedResults(defaultGUID, defaultGUID);
-  resultsToDisplay.value = await apiClient.getTotalResults(defaultGUID, defaultGUID);
+  detailedResults.value = await apiClient.getDetailedResults(defaultGUID2, defaultGUID);
+  resultsToDisplay.value = await apiClient.getTotalResults(defaultGUID2, defaultGUID);
   isLoading.value = false;
 });
 
@@ -196,9 +199,15 @@ function formatPercent(percent: number): string {
 
 async function loadNewResults() {
   isLoading.value = true;
-  mapStore.selectConstituency(0);
+  const [results, simDataResult] = await Promise.all([
+      apiClient.getTotalResults(selectData.value.simData, selectData.value.method),
+      apiClient.getSimulationData(selectData.value.simData),
+  ]);
+  resultsToDisplay.value = results;
   detailedResults.value = await apiClient.getDetailedResults(selectData.value.simData, selectData.value.method);
+  constituencies.value = await generateConstituenciesFromDistrict(simDataResult.districts);
   resultsToDisplay.value = await apiClient.getTotalResults(selectData.value.simData, selectData.value.method);
+  mapStore.selectConstituency(0);
   isLoading.value = false;
 }
 

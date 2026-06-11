@@ -38,3 +38,29 @@ export async function generateConstituencies() {
     };
     return geoCollection;
 }
+
+export async function generateConstituenciesFromDistrict(
+  districts: Record<string, { seats: number; terytCodes: string[] }>
+) {
+    const powiaty = await loadPowiaty();
+    const constituencies = Object.entries(districts)
+      .map(([index, district]) => {
+          const shapes = powiaty.features.filter(function(item: { properties: { terc: string; }; }) {
+              return district.terytCodes.includes(item.properties.terc);
+          });
+          if (shapes.length === 1) {
+              return shapes[0];
+          }
+          let _union = union({
+              "type": "FeatureCollection",
+              "features": shapes
+          });
+          // because union() puts the vertices in the wrong order, causing constituencies to be colored on the outside
+          _union!.geometry = rewind(_union!.geometry, {reverse: true}) as Polygon | MultiPolygon;
+          return _union;
+      });
+    return {
+        "type": "FeatureCollection",
+        "features": constituencies
+    };
+}
