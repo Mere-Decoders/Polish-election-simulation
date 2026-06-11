@@ -33,8 +33,8 @@ const router = createRouter({
       },
     },
     {
-      path: '/vote-map-editor',
-      name: 'vote-map-editor',
+      path: '/vote_map_editor',
+      name: 'vote_map_editor',
       component: () => import('../views/VoteMapEditorView.vue'),
       meta: {
         requiresAuth: true,
