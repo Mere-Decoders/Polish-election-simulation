@@ -379,7 +379,9 @@ async function loadSimData() {
   idCounter = new_columns.length + 1;
 
   visibleGroupIds.value = new Set();
+  const forbiddenPowiats = ["SPEC", "1498", "1499"];
   for(const [index, district] of Object.entries(data.districts)) {
+    if(district.terytCodes.includes("SPEC")) district.terytCodes = district.terytCodes.filter(str => !forbiddenPowiats.includes(str));
     const id_num = Number(index);
     rowGroups.value[id_num - 1]!.powiats = new Set(district.terytCodes);
     rowGroups.value[id_num - 1]!.seats = district.seats;

@@ -93,7 +93,7 @@ import LoadingComponent from "@/components/LoadingComponent.vue";
 
 import apiClient from "@/api/apiClient.ts";
 import ResultsTableRow from "@/api/ResultsTableRow.ts";
-import {generateConstituencies} from "@/api/constituencyLoader.ts";
+import {generateConstituencies, generateConstituenciesFromDistrict} from "@/api/constituencyLoader.ts";
 import ApportionmentMethod from "@/api/ApportionmentMethod.ts";
 import VotesID from "@/api/VotesID.ts";
 
@@ -180,13 +180,15 @@ const selectData = ref({
 })
 
 const defaultGUID = "00000000-0000-0000-0000-000000000000";
+const defaultGUID2 = "00000000-0000-0000-0000-000000000003";
 
 onMounted(async () => {
-  constituencies.value = await generateConstituencies();
   methods.value = await apiClient.getApportionmentMethodIDs();
   simData.value = await apiClient.getVotesIDs();
-  detailedResults.value = await apiClient.getDetailedResults(defaultGUID, defaultGUID);
-  resultsToDisplay.value = await apiClient.getTotalResults(defaultGUID, defaultGUID);
+  resultsToDisplay.value = await apiClient.getTotalResults(defaultGUID2, defaultGUID);
+  detailedResults.value = await apiClient.getDetailedResults(defaultGUID2, defaultGUID);
+  const defaultSimData = await apiClient.getSimulationData(defaultGUID2);
+  constituencies.value = await generateConstituenciesFromDistrict(defaultSimData.districts);
   isLoading.value = false;
 });
 
@@ -196,9 +198,14 @@ function formatPercent(percent: number): string {
 
 async function loadNewResults() {
   isLoading.value = true;
-  mapStore.selectConstituency(0);
+  const [results, simDataResult] = await Promise.all([
+      apiClient.getTotalResults(selectData.value.simData, selectData.value.method),
+      apiClient.getSimulationData(selectData.value.simData),
+  ]);
+  resultsToDisplay.value = results;
   detailedResults.value = await apiClient.getDetailedResults(selectData.value.simData, selectData.value.method);
-  resultsToDisplay.value = await apiClient.getTotalResults(selectData.value.simData, selectData.value.method);
+  constituencies.value = await generateConstituenciesFromDistrict(simDataResult.districts);
+  mapStore.selectConstituency(0);
   isLoading.value = false;
 }
 
