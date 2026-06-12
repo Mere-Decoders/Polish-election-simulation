@@ -5,7 +5,7 @@
       <path
           class="cursor-pointer fill-[var(--color-constituency)]"
           :class="{ 'fill-[var(--color-constituency-active)]': mapStore.currentConstituency === feature.id }"
-          @click.stop="mapStore.selectConstituency(feature.id)"
+          @click.stop="mapStore.selectConstituency(feature.id); console.log(constituencies.features)"
           v-for="(feature, index) in constituencies.features"
           :key="index"
           :d="geoGenerator(feature)!"
