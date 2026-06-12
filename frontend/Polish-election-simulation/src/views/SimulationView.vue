@@ -186,9 +186,7 @@ onMounted(async () => {
   methods.value = await apiClient.getApportionmentMethodIDs();
   simData.value = await apiClient.getVotesIDs();
   resultsToDisplay.value = await apiClient.getTotalResults(defaultGUID2, defaultGUID);
-  console.log(resultsToDisplay);
   detailedResults.value = await apiClient.getDetailedResults(defaultGUID2, defaultGUID);
-  console.log(detailedResults);
   const defaultSimData = await apiClient.getSimulationData(defaultGUID2);
   constituencies.value = await generateConstituenciesFromDistrict(defaultSimData.districts);
   isLoading.value = false;
