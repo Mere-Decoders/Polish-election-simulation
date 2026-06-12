@@ -525,6 +525,10 @@ async function createSimData() {
   }
 }
 
+.title-section h1 {
+  font-size: 2rem;
+}
+
 .container {
   display: flex;
   flex-direction: column;
