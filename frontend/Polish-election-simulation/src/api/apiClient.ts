@@ -142,7 +142,7 @@ export default class apiClient {
     );
     const data = await data_response.json();
     let results: DetailedResultsRow[] = [];
-    const constituencyCount: number = 41;
+    const constituencyCount: number = Object.keys(data.constituencySeats).length;
     for (let i = 0; i < data.partyNames.length; i++) {
       let votes: number[] = [];
       let seats: number[] = [];
