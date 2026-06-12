@@ -457,9 +457,6 @@ async function gatherSimData() {
         col => row[`party${col.id}`]
     )
   }
-  console.log("districts tercs:", Object.values(result.districts).flatMap(d => d.terytCodes).length);
-  console.log("total rows:", rows.value.length);
-  console.log("visible groups:", visibleGroups.value.map(g => ({ id: g.id, powiats: g.powiats.size })));
   return result;
 }
 
