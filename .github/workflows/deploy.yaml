@@ -1,26 +1,32 @@
-name: Deploy Full Project
+name: Deploy
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -f Dockerfile -t full-project .
+      - name: Build and start
+        shell: bash
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          JWT_KEY: ${{ secrets.JWT_KEY }}
+          JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
+          JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
+          TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+        run: docker compose up -d --build --remove-orphans
 
-      - name: Login to ACR
-        run: |
-          echo "${{ secrets.AZURE_ACR_PASSWORD }}" | docker login polelecontainerregistry.azurecr.io --username ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
-
-      - name: Tag image
-        run: docker tag full-project polelecontainerregistry.azurecr.io/full-project:latest
-
-      - name: Push image
-        run: docker push polelecontainerregistry.azurecr.io/full-project:latest
+      - name: Clean up old images
+        shell: bash
+        run: docker image prune -f
